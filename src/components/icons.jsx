@@ -1,0 +1,32 @@
+import sch_management from '../assets/icons/icons8-management-100.png';
+import result from '../assets/icons/icons8-result-100.png';
+import dashboard from '../assets/icons/icons8-dashboard-100.png';
+import communication from '../assets/icons/icons8-communication-100.png';
+import digital from '../assets/icons/icons8-digital-100.png';
+import performance from '../assets/icons/icons8-performance-100.png';
+import support from '../assets/icons/icons8-support-100.png';
+import bullet from '../assets/icons/bullet-point.png';
+import hamburger from '../assets/icons/icons8-hamburger-menu-100.png';
+import asterisk from '../assets/icons/asterisk.png';
+import asterisk_1 from '../assets/icons/asterisk_1.png';
+import close from '../assets/icons/icons8-close-100.png';
+import main_close from '../assets/icons/close.png';
+
+
+
+
+export const Icons = {
+    sch_management,
+    result,
+    dashboard,
+    communication,
+    support,
+    bullet,
+    hamburger,
+    digital,
+    asterisk,
+    main_close,
+    close,
+    asterisk_1,
+    performance,
+}

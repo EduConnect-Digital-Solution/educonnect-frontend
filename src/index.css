@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+.page_bg {
+    /*background: #0961A1;*/
+    /*background: linear-gradient(83deg, rgba(9, 97, 161, 1) 0%, rgba(255, 193, 33, 1) 94%);*/
+    background-image: url('./assets/images/page_bg.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.why_choose_us_bg {
+    background-image: url('./assets/images/circle-scatter-haikei.svg');
+}
+
+@media (max-width: 640px) {
+    .why_choose_us_bg {
+        background-image: none;
+    }
+}
