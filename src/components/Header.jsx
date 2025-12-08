@@ -81,7 +81,7 @@ export const Header = () => {
 
                 {/* Action Buttons */}
                 <div className=" flex space-x-4">
-                    <NavLink to={`/welcome`}>
+                    <NavLink to={`/register`}>
                         <button className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">
                             Log in
                         </button>

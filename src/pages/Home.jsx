@@ -8,6 +8,8 @@ import ContactPage from "./ContactForm.jsx";
 import {Header} from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import {NavLink} from "react-router-dom";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export const Home = () => {
     const [activeReason, setActiveReason] = useState(0);
@@ -77,7 +79,7 @@ export const Home = () => {
         smoothScrollTo(id);
         // Close mobile if open
     }, [mapNavKeytoID, smoothScrollTo]);
-
+    AOS.init();
     return (
         <>
             <Header />
@@ -175,7 +177,7 @@ export const Home = () => {
                     </div>
 
                     {/* Stakeholder Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div data-aos={`fade-up`} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {stakeholders.map((stakeholder, index) => {
                             return (
                                 <div
@@ -361,7 +363,7 @@ export const Home = () => {
                             </h2>
 
                             {/* Subtext */}
-                            <p className="text-xl text-gray-700 mb-10 max-w-2xl lg:max-w-full mx-auto">
+                            <p  className="text-xl text-gray-700 mb-10 max-w-2xl lg:max-w-full mx-auto">
                                 From classroom updates to progress tracking, EduConnect keeps everyone connected and informed with zero effort.
                             </p>
 
