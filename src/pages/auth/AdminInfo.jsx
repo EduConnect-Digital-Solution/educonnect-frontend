@@ -30,13 +30,15 @@ export function AdminInfo() {
         <>
             {/* Back button */}
             <div className="mb-6">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                    <span className="font-medium">Back</span>
-                </button>
+                <NavLink to={`/register/school`}>
+                    <button
+                        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                        <span className="font-medium">Back</span>
+                    </button>
+                </NavLink>
+
             </div>
 
             {/* Form Header */}
@@ -133,12 +135,14 @@ export function AdminInfo() {
                     >
                         Previous
                     </button>
-                    <button
-                        onClick={handleCreateAccount}
-                        className="w-full py-4 bg-[#0A61A4] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 mt-6"
-                    >
-                        Create Account
-                    </button>
+                    <NavLink to={`/verify`} className={`w-full `}>
+                        <button
+                            onClick={handleCreateAccount}
+                            className="w-full py-4 bg-[#0A61A4] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 mt-6"
+                        >
+                            Create Account
+                        </button>
+                    </NavLink>
                 </div>
 
             </div>

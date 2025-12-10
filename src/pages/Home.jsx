@@ -368,7 +368,7 @@ export const Home = () => {
                             </p>
 
                             {/* Action Button */}
-                            <NavLink to={`/register`}>
+                            <NavLink to={`/register/school`}>
                                 <button
                                     className="px-10 py-3 bg-[#0A61A4] text-white font-semibold rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150 shadow-md">
                                     Get Started Today
