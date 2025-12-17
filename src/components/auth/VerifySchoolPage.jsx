@@ -128,8 +128,10 @@ function OtpForm() {
 
             </div>
 
-            <div className={`flex justify-center`}>
-                <Button type="submit" className={`w-2/5  mx-auto items-center content-center justify-center`}>Submit</Button>
+            <div className={``}>
+                <NavLink to={`/dashboard/teacher`} className={`flex justify-center`}>
+                    <Button type="submit" className={`w-2/5  mx-auto items-center content-center justify-center`}>Submit</Button>
+                </NavLink>
             </div>
         </form>
     )

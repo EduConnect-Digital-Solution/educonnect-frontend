@@ -28,8 +28,8 @@ This is the frontend repository for EduConnect, a modern web platform designed t
 
 ## Live Demo
 
-A live version of the application is deployed here: [EduConnect Demo](https://edu-connect-five-omega.vercel.app/) 
-*(Note: This is a placeholder link.)*
+A live version of the application is deployed here: [EduConnect Demo](https://educonnect-frontend-one.vercel.app/) 
+*(Note: This is a Vercel Hosted link.)*
 
 ---
 

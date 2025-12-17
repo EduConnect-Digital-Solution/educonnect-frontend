@@ -10,6 +10,7 @@ import Footer from "../components/Footer.jsx";
 import {NavLink} from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import {SEO} from "../SEO.jsx";
 
 export const Home = () => {
     const [activeReason, setActiveReason] = useState(0);
@@ -48,11 +49,6 @@ export const Home = () => {
     const handleVideoClick = (videoUrl) => {
         window.open(videoUrl, '_blank');
     };
-    const primaryBlue = '#104889';
-
-    // Define a professional accent color (using Tailwind's orange for contrast)
-    const accentColor = 'bg-orange-500';
-    const accentColorHover = 'hover:bg-orange-600';
 
     const mapNavKeytoID = useCallback((key) => {
         switch (key) {
@@ -82,6 +78,12 @@ export const Home = () => {
     AOS.init();
     return (
         <>
+            <SEO
+                title="EduConnect - Transform Your School Operations"
+                description="Digital learning and school management platform built for Nigerian schools. Streamline administration, engage parents, track student progress."
+                url="educonnect.com.ng"
+            />
+
             <Header />
             {/* Hero Section */}
             <section id={"home"} className="relative mb-10 md:mb-16 w-full h-[700px] flex items-center justify-center text-center overflow-hidden">

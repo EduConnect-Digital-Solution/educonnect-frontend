@@ -7,6 +7,7 @@ import { AuthLayout } from "./components/auth/AuthLayout.jsx";
 import { LoginPage } from "./pages/auth/LoginPage.jsx";
 import { SchoolInfo } from "./pages/auth/SchoolInfo.jsx";
 import { AdminInfo } from "./pages/auth/AdminInfo.jsx";
+import TeacherDashboard from "./pages/application/TeacherDashboard.jsx";
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                 {/* Other Routes */}
                 <Route path="/verify" element={<VerifySchoolPage />} />
                 <Route path="/success" element={<SuccessPage />} />
+                <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
 
                 {/* Catch all */}
                 <Route path="*" element={<Navigate to="/" />} />
