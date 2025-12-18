@@ -1,7 +1,6 @@
-import {BookOpen, GraduationCap, UserCheck, Users} from "lucide-react";
+import {BookOpen, GraduationCap, User, UserCheck, Users} from "lucide-react";
 import {Icons} from "../components/icons.jsx";
-import {useState} from "react";
-import { CheckCircle2, MapPin, Smartphone, DollarSign, TrendingUp, Sparkles } from 'lucide-react';
+import {MapPin, Smartphone, DollarSign, TrendingUp, Sparkles } from 'lucide-react';
 
 export const stakeholders = [
     {
@@ -236,3 +235,33 @@ export const navItems = [
     { key: 'resources',  label: 'Resources', hasDropdown: false },
     { key: 'faqs',  label: 'FAQs', hasDropdown: false },
 ];
+
+// TODO: change email to subject taught
+export const students = [
+    { sn: 1, name: 'Ganiyu Abbas Quadri', class: 'Primary 1', email: 'abbasquadri@gmail.com', status: 'Excellent', contact: '08034572891', avatarUrl: User },
+    { sn: 2, name: 'Daniel Gift Ayomide', class: 'Primary 2', email: 'danielgift@gmail.com', status: 'Average', contact: '09082936472', avatarUrl: User },
+    { sn: 3, name: 'Ilori Mosope Victory', class: 'Primary 3', email: 'ilorivictory@gmail.com', status: 'Needs Support', contact: '09017286735', avatarUrl: User },
+    { sn: 4, name: 'Adeyinka Oyinkan Favour', class: 'Primary 1', email: 'adeyinkafavour@gmail.com', status: 'Excellent', contact: '07017261936', avatarUrl: User },
+    { sn: 5, name: 'Hammed Kabirat Aima', class: 'Primary 1', email: 'hammedaima@gmail.com', status: 'Excellent', contact: '08026789164', avatarUrl: User },
+    { sn: 6, name: 'Aliyu Musa Bawa', class: 'Primary 3', email: 'aliyumusa@gmail.com', status: 'Average', contact: '08046738356', avatarUrl: User },
+    { sn: 7, name: 'Abdulahi Yusufu Danladi', class: 'Primary 1', email: 'yusufdanladi@gmail.com', status: 'Excellent', contact: '07026389175', avatarUrl: User },
+    { sn: 8, name: 'Danjuma Ibrahim Jatau', class: 'Primary 2', email: 'ibrahimjatau@gmail.com', status: 'Excellent', contact: '09027468897', avatarUrl: User },
+    { sn: 9, name: 'Danjuma Ibrahim Jatau', class: 'Primary 2', email: 'ibrahimjatau@gmail.com', status: 'Excellent', contact: '09027468897', avatarUrl: User },
+    { sn: 10, name: 'Danjuma Ibrahim Jatau', class: 'Primary 2', email: 'ibrahimjatau@gmail.com', status: 'Excellent', contact: '09027468897', avatarUrl: User },
+
+];
+
+export const getStatusStyles = (status) => {
+    switch (status) {
+        case 'Excellent': return 'bg-green-100/80 text-green-800';
+        case 'Average': return 'bg-blue-100/80 text-blue-800';
+        case 'Needs Support': return 'bg-red-100/80 text-red-800';
+        default: return 'bg-gray-100 text-gray-800';
+    }
+};
+
+
+// Helper to get initials for avatar fallback
+export const getInitials = (name) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+};

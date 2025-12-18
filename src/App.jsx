@@ -8,6 +8,8 @@ import { LoginPage } from "./pages/auth/LoginPage.jsx";
 import { SchoolInfo } from "./pages/auth/SchoolInfo.jsx";
 import { AdminInfo } from "./pages/auth/AdminInfo.jsx";
 import TeacherDashboard from "./pages/application/TeacherDashboard.jsx";
+import StudentList from "./components/MyStudents.jsx";
+import TeacherProfile from "./components/UserProfile.jsx";
 
 function App() {
     return (
@@ -29,8 +31,11 @@ function App() {
                 <Route path="/success" element={<SuccessPage />} />
                 <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
 
+                <Route path="/dashboard/teacher/my-students" element={<StudentList />} />
+                <Route path="/dashboard/teacher/profile" element={<TeacherProfile />} />
+
                 {/* Catch all */}
-                <Route path="*" element={<Navigate to="/" />} />
+                {/*<Route path="*" element={<Navigate to="/" />} />*/}
             </Routes>
         </div>
     );

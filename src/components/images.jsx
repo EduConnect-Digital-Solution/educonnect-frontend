@@ -11,6 +11,7 @@ import CTA_image from '../assets/images/CTA_image.jpg';
 import auth_page_bg from '../assets/images/auth_page_bg.svg';
 import auth from '../assets/images/auth.png';
 import verify_bg from '../assets/images/2147864690.jpg';
+import profile_picture from '../assets/images/profile_picture.png';
 
 
 
@@ -25,7 +26,8 @@ export const Images = {
     circle,
     reg,
     main_logo,
-    CTA_image,
     verify_bg,
+    CTA_image,
+    profile_picture,
     why_choose_us,
 }

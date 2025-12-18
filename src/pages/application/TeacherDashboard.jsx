@@ -1,5 +1,5 @@
-import React from 'react';
-import { Menu, Search, Bell, Sun } from 'lucide-react';
+import React, {useState} from 'react';
+import {Menu, Search, Bell, Sun, Book} from 'lucide-react';
 import {
     LayoutDashboard,
     Bot,
@@ -8,8 +8,9 @@ import {
     User,
     Zap,
 } from 'lucide-react';
-
+import { AlertTriangle, MessageSquare, AlertCircle, ChevronRight } from 'lucide-react';
 import { Users, BookOpen, UserCheck, GraduationCap } from 'lucide-react';
+import { Upload, MessageCircle, MoreHorizontal, TrendingUp } from 'lucide-react';
 import {NavLink} from "react-router-dom";
 import {Images} from "../../components/images.jsx";
 
@@ -25,14 +26,14 @@ export default function TeacherDashboard() {
                     <Header />
                     <main className="flex-1 p-6">
                         <EducationOverviewDashboard />
-                        <AnalyticsAndActions />
-                        {/* ... other content goes here */}
                     </main>
                 </div>
             </div>
         </>
     )
 }
+
+// TODO: add myclasses to the sidebar that allows the teacher to view their classes from a drop down menu
 
 const EducationMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     return (
@@ -98,11 +99,13 @@ const EducationOverviewDashboard = () => {
                     />
                 ))}
             </div>
+            <AnalyticsAndActions />
+            <BottomSection />
         </div>
     );
 };
 
-const Header = () => {
+export const Header = () => {
     return (
         <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
             <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -170,14 +173,15 @@ const Header = () => {
     );
 };
 
-const Sidebar = () => {
+export const Sidebar = () => {
     // Define navigation items
     const navItems = [
-        { name: 'Dashboard', icon: LayoutDashboard, current: true, hasDropdown: false },
-        { name: 'My Students', icon: GraduationCap, current: false, hasDropdown: true, label: '' },
-        { name: 'User Profile', icon: User, current: false, hasDropdown: false },
+        { name: 'Dashboard', icon: LayoutDashboard, link: '/dashboard/teacher', current: true, hasDropdown: false },
+        { name: 'My Students', icon: GraduationCap, link: '/dashboard/teacher/my-students', current: false, hasDropdown: true, label: '' },
+        { name: 'User Profile', icon: User, link: '/dashboard/teacher/profile', current: false, hasDropdown: false },
     ];
 
+    // TODO: change from message parents to email parents
     return (
         <div className="flex flex-col w-64 h-screen bg-white border-r border-gray-200 sticky top-0">
             {/* Sidebar Header (Logo and Menu Icon) */}
@@ -204,7 +208,7 @@ const Sidebar = () => {
                     {navItems.map((item) => (
                         <a
                             key={item.name}
-                            href="#" // Placeholder link
+                            href={`${item.link}`} // Placeholder link
                             className={`flex items-center p-3 rounded-lg transition duration-150 ${
                                 item.current
                                     ? 'bg-blue-50 text-blue-600 font-semibold'
@@ -223,8 +227,6 @@ const Sidebar = () => {
                                   {item.label}
                                 </span>
                             )}
-
-
                         </a>
                     ))}
                 </nav>
@@ -236,94 +238,254 @@ const Sidebar = () => {
 };
 
 const AnalyticsAndActions = () => {
-    // Dummy data for the graph (just for labeling the X-axis)
+    const [timeframe, setTimeframe] = useState('Last Month');
     const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
 
-    // --- Quick Action Item Component ---
-    const QuickActionItem = ({ title, description, buttonText }) => (
-        <div className="mb-4 last:mb-0">
-            <h3 className="text-gray-900 font-semibold mb-1">
-                • {title}
-            </h3>
-            <p className="text-gray-500 text-sm mb-2">{description}</p>
-            <button className="px-4 py-2 text-sm font-medium rounded-lg text-blue-600 bg-blue-100 hover:bg-blue-200 transition duration-150">
-                {buttonText}
-            </button>
+    // --- Enhanced Quick Action Card Component ---
+    const QuickActionCard = ({ title, description, buttonText, icon: Icon, colorClass }) => (
+        <div className="group p-4 rounded-xl border border-gray-100 bg-white hover:border-blue-200 hover:shadow-md transition-all duration-200">
+            <div className="flex items-start gap-4">
+                <div className={`p-2.5 rounded-lg ${colorClass} transition-transform group-hover:scale-110`}>
+                    <Icon size={20} />
+                </div>
+                <div className="flex-1">
+                    <h3 className="text-gray-900 font-bold text-sm mb-1">{title}</h3>
+                    <p className="text-gray-500 text-xs mb-3 leading-relaxed">{description}</p>
+                    <button className="w-full py-2 text-xs font-bold rounded-lg bg-gray-50 text-gray-700 border border-gray-200 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors">
+                        {buttonText}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
 
-            {/* 1. Analytics Box (Graph Placeholder) */}
-            <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold text-gray-900">Analytics Box</h2>
-                    <select className="text-sm border border-gray-300 rounded-lg py-1.5 px-3 focus:ring-blue-500 focus:border-blue-500">
-                        <option>Last Month</option>
-                        <option>Last 6 Months</option>
-                        <option>Last Year</option>
-                    </select>
+            {/* 1. Enhanced Analytics Box */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            Analytics Box
+                        </h2>
+                        <p className="text-xs text-gray-400 font-medium">Student engagement and performance trends</p>
+                    </div>
+
+                    {/* Segmented Control instead of a plain dropdown */}
+                    <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100">
+                        <select className="text-sm border border-gray-300 rounded-lg py-1.5 px-3 focus:ring-blue-500 focus:border-blue-500">
+
+                            <option>Last Month</option>
+
+                            <option>Last 6 Months</option>
+
+                            <option>Last Year</option>
+
+                        </select>
+                    </div>
                 </div>
 
-                {/* --- Graph Visual Placeholder (Simulating Area Chart) --- */}
-                <div className="relative h-72 w-full">
+                {/* --- Enhanced Graph Visualization --- */}
+                <div className="relative h-72 w-full mt-4">
+                    {/* Simulated Grid Lines */}
+                    <div className="absolute left-8 right-0 top-0 h-full flex flex-col justify-between pointer-events-none">
+                        {[...Array(5)].map((_, i) => (
+                            <div key={i} className="w-full border-t border-gray-50" />
+                        ))}
+                    </div>
+
                     {/* Y-axis Labels */}
-                    <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500">
+                    <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] font-bold text-gray-400">
                         <span>100</span>
                         <span>75</span>
                         <span>50</span>
                         <span>25</span>
-                        <span>0</span>
+                        <span className="mb-6">0</span>
                     </div>
 
-                    {/* Chart Area: Simulates the curve using a complex background image or a clipped element.
-              Here we use a simpler, common technique: a semi-transparent curved shape. */}
+                    {/* Styled Area Chart Area */}
                     <div className="absolute left-8 right-0 bottom-6 top-0">
-                        {/* This div represents the actual chart visualization from a library like Recharts.
-               For this demo, we use a basic background pattern to suggest a curved area graph. */}
-                        <div
-                            className="w-full h-full"
-                            style={{
-                                // A complex gradient/clip-path would be needed for perfect fidelity,
-                                // but this placeholder gives the space and axis context.
-                                background: 'linear-gradient(to top, rgba(59, 130, 246, 0.4) 0%, rgba(59, 130, 246, 0) 100%)',
-                                clipPath: 'polygon(0 100%, 0 0%, 25% 60%, 50% 70%, 75% 40%, 100% 75%, 100% 100%)',
-                                opacity: 0.8
-                            }}
-                        ></div>
+                        <svg className="w-full h-full" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+                                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                                </linearGradient>
+                            </defs>
+                            {/* The Area Path */}
+                            <path
+                                d="M0 20 Q 25 150, 50 160 T 100 80 T 150 180 T 200 120 L 200 280 L 0 280 Z"
+                                fill="url(#chartGradient)"
+                                className="w-full h-full"
+                                vectorEffect="non-scaling-stroke"
+                                style={{ transform: 'scaleX(5.5)' }} // Simple scaling to fill width
+                            />
+                            {/* The Line Path */}
+                            <path
+                                d="M0 20 Q 25 150, 50 160 T 100 80 T 150 180 T 200 120"
+                                fill="none"
+                                stroke="#3b82f6"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                vectorEffect="non-scaling-stroke"
+                                style={{ transform: 'scaleX(5.5)' }}
+                            />
+                        </svg>
                     </div>
 
                     {/* X-axis Labels */}
-                    <div className="absolute left-8 right-0 bottom-0 h-4 flex justify-around text-xs text-gray-600 pt-1">
-                        {weeks.map((week, index) => (
-                            <span key={index} className="w-1/4 text-center">{week}</span>
+                    <div className="absolute left-8 right-0 bottom-0 h-6 flex justify-around text-[11px] font-bold text-gray-400 border-t border-gray-100 pt-2">
+                        {weeks.map((week) => (
+                            <span key={week}>{week}</span>
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* 2. Quick Actions Box */}
-            <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+            {/* 2. Enhanced Quick Actions Box */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
+                    <button className="text-gray-400 hover:text-gray-600">
+                        <MoreHorizontal size={20} />
+                    </button>
+                </div>
 
-                <div className="space-y-6">
-                    <QuickActionItem
+                <div className="space-y-4 flex-1">
+                    <QuickActionCard
                         title="Upload Lessons"
                         description="Upload notes, slides and resources"
                         buttonText="Upload Now"
+                        icon={Upload}
+                        colorClass="bg-blue-50 text-blue-600"
                     />
-                    <QuickActionItem
+                    <QuickActionCard
                         title="Create Quiz"
                         description="Test your students' understanding quickly"
                         buttonText="Create Quiz"
+                        icon={BookOpen}
+                        colorClass="bg-purple-50 text-purple-600"
                     />
-                    <QuickActionItem
+                    <QuickActionCard
                         title="Message Parents"
                         description="Communicate with parents in real time"
                         buttonText="Message"
+                        icon={MessageCircle}
+                        colorClass="bg-green-50 text-green-600"
                     />
                 </div>
+            </div>
+        </div>
+    );
+};
+
+const BottomSection = () => {
+    const alerts = [
+        {
+            title: 'Low-Performing Students',
+            description: '3 students are performing below expected level this week',
+            cta: 'View Student Details',
+            type: 'critical',
+            icon: AlertTriangle,
+            bgColor: 'bg-red-50',
+            textColor: 'text-red-700',
+            iconColor: 'text-red-500',
+        },
+        {
+            title: 'Parent Escalations',
+            description: 'You have 1 urgent message from a parent',
+            cta: 'Open Message',
+            type: 'warning',
+            icon: MessageSquare,
+            bgColor: 'bg-amber-50',
+            textColor: 'text-amber-700',
+            iconColor: 'text-amber-500',
+        },
+        {
+            title: 'Students Needing Attention',
+            description: '2 students need attention due to consistent missed assignments',
+            cta: "Message Parents",
+            type: 'info',
+            icon: AlertCircle,
+            bgColor: 'bg-purple-50',
+            textColor: 'text-purple-700',
+            iconColor: 'text-purple-500',
+        },
+    ];
+
+    const classes = [
+        { name: 'Primary 1', count: 8, max: 25 },
+        { name: 'Primary 2', count: 12, max: 25 },
+        { name: 'Primary 3', count: 20, max: 25 },
+        { name: 'Primary 4', count: 24, max: 25 },
+        { name: 'Primary 5', count: 24, max: 25 },
+    ];
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+            {/* 1. Important Alerts Section */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-gray-800">Important Alerts</h2>
+                    <span className="px-2 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full animate-pulse">
+            3 ACTION ITEMS
+          </span>
+                </div>
+
+                <div className="space-y-4">
+                    {alerts.map((alert, idx) => (
+                        <div
+                            key={idx}
+                            className={`${alert.bgColor} p-4 rounded-xl flex items-start gap-4 transition-all hover:shadow-md cursor-default border border-transparent hover:border-gray-200`}
+                        >
+                            <div className={`${alert.iconColor} mt-1`}>
+                                <alert.icon size={22} />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className={`font-bold ${alert.textColor} text-sm lg:text-base`}>
+                                    {alert.title}
+                                </h3>
+                                <p className="text-gray-500 text-sm mt-0.5">{alert.description}</p>
+                            </div>
+                            <button className={`text-sm font-semibold underline underline-offset-4 hover:opacity-70 transition-opacity ${alert.textColor}`}>
+                                {alert.cta}
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* 2. Class Overview Section */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 className="text-xl font-bold text-gray-800 mb-2">Class Overview</h2>
+                <p className="text-gray-400 text-sm mb-6">Number of students in each class</p>
+
+                <div className="space-y-6">
+                    {classes.map((cls, idx) => (
+                        <div key={idx} className="group cursor-default">
+                            <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">
+                  {cls.name}
+                </span>
+                                <span className="text-sm font-bold text-gray-900">{cls.count}</span>
+                            </div>
+                            {/* Enhancement: Progress bar for visual capacity */}
+                            <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                <div
+                                    className={`h-full rounded-full transition-all duration-1000 ${
+                                        (cls.count / cls.max) > 0.8 ? 'bg-orange-400' : 'bg-blue-500'
+                                    }`}
+                                    style={{ width: `${(cls.count / cls.max) * 100}%` }}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <button className="w-full mt-8 py-3 text-sm font-bold text-gray-500 border-2 border-dashed border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2">
+                    View All Classes <ChevronRight size={16} />
+                </button>
             </div>
         </div>
     );
