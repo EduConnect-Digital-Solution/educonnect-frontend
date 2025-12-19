@@ -1,3 +1,4 @@
+
 # EduConnect Frontend
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -66,7 +67,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 1.  **Clone the repository:**
     ```sh
-    git clone <your-repository-url>
+    git clone https://github.com/EduConnect-Digital-Solution/educonnect-frontend.git
     ```
 
 2.  **Navigate to the project directory:**
@@ -85,7 +86,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 In the project directory, you can run:
 
--   `npm run dev`: Runs the app in development mode. Open [http://localhost:5173](http://localhost:5173) to view it.
+-   `npm run dev`: Runs the app in development mode.
 -   `npm run build`: Builds the app for production to the `dist` folder.
 -   `npm run lint`: Lints the codebase using ESLint.
 -   `npm run preview`: Serves the production build locally to preview before deployment.
