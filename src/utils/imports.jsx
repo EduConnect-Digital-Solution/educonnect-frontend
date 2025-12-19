@@ -277,3 +277,22 @@ export const getStatusStyles = (status) => {
 export const getInitials = (name) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 };
+
+export const users = [
+    { sn: 1, name: 'Ganiyu Abbas Quadri', class: 'Primary 1', subject: 'Mathematics', email: 'abbasquadri@gmail.com', status: 'Excellent', contact: '08034572891', avatarUrl: User, attendance: 95, behavioral: 90, participation: 98 },
+    { sn: 2, name: 'Daniel Gift Ayomide', class: 'Primary 2', subject: 'Mathematics', email: 'danielgift@gmail.com', status: 'Average', contact: '09082936472', avatarUrl: User, attendance: 85, behavioral: 80, participation: 88 },
+    { sn: 3, name: 'Ilori Mosope Victory', class: 'Primary 3', subject: 'Mathematics', email: 'ilorivictory@gmail.com', status: 'Needs Support', contact: '09017286735', avatarUrl: User, attendance: 70, behavioral: 65, participation: 75 },
+    { sn: 4, name: 'Adeyinka Oyinkan Favour', class: 'Primary 1', subject: 'Mathematics', email: 'adeyinkafavour@gmail.com', status: 'Excellent', contact: '07017261936', avatarUrl: User, attendance: 98, behavioral: 92, participation: 99 },
+    { sn: 5, name: 'Hammed Kabirat Aima', class: 'Primary 1', subject: 'Basic Science', email: 'hammedaima@gmail.com', status: 'Excellent', contact: '08026789164', avatarUrl: User, attendance: 96, behavioral: 91, participation: 97 },
+    { sn: 6, name: 'Aliyu Musa Bawa', class: 'Primary 3', subject: 'Basic Science', email: 'aliyumusa@gmail.com', status: 'Average', contact: '08046738356', avatarUrl: User, attendance: 88, behavioral: 82, participation: 90 },
+    { sn: 7, name: 'Abdulahi Yusufu Danladi', class: 'Primary 1', subject: 'Quantitative Reasoning', email: 'yusufdanladi@gmail.com', status: 'Excellent', contact: '07026389175', avatarUrl: User, attendance: 99, behavioral: 94, participation: 100 },
+    { sn: 8, name: 'Danjuma Ibrahim Jatau', class: 'Primary 2', subject: 'Quantitative Reasoning', email: 'ibrahimjatau@gmail.com', status: 'Excellent', contact: '09027468897', avatarUrl: User, attendance: 97, behavioral: 93, participation: 98 },
+    { sn: 9, name: 'Aisha Bello', class: 'Primary 1', subject: 'Mathematics', email: 'aishabello@gmail.com', status: 'Average', contact: '08012345678', avatarUrl: User, attendance: 89, behavioral: 85, participation: 92 },
+    { sn: 10, name: 'Emeka Okafor', class: 'Primary 2', subject: 'Mathematics', email: 'emekaokafor@gmail.com', status: 'Excellent', contact: '08023456789', avatarUrl: User, attendance: 96, behavioral: 90, participation: 97 },
+    { sn: 11, name: 'Fatima Mohammed', class: 'Primary 3', subject: 'Mathematics', email: 'fatimamohammed@gmail.com', status: 'Needs Support', contact: '08034567890', avatarUrl: User, attendance: 75, behavioral: 70, participation: 80 },
+    { sn: 12, name: 'Chinedu Eze', class: 'Primary 1', subject: 'Basic Science', email: 'chinedueze@gmail.com', status: 'Excellent', contact: '08045678901', avatarUrl: User, attendance: 97, behavioral: 92, participation: 98 },
+    { sn: 13, name: 'Ngozi Okonkwo', class: 'Primary 2', subject: 'Basic Science', email: 'ngoziokonkwo@gmail.com', status: 'Average', contact: '08056789012', avatarUrl: User, attendance: 88, behavioral: 84, participation: 91 },
+    { sn: 14, name: 'Aminu Sani', class: 'Primary 3', subject: 'Basic Science', email: 'aminusani@gmail.com', status: 'Excellent', contact: '08067890123', avatarUrl: User, attendance: 95, behavioral: 89, participation: 96 },
+    { sn: 15, name: 'Binta Suleiman', class: 'Primary 1', subject: 'Quantitative Reasoning', email: 'bintasuleiman@gmail.com', status: 'Needs Support', contact: '08078901234', avatarUrl: User, attendance: 78, behavioral: 72, participation: 81 },
+    { sn: 16, name: 'Tunde Adebayo', class: 'Primary 2', subject: 'Quantitative Reasoning', email: 'tundeadebayo@gmail.com', status: 'Excellent', contact: '08089012345', avatarUrl: User, attendance: 99, behavioral: 95, participation: 100 },
+];
