@@ -16,7 +16,6 @@ import {NavLink, useLocation} from "react-router-dom";
 import {Images} from "../../../components/images.jsx";
 import {Button} from "../../../components/ui/button.jsx";
 import { FileText, ChevronDown, CalendarCheck, LucideMail} from 'lucide-react';
-import {Header} from "../TeacherDashboard/TeacherDashboard.jsx";
 
 
 export default function ParentDashboard() {
@@ -30,7 +29,8 @@ export default function ParentDashboard() {
                 <div className="flex-1 flex flex-col">
                     <Header />
                     <main className="flex-1 p-6">
-                        <EducationOverviewDashboard />
+                        <ParentsQuickStatsInfo />
+                        <AnalyticsAndActions />
                         <ParentDashboardSection />
                     </main>
                 </div>
@@ -38,8 +38,36 @@ export default function ParentDashboard() {
         </>
     )
 }
+const Header = () => {
+    return (
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+            <div className="flex h-16 px-4 sm:px-6 lg:px-8">
+                {/* Right Side: Notifications, Theme Toggle, and Profile */}
+                <div className="flex items-center space-x-3 ml-auto">
+                    {/* Notifications Icon */}
+                    <button
+                        className="p-2 text-gray-500 hover:text-gray-600 rounded-full hover:bg-gray-100 transition duration-150 relative"
+                        aria-label="Notifications"
+                    >
+                        <Bell className="w-6 h-6" />
+                    </button>
 
-const EducationMetricCard = ({ title, value, icon: Icon, colorClass }) => {
+                    {/* User Profile */}
+                    <div className="flex items-center px-3 py-2 space-x-2 cursor-pointer rounded-lg hover:bg-gray-100 transition duration-150">
+                        <span className="text-sm font-medium text-gray-800 hidden sm:block">
+                            Musharof
+                        </span>
+
+                        <User className="w-6 h-6 ring-2 rounded-full ring-black" />
+                    </div>
+                </div>
+            </div>
+        </header>
+
+    );
+};
+
+const StatsMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     return (
         // Apply background and text color based on the colorClass prop
         <div className={`p-6 rounded-xl shadow-md flex items-center justify-between min-w-[200px] ${colorClass}`}>
@@ -56,7 +84,7 @@ const EducationMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     );
 };
 
-const EducationOverviewDashboard = () => {
+const ParentsQuickStatsInfo = () => {
 
     // Define the metric data, colors, and icons
     const metrics = [
@@ -87,14 +115,14 @@ const EducationOverviewDashboard = () => {
     ];
 
     return (
-        <div className="p-6">
+        <div className="md:p-6">
             {/* Overview Heading (Kept from original design) */}
             <h1 className="text-xl font-semibold text-gray-900 mb-6">Overview</h1>
 
             {/* Metrics Container */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {metrics.map((metric) => (
-                    <EducationMetricCard
+                    <StatsMetricCard
                         key={metric.title}
                         title={metric.title}
                         value={metric.value}
@@ -103,7 +131,6 @@ const EducationOverviewDashboard = () => {
                     />
                 ))}
             </div>
-            <AnalyticsAndActions />
         </div>
     );
 };
@@ -128,13 +155,13 @@ export const ParentSidebar = () => {
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md"
+                    className="lg:hidden fixed top-3 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md"
                 >
                     <Menu className="w-6 h-6 text-gray-600" />
                 </button>
             )}
 
-            {/* Backdrop Overlay */}
+            {/*Darkened Backdrop Overlay */}
             {isOpen && (
                 <div
                     className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -209,6 +236,7 @@ export const ParentSidebar = () => {
         </>
     );
 };
+
 
 const AnalyticsAndActions = () => {
     const [selectedChild, setSelectedChild] = useState('Sandra J');
@@ -345,7 +373,7 @@ const AnalyticsAndActions = () => {
                     <QuickActionCard
                         title="Contact Teacher"
                         description="Get in touch with the school admin or teachers"
-                        buttonText="Message Now"
+                        buttonText="Coming Soon"
                         icon={LucideMail}
                         // colorClass="bg-green-50 text-green-600"
                         comingSoon={true} // New prop to handle po
@@ -353,15 +381,15 @@ const AnalyticsAndActions = () => {
                         // st-MVP state
                     />
 
-                    {/* 3. ACTIVE FEATURE */}
-                    {/*<QuickActionCard*/}
-                    {/*    title="Contact Support"*/}
-                    {/*    description="Get in touch with the school admin or teachers"*/}
-                    {/*    buttonText="Message Now"*/}
-                    {/*    icon={MessageCircle}*/}
-                    {/*    colorClass="bg-purple-50 text-purple-600"*/}
-                    {/*    comingSoon={true} // New prop to handle post-MVP state*/}
-                    {/*/>*/}
+                     {/*3. ACTIVE FEATURE*/}
+                    <QuickActionCard
+                        title="Contact Support"
+                        description="Get in touch with the school admin or teachers"
+                        buttonText="Coming Soon"
+                        icon={MessageCircle}
+                        colorClass="bg-gray-100 text-gray-400"
+                        comingSoon={true} // New prop to handle post-MVP state
+                    />
                 </div>
             </div>
         </div>
@@ -391,7 +419,7 @@ const ParentDashboardSection = () => {
     const hiddenCount = allNotifications.length - displayNotifications.length;
 
     return (
-        <div className="p-6 bg-gray-50">
+        <div className="py-5 bg-gray-50">
             {/* Main Side-by-Side Container */}
             <div className="flex flex-col lg:flex-row gap-6">
 

@@ -14,19 +14,19 @@ const ChildSelectionPage = () => {
     const children = [
         {
             id: 1, name: "Ganiu Abbas Quadri", class: "Primary 1",
-            email: "abbasquadri@x.com", contact: "08034572891",
+            email: "abbasquadri@x.com", contact: "08034572891", subjects: 'Mathematics, Basic Science, Chemistry',
             attendance: 98, behavior: 86, participation: 74,
             image: Images.childPortrait
         },
         {
             id: 2, name: "Daniel Gift Ayomide", class: "Primary 1",
-            email: "danielgift@x.com", contact: "09082936472",
+            email: "danielgift@x.com", contact: "09082936472", subjects: 'Mathematics, Basic Science, Chemistry',
             attendance: 85, behavior: 80, participation: 88,
             image: Images.childPortrait
         },
         {
             id: 3, name: "Ilori Mosope Victory", class: "Primary 1",
-            email: "ilorivictory@x.com", contact: "09017286735",
+            email: "ilorivictory@x.com", contact: "09017286735", subjects: 'Mathematics, Basic Science, Chemistry',
             attendance: 92, behavior: 90, participation: 82,
             image: Images.childPortrait
         }
@@ -108,10 +108,15 @@ const ChildSelectionPage = () => {
                                             <Mail size={16} className="text-gray-300" />
                                             <span className="text-xs font-bold text-gray-600">{child.email}</span>
                                         </div>
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-3 mb-3">
                                             <Phone size={16} className="text-gray-300" />
                                             <span className="text-xs font-bold text-gray-600">{child.contact}</span>
                                         </div>
+                                        <div className="flex items-center gap-3">
+                                            <Phone size={16} className="text-gray-300" />
+                                            <span className="text-xs font-bold text-gray-600">{child.subjects}</span>
+                                        </div>
+
                                     </div>
 
                                     {/* Performance Stats Rings */}

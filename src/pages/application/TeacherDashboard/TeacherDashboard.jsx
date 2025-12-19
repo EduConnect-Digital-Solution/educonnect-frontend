@@ -18,7 +18,7 @@ import {Button} from "../../../components/ui/button.jsx";
 export default function TeacherDashboard() {
     return (
         <>
-            <div className="flex min-h-screen bg-gray-50">
+            <div className="flex min-h-screen bg-gray-50  w-full ">
                 {/* Sidebar is fixed on the left */}
                 <Sidebar />
 
