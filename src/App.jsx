@@ -7,9 +7,10 @@ import { AuthLayout } from "./components/auth/AuthLayout.jsx";
 import { LoginPage } from "./pages/auth/LoginPage.jsx";
 import { SchoolInfo } from "./pages/auth/SchoolInfo.jsx";
 import { AdminInfo } from "./pages/auth/AdminInfo.jsx";
-import TeacherDashboard from "./pages/application/TeacherDashboard.jsx";
-import StudentList from "./components/MyStudents.jsx";
-import TeacherProfile from "./components/UserProfile.jsx";
+import TeacherDashboard from "./pages/application/TeacherDashboard/TeacherDashboard.jsx";
+import StudentList from "./pages/application/TeacherDashboard/MyStudents.jsx";
+import TeacherProfile from "./pages/application/TeacherDashboard/UserProfile.jsx";
+import ClassStudents from "./pages/application/TeacherDashboard/ClassStudents.jsx";
 
 function App() {
     return (
@@ -31,8 +32,10 @@ function App() {
                 <Route path="/success" element={<SuccessPage />} />
                 <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
 
-                <Route path="/dashboard/teacher/my-students" element={<StudentList />} />
+                <Route path="/dashboard/teacher/students" element={<StudentList />} />
                 <Route path="/dashboard/teacher/profile" element={<TeacherProfile />} />
+                <Route path="/dashboard/teacher/students/:subject/:class" element={<ClassStudents />} />
+
 
                 {/* Catch all */}
                 {/*<Route path="*" element={<Navigate to="/" />} />*/}

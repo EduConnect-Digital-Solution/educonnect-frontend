@@ -1,8 +1,8 @@
 import React, {Fragment, useState} from 'react';
 import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import {Header, Sidebar} from "../pages/application/TeacherDashboard.jsx";
+import {Header, Sidebar} from "./TeacherDashboard.jsx";
 import { Dialog, Transition } from '@headlessui/react';
-import {getInitials, getStatusStyles, students} from "../utils/imports.jsx";
+import {getInitials, getStatusStyles, students} from "../../../utils/imports.jsx";
 import StudentAnalytics from './StudentAnalytics.jsx';
 
 

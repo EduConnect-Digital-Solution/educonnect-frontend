@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Menu, Search, Bell, Sun, Book} from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {Menu, Search, Bell, Sun, Book, X, LogOut} from 'lucide-react';
 import {
     LayoutDashboard,
     Bot,
@@ -11,8 +11,9 @@ import {
 import { AlertTriangle, MessageSquare, AlertCircle, ChevronRight } from 'lucide-react';
 import { Users, BookOpen, UserCheck, GraduationCap } from 'lucide-react';
 import { Upload, MessageCircle, MoreHorizontal, TrendingUp } from 'lucide-react';
-import {NavLink} from "react-router-dom";
-import {Images} from "../../components/images.jsx";
+import {NavLink, useLocation} from "react-router-dom";
+import {Images} from "../../../components/images.jsx";
+import {Button} from "../../../components/ui/button.jsx";
 
 export default function TeacherDashboard() {
     return (
@@ -32,8 +33,6 @@ export default function TeacherDashboard() {
         </>
     )
 }
-
-// TODO: add myclasses to the sidebar that allows the teacher to view their classes from a drop down menu
 
 const EducationMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     return (
@@ -108,132 +107,131 @@ const EducationOverviewDashboard = () => {
 export const Header = () => {
     return (
         <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-            <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-                {/* Left Side: Menu and Search */}
-                <div className="flex items-center space-x-4">
-                    {/* Hamburger Menu Icon */}
-                    <button
-                        className="text-gray-500 hover:text-gray-600 p-2 rounded-lg"
-                        aria-label="Toggle sidebar"
-                    >
-                        <Menu className="w-6 h-6" />
-                    </button>
-
-                    {/* Search Bar */}
-                    <div className="relative flex items-center bg-gray-50 rounded-lg border border-gray-200 p-2 w-72">
-                        <Search className="w-5 h-5 text-gray-400 mr-2" />
-                        <input
-                            type="text"
-                            placeholder="Search or type command..."
-                            className="bg-transparent focus:outline-none w-full text-gray-800 placeholder-gray-500 text-sm"
-                        />
-                        {/* The 'K' icon/shortcut button */}
-                        <button className="flex items-center justify-center h-6 w-6 text-xs text-gray-500 bg-white border border-gray-300 rounded-md shadow-sm ml-2">
-                            K
-                        </button>
-                    </div>
-                </div>
-
+            <div className="flex h-16 px-4 sm:px-6 lg:px-8">
                 {/* Right Side: Notifications, Theme Toggle, and Profile */}
-                <div className="flex items-center space-x-3">
-                    {/* Dark Mode Toggle (Moon/Sun) */}
-                    {/*<button*/}
-                    {/*    className="p-2 text-gray-500 hover:text-gray-600 rounded-full hover:bg-gray-100 transition duration-150"*/}
-                    {/*    aria-label="Toggle theme"*/}
-                    {/*>*/}
-                    {/*    <Sun className="w-6 h-6" /> /!* Using Sun for the light mode icon as seen *!/*/}
-                    {/*</button>*/}
-
+                <div className="flex items-center space-x-3 ml-auto">
                     {/* Notifications Icon */}
                     <button
                         className="p-2 text-gray-500 hover:text-gray-600 rounded-full hover:bg-gray-100 transition duration-150 relative"
                         aria-label="Notifications"
                     >
                         <Bell className="w-6 h-6" />
-                        {/* Optional: Add a dot for notification count if needed */}
                     </button>
 
                     {/* User Profile */}
-                    <div className="flex items-center space-x-2 cursor-pointer p-1 rounded-lg hover:bg-gray-100 transition duration-150">
-            <span className="text-sm font-medium text-gray-800 hidden sm:block">
-              Musharof
-            </span>
-                        {/*<img*/}
-                        {/*    className="h-9 w-9 rounded-full object-cover ring-2 ring-white"*/}
-                        {/*    src={`${User}`} // Replace with the actual image path*/}
-                        {/*    alt=""*/}
-                        {/*/>*/}
+                    <div className="flex items-center px-3 py-2 space-x-2 cursor-pointer rounded-lg hover:bg-gray-100 transition duration-150">
+                        <span className="text-sm font-medium text-gray-800 hidden sm:block">
+                            Musharof
+                        </span>
 
                         <User className="w-6 h-6 ring-2 rounded-full ring-black" />
-
                     </div>
                 </div>
             </div>
         </header>
+
     );
 };
 
 export const Sidebar = () => {
-    // Define navigation items
+    const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        setIsOpen(false);
+    }, [location]);
+
     const navItems = [
-        { name: 'Dashboard', icon: LayoutDashboard, link: '/dashboard/teacher', current: true, hasDropdown: false },
-        { name: 'My Students', icon: GraduationCap, link: '/dashboard/teacher/my-students', current: false, hasDropdown: true, label: '' },
-        { name: 'User Profile', icon: User, link: '/dashboard/teacher/profile', current: false, hasDropdown: false },
+        { name: 'Dashboard', icon: LayoutDashboard, link: '/dashboard/teacher' },
+        { name: 'My Students', icon: GraduationCap, link: '/dashboard/teacher/students', label: '' },
+        { name: 'User Profile', icon: User, link: '/dashboard/teacher/profile' },
     ];
 
-    // TODO: change from message parents to email parents
     return (
-        <div className="flex flex-col w-64 h-screen bg-white border-r border-gray-200 sticky top-0">
-            {/* Sidebar Header (Logo and Menu Icon) */}
-            <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-                <div className="flex items-center space-x-2">
-                    <NavLink to={`/`}>
-                        <img
-                            src={`${Images.main_logo}`}
-                            alt="EduConnect Logo Icon"
-                            className="w-34"
-                        />
+        <>
+            {/* Mobile Toggle Button */}
+            {!isOpen && (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md"
+                >
+                    <Menu className="w-6 h-6 text-gray-600" />
+                </button>
+            )}
+
+            {/* Backdrop Overlay */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
+
+            {/* Sidebar Container */}
+            <div className={`
+                fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 
+                flex flex-col h-screen transition-transform duration-300 ease-in-out
+                lg:translate-x-0 lg:sticky lg:top-0
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+            `}>
+
+                {/* 1. Header Section */}
+                <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 shrink-0">
+                    <NavLink to="/" className="flex items-center">
+                        <img src={Images.main_logo} alt="Logo" className="w-32" />
                     </NavLink>
 
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="lg:hidden text-gray-500 hover:text-gray-600 p-2"
+                    >
+                        <X className="w-6 h-6" />
+                    </button>
+                </div>
+
+                {/* 2. Scrollable Navigation Area */}
+                <div className="flex-1 overflow-y-auto pt-6 px-4">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
+                        Menu
+                    </p>
+                    <nav className="space-y-1">
+                        {navItems.map((item) => (
+                            <NavLink
+                                key={item.name}
+                                to={item.link}
+                                end={item.link === '/dashboard/teacher'}
+                                className={({ isActive }) =>
+                                    `flex items-center p-3 rounded-lg transition duration-150 ${
+                                        isActive
+                                            ? 'bg-blue-50 text-blue-600 font-semibold'
+                                            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+                                    }`
+                                }
+                            >
+                                <item.icon className="w-5 h-5 mr-3" />
+                                <span className="flex-1 text-sm">{item.name}</span>
+                                {item.label && (
+                                    <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                      {item.label}
+                                    </span>
+                                )}
+                            </NavLink>
+                        ))}
+                    </nav>
+                </div>
+
+                {/* 3. Bottom Logout Section */}
+                <div className="p-4 border-t border-gray-200 shrink-0">
+                    <button
+                        onClick={() => console.log('Logging out...')}
+                        className="flex items-center w-full p-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition duration-150"
+                    >
+                        <LogOut className="w-5 h-5 mr-3" />
+                        Logout
+                    </button>
                 </div>
             </div>
-
-            {/* Navigation Menu */}
-            <div className="flex-1 overflow-y-auto pt-6 px-4">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
-                    Menu
-                </p>
-
-                <nav className="space-y-1">
-                    {navItems.map((item) => (
-                        <a
-                            key={item.name}
-                            href={`${item.link}`} // Placeholder link
-                            className={`flex items-center p-3 rounded-lg transition duration-150 ${
-                                item.current
-                                    ? 'bg-blue-50 text-blue-600 font-semibold'
-                                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
-                            }`}
-                        >
-                            {/* Icon */}
-                            <item.icon className="w-5 h-5 mr-3" />
-
-                            {/* Text */}
-                            <span className="flex-1 text-sm">{item.name}</span>
-
-                            {/* Label (NEW tag) */}
-                            {item.label && (
-                                <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                  {item.label}
-                                </span>
-                            )}
-                        </a>
-                    ))}
-                </nav>
-            </div>
-
-
-        </div>
+        </>
     );
 };
 

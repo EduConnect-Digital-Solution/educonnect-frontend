@@ -6,7 +6,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 export function AuthLayout() {
-    AOS.init();
+    AOS.init(); // Initialize Animate on Scroll library
     return (
         <>
             <div className="hidden z-50 md:flex items-center absolute space-x-2">
@@ -29,6 +29,7 @@ export function AuthLayout() {
                         />
                         {/* dark overlay */}
                         <div className="absolute inset-0 rounded-2xl m-25 bg-black/40" />
+
                         {/* text */}
                         <div data-aos={`fade-up`} className="absolute bottom-10 left-10 m-25 text-white max-w-lg">
                             <h1 className="text-3xl font-bold mb-3">

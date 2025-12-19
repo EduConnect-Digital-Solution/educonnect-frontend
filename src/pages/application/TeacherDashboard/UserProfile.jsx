@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
     PencilLine,
     User,
@@ -11,10 +12,10 @@ import {
     Filter,
     ArrowDownUp, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import {Header, Sidebar} from "../pages/application/TeacherDashboard.jsx";
+import {Header, Sidebar} from "./TeacherDashboard.jsx";
 import { Users, BarChart3, CheckCircle2, ShieldCheck, Clock, CalendarDays, UserCog } from 'lucide-react';
-import {Images} from "./images.jsx";
-// import {getStatusStyles, students} from "../utils/imports.jsx";
+import {Images} from "../../../components/images.jsx";
+import ClassSelectionModal from "./ClassSelectionModal.jsx";
 
 
 const AccountAndClasses = () => {
@@ -163,6 +164,19 @@ const AccountAndClasses = () => {
     );
 };
 const TeacherProfile = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedSubject, setSelectedSubject] = useState('');
+
+    const openModal = (subject) => {
+        setSelectedSubject(subject);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedSubject('');
+    };
+
     // Mock Data
     const teacherData = {
         name: "Samuel Daniels",
@@ -174,9 +188,9 @@ const TeacherProfile = () => {
         qualifications: "B.Ed, M.Ed, Certificates",
         summary: "Mr. Samuel Daniels is a dedicated African primary school teacher who is passionate about helping young learners build confidence, curiosity, and strong academic foundations. He brings patience, creativity, and over 10 years of classroom experience to every lesson, inspiring his pupils to believe in themselves and reach their full potential.",
         subjects: [
-            "Mathematics (Primary 1-5)",
-            "Basic-Science (Primary 1-5)",
-            "Quantitative Reasoning (Primary 1-5)"
+            "Mathematics",
+            "Basic Science",
+            "Quantitative Reasoning"
         ]
     };
 
@@ -216,7 +230,7 @@ const TeacherProfile = () => {
                                             />
                                         </div>
                                         <button className="absolute bottom-0 right-0 p-1.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-500 hover:text-blue-600">
-                                            <Hash size={12} />
+                                            <PencilLine size={12} />
                                         </button>
                                     </div>
 
@@ -300,7 +314,7 @@ const TeacherProfile = () => {
                                                 {subject}
                                             </span>
                                                 <button
-                                                    onClick={() => setActiveSubjectView(subject)} // <--- Trigggers the table view
+                                                    onClick={() => openModal(subject)} // <--- Trigggers the table view
                                                     className="px-3 py-1.5 text-[10px] font-bold text-blue-600 border border-blue-200 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-sm"
                                                 >
                                                     View Students
@@ -318,8 +332,12 @@ const TeacherProfile = () => {
                 </div>
             </div>
 
+            <ClassSelectionModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                subject={selectedSubject}
+            />
         </>
-
     );
 };
 

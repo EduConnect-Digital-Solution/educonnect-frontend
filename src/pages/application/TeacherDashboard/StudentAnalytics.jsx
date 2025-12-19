@@ -3,7 +3,7 @@ import {
     FileText, Calendar, Award, BookOpen,
     MoreVertical, Clock
 } from 'lucide-react';
-import { getInitials } from "../utils/imports.jsx"; // Assuming helper is available
+import { getInitials } from "../../../utils/imports.jsx"; // Assuming helper is available
 
 // Circular Progress - Using your exact design philosophy code
 const CircularProgress = ({ value, label, colorClass }) => {

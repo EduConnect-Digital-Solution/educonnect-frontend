@@ -10,42 +10,53 @@ import {Images} from "../images.jsx";
 import {NavLink} from "react-router-dom";
 
 export function VerifySchoolPage({ onNavigate }) {
+    // State variable to hold the user-entered verification code.
+// setVerificationCode is the function used to update this state.
     const [verificationCode, setVerificationCode] = useState('');
 
-    const handleVerify = () => {
-        console.log('Verification code:', verificationCode);
-        onNavigate('success');
-    };
-
+// State variable to manage the resend button cooldown timer (in seconds).
+// setCooldown is the function used to update the cooldown time.
     const [cooldown, setCooldown] = useState(0);
 
+// useEffect hook to manage the countdown timer logic.
+// It runs whenever the 'cooldown' state changes.
     useEffect(() => {
-        let timer;
+        let timer; // Variable to hold the interval ID
 
+        // Check if the cooldown is currently active (greater than 0 seconds).
         if (cooldown > 0) {
+            // Start a new interval (timer) that executes every 1000 milliseconds (1 second).
             timer = setInterval(() => {
+                // Update the cooldown state: decrease it by 1 second.
+                // Using the functional update form (prev => prev - 1) ensures
+                // we're working with the most current state value.
                 setCooldown((prev) => prev - 1);
             }, 1000);
         }
 
+        // Cleanup function: This runs when the component unmounts OR
+        // before the effect runs again (if 'cooldown' changes).
+        // It clears the interval to stop the timer and prevent memory leaks.
         return () => clearInterval(timer);
+
+// Dependency array: The effect re-runs when 'cooldown' changes.
+// This is crucial for stopping the timer when 'cooldown' hits 0.
     }, [cooldown]);
 
+// Handler function for the "Resend Code" action.
     const handleResend = () => {
+        // 1. Check if the cooldown is still active. If it is (cooldown > 0),
+        //    do nothing and exit the function early to prevent resending.
         if (cooldown > 0) return;
 
-        // 👉 Call your resend function here
-        console.log("Code resent!");
-
-        setCooldown(59); // Start cooldown
+        // 2. If not on cooldown, set the cooldown to a specific value (e.g., 59 seconds).
+        //    This immediately starts the timer managed by the useEffect hook.
+        //    *Note: A subsequent network request to actually resend the code would typically
+        //    be placed here before or after setting the cooldown.*
+        setCooldown(59); // Start cooldown for 59 seconds (to display "Resend in 0:59")
     };
     return (
         <div className="min-h-screen flex bg-[#f1fbf7] items-center justify-center p-4">
-            {/*<img*/}
-            {/*    alt={``}*/}
-            {/*    src={`${Images.verify_bg}`}*/}
-            {/*    className={`fixed inset-0 h-full w-full object-cover z-0`} // <-- Updated Classes*/}
-            {/*/>*/}
             <div className="max-w-md w-full z-30">
                 {/* Back button */}
                 <NavLink to={`/register/admin`}>
@@ -72,7 +83,7 @@ export function VerifySchoolPage({ onNavigate }) {
                         </p>
                     </div>
 
-                    {/* Verification Code Input */}
+                    {/* OTP boxes Component*/}
                     <div className="mb-6 ">
                         <OtpForm />
                     </div>
