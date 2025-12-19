@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X, UserCircle2, Plus, Trash2  } from 'lucide-react';
-import { Header, Sidebar } from "../AdminDashboard.jsx";
+import {Header} from "../../dashboardUtilities.jsx";
+import {Sidebar} from "../adminUtils/a_utils.jsx";
 
 // Helper to get initials for avatar fallback
 const getInitials = (name) => {

@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-    User, Mail, Phone, MapPin, Briefcase,
-    ShieldCheck, Key, Edit3, LogOut,
-    BellRing, Smartphone, Check, Users, BookOpen, GraduationCap
+    User, MapPin,
+    ShieldCheck, Key,
+    Edit3, Smartphone
 } from 'lucide-react';
-import {ParentSidebar} from "./ParentDashboard.jsx";
-import {Header} from "../TeacherDashboard/TeacherDashboard.jsx";
+import {ParentSidebar} from "./parentUtils/p_utils.jsx";
+import {Header} from "../dashboardUtilities.jsx";
 
 const ParentProfilePage = () => {
     // Mock Parent Data based on your screenshots
@@ -116,8 +116,8 @@ const ParentProfilePage = () => {
                                                 </div>
                                             </div>
                                             <span className="px-3 py-1 bg-green-100 text-green-600 text-[10px] font-black uppercase rounded-full">
-                    {parent.status}
-                  </span>
+                                                {parent.status}
+                                            </span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

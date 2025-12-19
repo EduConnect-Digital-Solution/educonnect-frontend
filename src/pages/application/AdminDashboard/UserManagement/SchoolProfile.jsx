@@ -9,7 +9,8 @@ import {
     Power,
     Info
 } from 'lucide-react';
-import {Header, Sidebar} from "../AdminDashboard.jsx";
+import {Sidebar} from "../adminUtils/a_utils.jsx";
+import {Header} from "../../dashboardUtilities.jsx";
 
 const Field = ({ label, value, icon: Icon, editable }) => (
     <div>

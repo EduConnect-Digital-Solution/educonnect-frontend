@@ -1,13 +1,13 @@
 import React, { Fragment, useState } from 'react';
 import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X, UserCircle2, Plus, Trash2  } from 'lucide-react';
-import { Header, Sidebar } from "./AdminDashboard.jsx";
+import {Sidebar} from "./adminUtils/a_utils.jsx";
+import {Header} from "../dashboardUtilities.jsx";
 
 // Helper to get initials for avatar fallback
 const getInitials = (name) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 };
-// TODO: change user management drop down to view teachers, parents, students
-// Helper to get role badge styling
+
 const getRoleBadgeStyle = (role) => {
     const styles = {
         Teacher: 'bg-blue-100 text-blue-700',
@@ -79,13 +79,6 @@ const UserList = () => {
         setCurrentPage(1);
     };
 
-    const handleRemoveUser = (user) => {
-        // Add your remove logic here
-        console.log('Remove user:', user);
-        if (window.confirm(`Are you sure you want to remove ${user.name}?`)) {
-            alert(`User ${user.name} has been removed`);
-        }
-    };
 
     const handleChangeStatus = (user) => {
         setStatusChangeUser(user);
@@ -232,12 +225,6 @@ const UserList = () => {
                                                         onClick={() => handleChangeStatus(user)}
                                                         className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                                                     >
-                                                        View Details
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleChangeStatus(user)}
-                                                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                                                    >
                                                         Change Status
                                                     </button>
                                                     <button
@@ -301,117 +288,117 @@ const UserList = () => {
                         </div>
                     </div>
                 </main>
-            </div>
+                {/* Change Status Modal */}
+                {statusChangeUser && (
+                    <div className="fixed inset-0 z-50 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4">
+                            <div className="fixed inset-0 bg-black/30" onClick={() => setStatusChangeUser(null)} />
+                            <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
+                                <button
+                                    onClick={() => setStatusChangeUser(null)}
+                                    className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
 
-            {/* Change Status Modal */}
-            {statusChangeUser && (
-                <div className="fixed inset-0 z-50 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4">
-                        <div className="fixed inset-0 bg-black/30" onClick={() => setStatusChangeUser(null)} />
-                        <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
-                            <button
-                                onClick={() => setStatusChangeUser(null)}
-                                className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-
-                            <div>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                                        <UserCircle2 className="w-6 h-6 text-gray-600" />
+                                <div>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                                            <UserCircle2 className="w-6 h-6 text-gray-600" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900">Change User Status</h3>
+                                            <p className="text-sm text-gray-500">{statusChangeUser.name}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-900">Change User Status</h3>
-                                        <p className="text-sm text-gray-500">{statusChangeUser.name}</p>
-                                    </div>
-                                </div>
 
-                                <div className="mb-4">
-                                    <p className="text-sm text-gray-600 mb-3">Current Status:</p>
-                                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(statusChangeUser.status)}`}>
+                                    <div className="mb-4">
+                                        <p className="text-sm text-gray-600 mb-3">Current Status:</p>
+                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(statusChangeUser.status)}`}>
                                         {statusChangeUser.status}
                                     </span>
-                                </div>
+                                    </div>
 
-                                <div className="border-t border-gray-100 pt-4">
-                                    <p className="text-sm font-semibold text-gray-700 mb-3">Select New Status:</p>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {['Active', 'Inactive', 'Suspended', 'Pending'].map((status) => (
-                                            <button
-                                                key={status}
-                                                onClick={() => confirmStatusChange(status)}
-                                                disabled={statusChangeUser.status === status}
-                                                className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                                                    statusChangeUser.status === status
-                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
-                                                }`}
-                                            >
-                                                {status}
-                                            </button>
-                                        ))}
+                                    <div className="border-t border-gray-100 pt-4">
+                                        <p className="text-sm font-semibold text-gray-700 mb-3">Select New Status:</p>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {['Active', 'Inactive', 'Suspended', 'Pending'].map((status) => (
+                                                <button
+                                                    key={status}
+                                                    onClick={() => confirmStatusChange(status)}
+                                                    disabled={statusChangeUser.status === status}
+                                                    className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                                                        statusChangeUser.status === status
+                                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                            : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                                    }`}
+                                                >
+                                                    {status}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
-            {/* Delete Confirmation Modal */}
-            {userToDelete && (
-                <div className="fixed inset-0 z-50 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4">
-                        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setUserToDelete(null)} />
-                        <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all">
-                            <div className="flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                                    <Trash2 className="w-8 h-8 text-red-600" />
-                                </div>
+                )}
+                {/* Delete Confirmation Modal */}
+                {userToDelete && (
+                    <div className="fixed inset-0 z-50 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4">
+                            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setUserToDelete(null)} />
+                            <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                        <Trash2 className="w-8 h-8 text-red-600" />
+                                    </div>
 
-                                <h3 className="text-xl font-black text-gray-900 mb-2">Confirm Removal</h3>
-                                <p className="text-sm text-gray-500 mb-6">
-                                    Are you sure you want to delete <span className="font-bold text-gray-800">{userToDelete.name}</span>?
-                                    This action is permanent and cannot be undone.
-                                </p>
+                                    <h3 className="text-xl font-black text-gray-900 mb-2">Confirm Removal</h3>
+                                    <p className="text-sm text-gray-500 mb-6">
+                                        Are you sure you want to delete <span className="font-bold text-gray-800">{userToDelete.name}</span>?
+                                        This action is permanent and cannot be undone.
+                                    </p>
 
-                                <div className="w-full text-left mb-6">
-                                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
-                                        Reason for removal
-                                    </label>
-                                    <textarea
-                                        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                                        rows="3"
-                                        placeholder="Please provide a reason for deleting this account..."
-                                        value={deleteReason}
-                                        onChange={(e) => setDeleteReason(e.target.value)}
-                                    />
-                                </div>
+                                    <div className="w-full text-left mb-6">
+                                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
+                                            Reason for removal
+                                        </label>
+                                        <textarea
+                                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                                            rows="3"
+                                            placeholder="Please provide a reason for deleting this account..."
+                                            value={deleteReason}
+                                            onChange={(e) => setDeleteReason(e.target.value)}
+                                        />
+                                    </div>
 
-                                <div className="flex gap-3 w-full">
-                                    <button
-                                        onClick={() => setUserToDelete(null)}
-                                        className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-all"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        disabled={!deleteReason.trim()}
-                                        onClick={() => {
-                                            console.log(`Deleting ${userToDelete.id} for: ${deleteReason}`);
-                                            setUserToDelete(null);
-                                            setDeleteReason('');
-                                        }}
-                                        className="flex-1 py-3 px-4 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        Proceed
-                                    </button>
+                                    <div className="flex gap-3 w-full">
+                                        <button
+                                            onClick={() => setUserToDelete(null)}
+                                            className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-all"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            disabled={!deleteReason.trim()}
+                                            onClick={() => {
+                                                console.log(`Deleting ${userToDelete.id} for: ${deleteReason}`);
+                                                setUserToDelete(null);
+                                                setDeleteReason('');
+                                            }}
+                                            className="flex-1 py-3 px-4 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Proceed
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
+
         </div>
     );
 };

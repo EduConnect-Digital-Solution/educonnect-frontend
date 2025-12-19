@@ -1,13 +1,8 @@
 import React from 'react';
-import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import {Header, Sidebar} from "../TeacherDashboard/TeacherDashboard.jsx";
-import {
-    Users, BookOpen, GraduationCap,
-     ArrowUpRight, LayoutDashboard
-} from 'lucide-react';
-import {MoreHorizontal, Mail, Phone} from 'lucide-react';
-import {ParentSidebar} from "./ParentDashboard.jsx";
+import {Users, BookOpen, GraduationCap, Mail, Phone} from 'lucide-react';
 import {Images} from "../../../components/images.jsx";
+import {SummaryCard, StatRing, ParentSidebar} from "./parentUtils/p_utils.jsx";
+import {Header} from "../dashboardUtilities.jsx";
 
 const ChildSelectionPage = () => {
     // Mock Data for the 3 Children
@@ -32,40 +27,6 @@ const ChildSelectionPage = () => {
         }
     ];
 
-    // Component for the Overview Cards at the top
-    const SummaryCard = ({ title, value, icon: Icon, color }) => (
-        <div className={`flex items-center justify-between p-6 rounded-2xl shadow-sm border border-gray-100 ${color}`}>
-            <div>
-                <Icon size={24} className="mb-2 opacity-80" />
-                <p className="text-sm font-bold opacity-70">{title}</p>
-            </div>
-            <p className="text-4xl font-bold">{value}</p>
-        </div>
-    );
-
-    // Circular Progress Stat
-    const StatRing = ({ percentage, label }) => {
-        const radius = 35;
-        const circumference = 2 * Math.PI * radius;
-        const offset = circumference - (percentage / 100) * circumference;
-
-        return (
-            <div className="flex flex-col items-center">
-                <div className="relative w-16 h-16 mb-2">
-                    <svg className="w-full h-full transform -rotate-90">
-                        <circle cx="32" cy="32" r={radius} stroke="currentColor" strokeWidth="6" fill="transparent" className="text-gray-100" />
-                        <circle
-                            cx="32" cy="32" r={radius} stroke="currentColor" strokeWidth="6" fill="transparent"
-                            strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className="text-green-500"
-                        />
-                    </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black">{percentage}%</span>
-                </div>
-                <span className="text-[9px] font-bold text-gray-400 uppercase text-center leading-tight">{label}</span>
-            </div>
-        );
-    };
-
     return (
         <div className="flex min-h-screen bg-gray-50">
             {/* Sidebar is fixed on the left */}
@@ -74,7 +35,7 @@ const ChildSelectionPage = () => {
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
                 <Header />
-                <main className="flex-1 p-6">
+                <main className="flex-1 md:p-6">
                     <div className="p-8 bg-gray-50 min-h-screen">
                         {/* --- Top Overview Section --- */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

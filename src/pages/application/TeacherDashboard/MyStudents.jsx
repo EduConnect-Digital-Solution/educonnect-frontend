@@ -1,49 +1,11 @@
 import React, {Fragment, useState} from 'react';
 import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import {Header, Sidebar} from "./TeacherDashboard.jsx";
+import {Header} from "../dashboardUtilities.jsx";
+import {CircularProgress, Sidebar} from "./teacherUtils/t_utils.jsx";
 import { Dialog, Transition } from '@headlessui/react';
 import {getInitials, getStatusStyles, students} from "../../../utils/imports.jsx";
 import StudentAnalytics from './StudentAnalytics.jsx';
 
-
-const CircularProgress = ({ value, label, colorClass }) => {
-    const radius = 30;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (value / 100) * circumference;
-
-    return (
-        <div className="flex flex-col items-center">
-            <div className="relative w-24 h-24">
-                <svg className="w-full h-full" viewBox="0 0 70 70">
-                    <circle
-                        className="text-gray-200 stroke-current"
-                        strokeWidth="6"
-                        cx="35"
-                        cy="35"
-                        r={radius}
-                        fill="transparent"
-                    />
-                    <circle
-                        className={`${colorClass} stroke-current transition-all duration-500 ease-in-out`}
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        cx="35"
-                        cy="35"
-                        r={radius}
-                        fill="transparent"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={offset}
-                        transform="rotate(-90 35 35)"
-                    />
-                </svg>
-                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                    <span className={`text-xl font-bold ${colorClass}`}>{value}%</span>
-                </div>
-            </div>
-            <p className="mt-2 text-sm font-medium text-gray-600 text-center leading-tight">{label}</p>
-        </div>
-    );
-};
 
 const StudentList = () => {
     const [selectedStudentForSummary, setSelectedStudentForSummary] = useState(null);

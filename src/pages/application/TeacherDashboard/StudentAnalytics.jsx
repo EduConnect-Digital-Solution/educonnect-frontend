@@ -3,47 +3,9 @@ import {
     FileText, Calendar, Award, BookOpen,
     MoreVertical, Clock
 } from 'lucide-react';
-import { getInitials } from "../../../utils/imports.jsx"; // Assuming helper is available
+import { getInitials } from "../../../utils/imports.jsx";
+import {CircularProgress} from "./teacherUtils/t_utils.jsx"; // Assuming helper is available
 
-// Circular Progress - Using your exact design philosophy code
-const CircularProgress = ({ value, label, colorClass }) => {
-    const radius = 30;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (value / 100) * circumference;
-
-    return (
-        <div className="flex flex-col items-center">
-            <div className="relative w-20 h-20">
-                <svg className="w-full h-full" viewBox="0 0 70 70">
-                    <circle
-                        className="text-gray-100 stroke-current"
-                        strokeWidth="6"
-                        cx="35"
-                        cy="35"
-                        r={radius}
-                        fill="transparent"
-                    />
-                    <circle
-                        className={`${colorClass} stroke-current transition-all duration-500 ease-in-out`}
-                        strokeWidth="6"
-                        strokeLinecap="round"
-                        cx="35"
-                        cy="35"
-                        r={radius}
-                        fill="transparent"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={offset}
-                        transform="rotate(-90 35 35)"
-                    />
-                </svg>
-                <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-                    <span className={`text-base font-bold ${colorClass.replace('text-', 'text-')}`}>{value}%</span>
-                </div>
-            </div>
-            <p className="mt-2 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-center leading-tight">{label}</p>
-        </div>
-    );
-};
 
 const StudentAnalytics = ({ student, onBack }) => {
     // Mock Data for New Sections
