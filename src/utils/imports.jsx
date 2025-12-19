@@ -256,6 +256,13 @@ export const students = [
     { sn: 16, name: 'Tunde Adebayo', class: 'Primary 2', subject: 'Quantitative Reasoning', email: 'tundeadebayo@gmail.com', status: 'Excellent', contact: '08089012345', avatarUrl: User, attendance: 99, behavioral: 95, participation: 100 },
 ];
 
+export const children = [
+    { sn: 1, name: 'Ganiyu Abbas Quadri', class: 'Primary 1', subject: 'Mathematics', email: 'abbasquadri@gmail.com', status: 'Excellent', contact: '08034572891', avatarUrl: User, attendance: 95, behavioral: 90, participation: 98 },
+    { sn: 2, name: 'Daniel Gift Ayomide', class: 'Primary 2', subject: 'Mathematics', email: 'danielgift@gmail.com', status: 'Average', contact: '09082936472', avatarUrl: User, attendance: 85, behavioral: 80, participation: 88 },
+    { sn: 3, name: 'Ilori Mosope Victory', class: 'Primary 3', subject: 'Mathematics', email: 'ilorivictory@gmail.com', status: 'Needs Support', contact: '09017286735', avatarUrl: User, attendance: 70, behavioral: 65, participation: 75 }
+];
+
+
 export const getStatusStyles = (status) => {
     switch (status) {
         case 'Excellent': return 'bg-green-100/80 text-green-800';

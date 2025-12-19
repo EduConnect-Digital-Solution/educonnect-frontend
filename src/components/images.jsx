@@ -12,6 +12,7 @@ import auth_page_bg from '../assets/images/auth_page_bg.svg';
 import auth from '../assets/images/auth.png';
 import verify_bg from '../assets/images/2147864690.jpg';
 import profile_picture from '../assets/images/profile_picture.png';
+import childPortrait from '../assets/images/childPortrait.png';
 
 
 
@@ -28,6 +29,7 @@ export const Images = {
     main_logo,
     verify_bg,
     CTA_image,
+    childPortrait,
     profile_picture,
     why_choose_us,
 }

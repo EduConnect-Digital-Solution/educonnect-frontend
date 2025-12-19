@@ -149,7 +149,7 @@ export function SchoolInfo() {
             <p className="text-center text-sm text-gray-600 mt-6">
                 Already registered?{" "}
                 <NavLink
-                    to={`/login`}
+                    to={`/login/welcome`}
                     className="text-[#0A61A4] font-semibold hover:underline"
                 >
                     Sign in

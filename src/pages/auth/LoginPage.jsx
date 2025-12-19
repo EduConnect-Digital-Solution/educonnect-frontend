@@ -1,23 +1,40 @@
 // src/pages/auth/LoginPage.jsx
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import {useNavigate, NavLink} from 'react-router-dom';
 import {Building2, Mail, Lock, ArrowLeft} from 'lucide-react';
 import {Images} from "../../components/images.jsx";
+import { useSearchParams } from 'react-router-dom';
 
 export function LoginPage() {
+    const [searchParams] = useSearchParams();
+    const role = searchParams.get('role');
     const [formData, setFormData] = useState({
         schoolID: '',
         schoolEmail: '',
         schoolPassword: ''
     });
 
+    const navigate = useNavigate();
+
     const handleLogin = () => {
         // Handle login logic here
         console.log('Login data:', formData);
+        navigate(`/dashboard/${role}`);
     };
+
+
 
     return (
         <>
+            <div className="absolute top-0 z-50 bg-gray-200/50 rounded-xl m-10 p-5 overflow-hidden items-center ">
+                <NavLink to={`/`}>
+                    <img
+                        src={`${Images.main_logo}`}
+                        alt="EduConnect Logo Icon"
+                        className="w-[120px] md:w-[170px] "
+                    />
+                </NavLink>
+            </div>
             <div className="min-h-screen flex bg-[#F4F5F9] items-center justify-center p-4">
                 <img
                     alt={``}
@@ -30,7 +47,7 @@ export function LoginPage() {
                         {/* Form Header */}
                         <div className="text-center mb-8">
                             <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                                Welcome Back
+                                {role ? role.charAt(0).toUpperCase() + role.slice(1) : ''} Login
                             </h2>
                             <p className="text-gray-600">
                                 Digitize your school operations with ease

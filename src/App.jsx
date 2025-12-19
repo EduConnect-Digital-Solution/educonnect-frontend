@@ -11,6 +11,10 @@ import TeacherDashboard from "./pages/application/TeacherDashboard/TeacherDashbo
 import StudentList from "./pages/application/TeacherDashboard/MyStudents.jsx";
 import TeacherProfile from "./pages/application/TeacherDashboard/UserProfile.jsx";
 import ClassStudents from "./pages/application/TeacherDashboard/ClassStudents.jsx";
+import ParentDashboard from "./pages/application/ParentDashboard/ParentDashboard.jsx";
+import ChildSelectionPage from "./pages/application/ParentDashboard/MyChildren.jsx";
+import ParentProfilePage from "./pages/application/ParentDashboard/ParentProfilePage.jsx";
+import AuthWelcome from "./pages/auth/AuthWelcome.jsx";
 
 function App() {
     return (
@@ -20,8 +24,11 @@ function App() {
                 <Route path="/" element={<Home />} />
 
                 <Route path="/login" element={<LoginPage />} />
+
                 {/* Auth Routes with Layout */}
                 <Route element={<AuthLayout />}>
+                    <Route path="/register/school" element={<SchoolInfo />} />
+                    <Route path="/login/welcome" element={<AuthWelcome />} />
                     <Route path="/register" element={<Navigate to="/register/school" />} />
                     <Route path="/register/school" element={<SchoolInfo />} />
                     <Route path="/register/admin" element={<AdminInfo />} />
@@ -31,6 +38,9 @@ function App() {
                 <Route path="/verify" element={<VerifySchoolPage />} />
                 <Route path="/success" element={<SuccessPage />} />
                 <Route path="/dashboard/teacher" element={<TeacherDashboard />} />
+                <Route path="/dashboard/parent" element={<ParentDashboard />} />
+                <Route path="/dashboard/parent/children" element={<ChildSelectionPage />} />
+                <Route path="/dashboard/parent/profile" element={<ParentProfilePage />} />
 
                 <Route path="/dashboard/teacher/students" element={<StudentList />} />
                 <Route path="/dashboard/teacher/profile" element={<TeacherProfile />} />

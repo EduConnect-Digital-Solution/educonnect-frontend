@@ -81,7 +81,7 @@ export const Header = () => {
 
                 {/* Action Buttons */}
                 <div className=" flex space-x-4">
-                    <NavLink to={`/login`}>
+                    <NavLink to={`/login/welcome`}>
                         <button className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">
                             Log in
                         </button>
@@ -123,7 +123,7 @@ export const Header = () => {
 
             </nav>
             {mobileOpen && (
-                <div className="fixed mt-20  inset-0 z-50 bg-white/95 backdrop-blur-sm px-6 py-10 overflow-y-auto">
+                <div className="fixed mt-20 md:hidden inset-0 z-50 bg-white/95 backdrop-blur-sm px-6 py-10 overflow-y-auto">
                     <div className="max-w-7xl mx-auto">
                         <nav className="flex flex-col gap-4">
                             {navItems.map((item) => (
@@ -135,13 +135,13 @@ export const Header = () => {
                     </div>
                     <div className={`absolute border-t border-gray-300 bottom-0 w-full mx-auto justify-center content-center left-0 h-auto px-4 pb-4`}>
                         <div className={`flex flex-col mx-auto items-center`}>
-                            <button className="mt-4 bg-[#104889] text-white w-full px-4 py-2 rounded-full" onClick={() => handleNavClick('contact')}>
+                            <NavLink to={`/register`} className="mt-4 bg-[#104889] text-white text-center w-full px-4 py-2 rounded-full">
                                 Get Started →
-                            </button>
+                            </NavLink>
 
-                            <button className="mt-4 text-black px-4 py-2 rounded-full w-fit" onClick={() => handleNavClick('contact')}>
+                            <NavLink to={`/login/welcome`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">
                                 Log in
-                            </button>
+                            </NavLink>
                         </div>
                     </div>
                 </div>
