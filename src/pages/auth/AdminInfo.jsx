@@ -1,29 +1,79 @@
 // src/pages/auth/AdminInfo.jsx
 import React, { useState } from 'react';
 import { useLocation, useNavigate, NavLink } from 'react-router-dom';
-import { ArrowLeft, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import {ArrowLeft, User, Mail, Lock, Eye, EyeOff, Globe, Phone} from 'lucide-react';
+import {RegSchool} from "./auth.js";
+import {Toast} from "../../components/Toast.jsx";
+
+// TODO: put an I hover button to describe who an admin is in the context of the app
 
 export function AdminInfo() {
     const navigate = useNavigate();
     const location = useLocation();
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+
+    const showToast = (message, type = 'error') => {
+        setToast({ show: true, message, type });
+    };
+
 
     // Combine school data from previous step with admin data
     const [formData, setFormData] = useState({
         ...location.state?.schoolData,
-        fullName: '',
+        adminFirstName: '',
+        adminLastName: '',
         adminEmail: '',
         password: '',
-        confirmPassword: ''
     });
 
-    const handleCreateAccount = () => {
-        // Here you would handle form validation and the final account creation logic.
-        // You have access to all the data in the `formData` state.
-        console.log('Account creation data:', formData);
-        // On success, you might navigate to a success page or dashboard
-        navigate('/success');
+
+    const handleCreateAccount = async () => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        // Validation Checks
+        if (!formData?.adminFirstName) {
+            showToast("Please input first name");
+            return;
+        }
+
+        if (!formData?.adminLastName) {
+            showToast("Please input last name");
+            return;
+        }
+
+        if (!formData?.adminEmail || !emailPattern.test(formData.adminEmail)) {
+            showToast("Please provide a valid email address.");
+            return;
+        }
+
+
+        if (!formData?.password || !passwordPattern.test(formData.password)) {
+            showToast("Please provide a valid password.");
+            return;
+        }
+
+
+        const combinedPayload = {
+            ...location.state?.schoolData,
+            adminFirstName: formData.adminFirstName.trim(),
+            adminLastName: formData.adminLastName.trim(),
+            email: formData.adminEmail.trim().toLowerCase(),
+            password: formData.password,
+
+        };
+
+        console.log('combinedPayload', combinedPayload);
+
+        try {
+            await RegSchool(combinedPayload);
+            showToast('School registered successfully', 'success');
+            navigate('/verify');
+        } catch (err) {
+            const message = err?.message || err?.error || 'Registration failed';
+            showToast(message, 'error');
+        }
     };
 
     return (
@@ -51,19 +101,37 @@ export function AdminInfo() {
                 </p>
             </div>
 
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
+
             {/* Form */}
             <div className="space-y-5">
                 {/* Full Name */}
-                <div>
+                <div className="grid md:grid-cols-2 gap-4">
                     <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                             type="text"
-                            name="fullName"
-                            value={formData.fullName}
-                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                            placeholder="Enter your full name"
-                            className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                            name="adminFirstName"
+                            value={formData?.adminFirstName || ""}
+                            onChange={(e) => setFormData({...formData, adminFirstName: e.target.value})}
+                            placeholder="First Name"
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                        />
+                    </div>
+
+                    <div className="relative">
+                        <input
+                            type="tel"
+                            name="adminLastName"
+                            value={formData?.adminLastName || ""}
+                            onChange={(e) => setFormData({...formData, adminLastName: e.target.value})}
+                            placeholder="Last Name"
+                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                         />
                     </div>
                 </div>
@@ -105,28 +173,6 @@ export function AdminInfo() {
                     </div>
                 </div>
 
-                {/* Confirm Password */}
-                <div>
-                    <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                            placeholder="Re-enter your password"
-                            className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                        >
-                            {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                        </button>
-                    </div>
-                </div>
-
                 {/* Submit Button */}
                 <div className={`flex gap-5 flex-row`}>
                     <button
@@ -135,17 +181,17 @@ export function AdminInfo() {
                     >
                         Previous
                     </button>
-                    <NavLink to={`/verify`} className={`w-full `}>
-                        <button
-                            onClick={handleCreateAccount}
-                            className="w-full py-4 bg-[#0A61A4] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 mt-6"
-                        >
-                            Create Account
-                        </button>
-                    </NavLink>
+
+                    <button
+                        onClick={handleCreateAccount}
+                        className="w-full py-4 bg-[#0A61A4] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 mt-6"
+                    >
+                        Create Account
+                    </button>
                 </div>
 
             </div>
+
             {/* Footer */}
             <p className="text-center text-sm text-gray-600 mt-3">
                 By creating an account, you agree to EduConnect’s
