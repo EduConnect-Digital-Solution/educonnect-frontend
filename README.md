@@ -1,19 +1,17 @@
-# EduConnect Frontend
 
-This is the frontend repository for EduConnect, a modern web platform designed to streamline communication and management for educational institutions.
+# EduConnect Frontend
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=flat-square&logo=eslint&logoColor=white)](https://eslint.org/)
-[![Version](https://img.shields.io/badge/Version-0.0.0-blue?style=flat-square)](./package.json)
+
+A school management system built with React and Vite, providing a platform for Administrators, Teachers, and Parents.
 
 ---
 
 ## Table of Contents
 
-- [Live Demo](#live-demo)
 - [Key Features](#key-features)
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
@@ -26,19 +24,33 @@ This is the frontend repository for EduConnect, a modern web platform designed t
 
 ---
 
-## Live Demo
+## Key Features
 
-A live version of the application is deployed here: [EduConnect Demo](https://educonnect-frontend-one.vercel.app/) 
-*(Note: This is a Vercel Hosted link.)*
+- **Role-Based Access Control:** Separate dashboards and functionalities for Administrators, Teachers, and Parents.
+- **Administrator Dashboard:**
+  - Manage users (Teachers, Parents, Students).
+  - Oversee school-wide information and settings.
+- **Teacher Dashboard:**
+  - View and manage assigned classes and students.
+  - Track student performance and analytics.
+- **Parent Dashboard:**
+  - View their children's progress and school-related information.
+- **Modern UI:** Built with Tailwind CSS and a mix of headless UI libraries for a clean and responsive user experience.
+- **Form Handling:** Robust and type-safe forms powered by React Hook Form and Zod.
 
 ---
 
 ## Technology Stack
 
-- **[React](https://reactjs.org/):** A JavaScript library for building user interfaces.
-- **[Tailwind CSS](https://tailwindcss.com/):** A utility-first CSS framework for rapidly building custom designs.
-- **[Vite](https://vitejs.dev/):** A modern frontend build tool that provides a faster and leaner development experience.
-- **[ESLint](https://eslint.org/):** For identifying and reporting on patterns found in ECMAScript/JavaScript code.
+- **[React](https://reactjs.org/)**: A JavaScript library for building user interfaces.
+- **[Vite](https://vitejs.dev/)**: A modern frontend build tool for faster development.
+- **[React Router](https://reactrouter.com/)**: For client-side routing.
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework.
+- **UI Components**:
+  - **[Chakra UI](https://chakra-ui.com/)**: For accessible and reusable UI components.
+  - **[Radix UI](https://www.radix-ui.com/)**: For headless, low-level UI primitives.
+- **[React Hook Form](https://react-hook-form.com/)**: For flexible and performant form validation.
+- **[Zod](https://zod.dev/)**: For TypeScript-first schema declaration and validation.
 
 ---
 
@@ -48,14 +60,14 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) (v18.x or higher)
-- [npm](https://www.npmjs.com/) (or your preferred package manager like yarn or pnpm)
+- [Node.js](https://nodejs.org/en/) (v18.x or higher recommended)
+- [npm](https://www.npmjs.com/) (or a compatible package manager like Yarn or pnpm)
 
 ### Installation
 
 1.  **Clone the repository:**
     ```sh
-    git clone https://github.com/your-org/educonnect-frontend.git
+    git clone https://github.com/EduConnect-Digital-Solution/educonnect-frontend.git
     ```
 
 2.  **Navigate to the project directory:**
@@ -72,15 +84,12 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 ## Available Scripts
 
-In the project directory, you can run the following commands:
+In the project directory, you can run:
 
--   **`npm run dev`**: Runs the app in development mode. Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
-
--   **`npm run build`**: Builds the app for production to the `dist` folder.
-
--   **`npm run lint`**: Lints the codebase and reports any issues.
-
--   **`npm run preview`**: Serves the production build locally to preview before deployment.
+-   `npm run dev`: Runs the app in development mode.
+-   `npm run build`: Builds the app for production to the `dist` folder.
+-   `npm run lint`: Lints the codebase using ESLint.
+-   `npm run preview`: Serves the production build locally to preview before deployment.
 
 ---
 
@@ -88,15 +97,22 @@ In the project directory, you can run the following commands:
 
 ```
 educonnect-frontend/
-├── public/              # Static assets
+├── public/              # Static assets like logo.png
 ├── src/
-│   ├── assets/          # Images, icons, etc.
-│   ├── components/      # Reusable React components
-│   │   └── auth/        # Auth-related components
-│   ├── pages/           # Main page components
-│   ├── utils/           # Utility functions and helpers
-│   ├── App.jsx          # Main application component
-│   └── main.jsx         # Entry point of the application
+│   ├── assets/          # Images, icons, and other static files
+│   ├── components/      # Reusable React components (Header, Footer, UI elements)
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utility functions
+│   ├── pages/           # Page components mapped to routes
+│   │   ├── auth/        # Authentication pages (Login, Success, etc.)
+│   │   ├── application/ # Core application dashboards
+│   │   │   ├── AdminDashboard/
+│   │   │   ├── ParentDashboard/
+│   │   │   └── TeacherDashboard/
+│   │   └── Home.jsx     # Landing page
+│   ├── utils/           # Other utility functions
+│   ├── App.jsx          # Main application component with routing setup
+│   └── main.jsx         # Application entry point
 ├── .gitignore
 ├── package.json
 └── README.md
@@ -106,7 +122,7 @@ educonnect-frontend/
 
 ## Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are welcome! If you'd like to contribute, please fork the repository and create a pull request.
 
 1.  Fork the Project
 2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -118,4 +134,4 @@ Contributions are what make the open-source community such an amazing place to l
 
 ## License
 
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+This project is licensed under the MIT License.

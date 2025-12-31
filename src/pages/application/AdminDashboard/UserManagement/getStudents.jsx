@@ -32,11 +32,11 @@ const getStatusBadgeStyle = (status) => {
 
 // Mock users data - replace with your actual data
 const mockUsers = [
-    { id: 1, name: 'John Doe', email: 'john.doe@school.com', role: 'Student', status: 'Active', lastLogin: '2 hours ago' },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@parent.com', role: 'Student', status: 'Active', lastLogin: '1 day ago' },
-    { id: 3, name: 'Michael Brown', email: 'mbrown@school.com', role: 'Student', status: 'Active', lastLogin: '3 hours ago' },
-    { id: 4, name: 'Sarah Johnson', email: 'sarah.j@parent.com', role: 'Student', status: 'Inactive', lastLogin: '2 weeks ago' },
-    { id: 5, name: 'David Wilson', email: 'dwilson@school.com', role: 'Student', status: 'Active', lastLogin: '30 mins ago' }
+    { id: 1, name: 'John Doe', email: 'john.doe@school.com', role: 'Student', status: 'Active', lastLogin: 'A' },
+    { id: 2, name: 'Jane Smith', email: 'jane.smith@parent.com', role: 'Student', status: 'Active', lastLogin: 'C' },
+    { id: 3, name: 'Michael Brown', email: 'mbrown@school.com', role: 'Student', status: 'Active', lastLogin: 'C' },
+    { id: 4, name: 'Sarah Johnson', email: 'sarah.j@parent.com', role: 'Student', status: 'Inactive', lastLogin: 'D' },
+    { id: 5, name: 'David Wilson', email: 'dwilson@school.com', role: 'Student', status: 'Active', lastLogin: 'F' }
 ];
 
 const StudentsList = () => {
@@ -161,22 +161,6 @@ const StudentsList = () => {
                                         Add New Student
                                     </button>
 
-                                    {showAddUserDropdown && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden py-1">
-                                            {['Teacher', 'Parent'].map((role) => (
-                                                <button
-                                                    key={role}
-                                                    className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                                                    onClick={() => {
-                                                        console.log(`Maps to add ${role}`);
-                                                        setShowAddUserDropdown(false);
-                                                    }}
-                                                >
-                                                    Add {role}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
                                 </div>
                                 {/* Search Bar */}
                                 <div className="relative flex-1 md:w-64">
@@ -205,7 +189,7 @@ const StudentsList = () => {
                             <table className="w-full text-left border-collapse">
                                 <thead className="bg-gray-50/50 sticky top-0">
                                 <tr>
-                                    {['S/N', 'Name', 'Email', 'Role', 'Status', 'Last Login', 'Actions'].map((header) => (
+                                    {['S/N', 'Name', 'Parent Email', 'Parent No.', 'Student Status', 'Overall Grade', 'Actions'].map((header) => (
                                         <th key={header} className="p-4 text-sm font-semibold text-gray-600 whitespace-nowrap">
                                             {header}
                                         </th>
@@ -227,9 +211,8 @@ const StudentsList = () => {
                                             </td>
                                             <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.email}</td>
                                             <td className="p-4">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeStyle(user.role)} whitespace-nowrap`}>
-                                                        {user.role}
-                                                    </span>
+                                                <span className="text-sm font-medium text-gray-600 whitespace-nowrap">08123456789</span>
+
                                             </td>
                                             <td className="p-4">
                                                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(user.status)} whitespace-nowrap`}>
@@ -274,7 +257,7 @@ const StudentsList = () => {
                         </div>
 
                         {/* Pagination Section */}
-                        <div className="p-4 flex justify-center items-center gap-4 border-t border-gray-100 flex-shrink-0">
+                        <div className="p-4 flex justify-center items-center gap-4 border-t border-gray-100 shrink-0">
                             <button
                                 onClick={() => goToPage(currentPage - 1)}
                                 disabled={currentPage === 1}
@@ -314,6 +297,8 @@ const StudentsList = () => {
                     </div>
                 </main>
             </div>
+
+            {/*TODO: for view details add tab for user Info, Subjects taken with Performance and Attendance visible for each class*/}
 
             {/*View Students Modal*/}
             {viewStudent && (
@@ -406,24 +391,6 @@ const StudentsList = () => {
                                         )}
                                     </div>
 
-                                    {/* Add Parent ID */}
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            placeholder="Enter Parent ID"
-                                            className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                            // onChange={...}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                // handleLinkParent()
-                                            }}
-                                            className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                        >
-                                            Link
-                                        </button>
-                                    </div>
                                 </div>
 
                                 {/* Actions */}
@@ -504,23 +471,38 @@ const StudentsList = () => {
                     </div>
                 </div>
             )}
-            {/* Delete Confirmation Modal */}
+
+            {/* Change Status Modal */}
             {userToDelete && (
                 <div className="fixed inset-0 z-50 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4">
-                        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setUserToDelete(null)} />
-                        <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all">
-                            <div className="flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                                    <Trash2 className="w-8 h-8 text-red-600" />
+                        <div className="fixed inset-0 bg-black/30" onClick={() => setUserToDelete(null)} />
+                        <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
+                            <button
+                                onClick={() => setUserToDelete(null)}
+                                className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+
+                            <div>
+                                <h3 className="text-xl text-center font-bold mb-3 text-gray-900">Delete User</h3>
+                                <div className="flex items-center gap-3 mb-6">
+
+                                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <UserCircle2 className="w-6 h-6 text-gray-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">{userToDelete.name}</p>
+                                    </div>
                                 </div>
 
-                                <h3 className="text-xl font-black text-gray-900 mb-2">Confirm Removal</h3>
-                                <p className="text-sm text-gray-500 mb-6">
-                                    Are you sure you want to delete <span className="font-bold text-gray-800">{userToDelete.name}</span>?
-                                    This action is permanent and cannot be undone.
-                                </p>
-
+                                <div className="mb-4 flex flex-row items-center gap-3 ">
+                                    <p className="text-sm text-gray-600">Current Status:</p>
+                                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(userToDelete.status)}`}>
+                                        {userToDelete.status}
+                                    </span>
+                                </div>
                                 <div className="w-full text-left mb-6">
                                     <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
                                         Reason for removal
@@ -537,7 +519,7 @@ const StudentsList = () => {
                                 <div className="flex gap-3 w-full">
                                     <button
                                         onClick={() => setUserToDelete(null)}
-                                        className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-all"
+                                        className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-all"
                                     >
                                         Cancel
                                     </button>
@@ -548,11 +530,12 @@ const StudentsList = () => {
                                             setUserToDelete(null);
                                             setDeleteReason('');
                                         }}
-                                        className="flex-1 py-3 px-4 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 py-3 px-4 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Proceed
                                     </button>
                                 </div>
+
                             </div>
                         </div>
                     </div>

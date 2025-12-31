@@ -143,7 +143,7 @@ const ParentsList = () => {
                 <main className="flex-1 p-6 flex flex-col">
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                         {/* Header Section */}
-                        <div className="p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 flex-shrink-0">
+                        <div className="p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 shrink-0">
                             <div>
                                 <h2 className="text-xl font-bold text-gray-800">Parent Management Table</h2>
                                 <p className="text-sm text-gray-500 mt-1">
@@ -154,29 +154,11 @@ const ParentsList = () => {
                             <div className="flex items-center gap-3 w-full md:w-auto">
                                 <div className="relative">
                                     <button
-                                        onClick={() => setShowAddUserDropdown(!showAddUserDropdown)}
                                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm"
                                     >
                                         <Plus size={18} />
                                         Add New Parent
                                     </button>
-
-                                    {showAddUserDropdown && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden py-1">
-                                            {['Teacher', 'Parent'].map((role) => (
-                                                <button
-                                                    key={role}
-                                                    className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                                                    onClick={() => {
-                                                        console.log(`Maps to add ${role}`);
-                                                        setShowAddUserDropdown(false);
-                                                    }}
-                                                >
-                                                    Add {role}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
                                 </div>
                                 {/* Search Bar */}
                                 <div className="relative flex-1 md:w-64">
@@ -524,23 +506,38 @@ const ParentsList = () => {
                     </div>
                 </div>
             )}
-            {/* Delete Confirmation Modal */}
+
+            {/* Change Status Modal */}
             {userToDelete && (
                 <div className="fixed inset-0 z-50 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4">
-                        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setUserToDelete(null)} />
-                        <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all">
-                            <div className="flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                                    <Trash2 className="w-8 h-8 text-red-600" />
+                        <div className="fixed inset-0 bg-black/30" onClick={() => setUserToDelete(null)} />
+                        <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
+                            <button
+                                onClick={() => setUserToDelete(null)}
+                                className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+
+                            <div>
+                                <h3 className="text-xl text-center font-bold mb-3 text-gray-900">Delete User</h3>
+                                <div className="flex items-center gap-3 mb-6">
+
+                                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <UserCircle2 className="w-6 h-6 text-gray-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500">{userToDelete.name}</p>
+                                    </div>
                                 </div>
 
-                                <h3 className="text-xl font-black text-gray-900 mb-2">Confirm Removal</h3>
-                                <p className="text-sm text-gray-500 mb-6">
-                                    Are you sure you want to delete <span className="font-bold text-gray-800">{userToDelete.name}</span>?
-                                    This action is permanent and cannot be undone.
-                                </p>
-
+                                <div className="mb-4 flex flex-row items-center gap-3 ">
+                                    <p className="text-sm text-gray-600">Current Status:</p>
+                                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(userToDelete.status)}`}>
+                                        {userToDelete.status}
+                                    </span>
+                                </div>
                                 <div className="w-full text-left mb-6">
                                     <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">
                                         Reason for removal
@@ -557,7 +554,7 @@ const ParentsList = () => {
                                 <div className="flex gap-3 w-full">
                                     <button
                                         onClick={() => setUserToDelete(null)}
-                                        className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-all"
+                                        className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-all"
                                     >
                                         Cancel
                                     </button>
@@ -568,16 +565,18 @@ const ParentsList = () => {
                                             setUserToDelete(null);
                                             setDeleteReason('');
                                         }}
-                                        className="flex-1 py-3 px-4 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 py-3 px-4 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Proceed
                                     </button>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 };

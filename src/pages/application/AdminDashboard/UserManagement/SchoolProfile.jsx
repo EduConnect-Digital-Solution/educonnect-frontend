@@ -127,9 +127,9 @@ const SchoolProfile = () => {
 
                                 {/* Status Toggle (Request Trigger) */}
                                 <div className="flex items-center justify-between mb-4">
-    <span className="text-sm font-medium text-gray-700">
-      Request School Deactivation
-    </span>
+                                    <span className="text-sm font-medium text-gray-700">
+                                      Request School Deactivation
+                                    </span>
 
                                     <div
                                         onClick={() => setShowDeactivationRequest(true)}

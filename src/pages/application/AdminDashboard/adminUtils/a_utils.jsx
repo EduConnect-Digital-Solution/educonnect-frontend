@@ -238,14 +238,14 @@ export const AdminOverviewDashboard = () => {
                     />
                 ))}
             </div>
-
+Week 1
         </div>
     );
 };
 
 export const AnalyticsAndActions = () => {
     const [timeframe, setTimeframe] = useState('Last Month');
-    const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    const weeks = ['9:00am', '11:00am', '13:00pm', '15:00pm'];
 
     // --- Enhanced Quick Action Card Component ---
     const QuickActionCard = ({ title, description, buttonText, icon: Icon, colorClass }) => (
@@ -313,30 +313,27 @@ export const AnalyticsAndActions = () => {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
-                    <button className="text-gray-400 hover:text-gray-600">
-                        <MoreHorizontal size={20} />
-                    </button>
                 </div>
 
                 <div className="space-y-4 flex-1">
                     <QuickActionCard
-                        title="Add Students"
-                        description="Add Student information"
-                        buttonText="Upload Now"
+                        title="Register Students"
+                        description="Add new students to the system."
+                        buttonText="Add Students"
                         icon={Plus}
                         colorClass="bg-blue-50 text-blue-600"
-                    />
+                        />
                     <QuickActionCard
-                        title="Add Teachers"
-                        description="Add Teachers information"
-                        buttonText="Create Quiz"
+                        title="Invite Teachers"
+                        description="Create teacher accounts and assign classes or send invitation links."
+                        buttonText="Invite Teachers"
                         icon={Plus}
                         colorClass="bg-purple-50 text-purple-600"
                     />
                     <QuickActionCard
-                        title="Add Parents"
-                        description="Add Parents information"
-                        buttonText="Message"
+                        title="Invite Parents"
+                        description="Send parent invites to connect guardians with their students' accounts."
+                        buttonText="Send Invites"
                         icon={Plus}
                         colorClass="bg-green-50 text-green-600"
                     />
