@@ -1,7 +1,7 @@
 import React from 'react';
 import {Header} from "../dashboardUtilities.jsx";
-import {AnalyticsAndActions, BottomSection, EducationOverviewDashboard, Sidebar} from "./teacherUtils/t_utils.jsx";
-
+import {TeacherDashboardHome, EducationOverviewDashboard, Sidebar} from "./teacherUtils/teacherComponents.jsx";
+// TODO: make a my classes sidebar page
 export default function TeacherDashboard() {
     return (
         <>
@@ -14,8 +14,7 @@ export default function TeacherDashboard() {
                     <Header />
                     <main className="flex-1 md:p-6">
                         <EducationOverviewDashboard />
-                        <AnalyticsAndActions />
-                        <BottomSection />
+                        <TeacherDashboardHome />
                     </main>
                 </div>
             </div>

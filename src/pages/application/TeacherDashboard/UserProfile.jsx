@@ -9,7 +9,7 @@ import {
     Award,
 } from 'lucide-react';
 import {Header} from "../dashboardUtilities.jsx";
-import {Sidebar, AccountAndClasses} from "./teacherUtils/t_utils.jsx";
+import {Sidebar, AccountAndClasses} from "./teacherUtils/teacherComponents.jsx";
 import {Images} from "../../../components/images.jsx";
 import ClassSelectionModal from "./ClassSelectionModal.jsx";
 

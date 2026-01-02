@@ -4,7 +4,7 @@ import {
     MoreVertical, Clock
 } from 'lucide-react';
 import { getInitials } from "../../../utils/imports.jsx";
-import {CircularProgress} from "./teacherUtils/t_utils.jsx"; // Assuming helper is available
+import {CircularProgress} from "./teacherUtils/teacherComponents.jsx"; // Assuming helper is available
 
 
 const StudentAnalytics = ({ student, onBack }) => {

@@ -5,7 +5,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import {getInitials, getStatusStyles, students} from "../../../utils/imports.jsx";
 import StudentAnalytics from './StudentAnalytics.jsx';
 import {Header} from "../dashboardUtilities.jsx";
-import {Sidebar, CircularProgress} from "./teacherUtils/t_utils.jsx";
+import {Sidebar, CircularProgress} from "./teacherUtils/teacherComponents.jsx";
 
 
 const ClassStudents = () => {
