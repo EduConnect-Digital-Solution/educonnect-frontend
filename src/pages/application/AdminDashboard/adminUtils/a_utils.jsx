@@ -238,7 +238,6 @@ export const AdminOverviewDashboard = () => {
                     />
                 ))}
             </div>
-Week 1
         </div>
     );
 };

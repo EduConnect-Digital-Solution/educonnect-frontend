@@ -11,7 +11,7 @@ import {NavLink} from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import {SEO} from "../SEO.jsx";
-
+// TODO: change home page services section wording about the student services
 export const Home = () => {
     const [activeReason, setActiveReason] = useState(0);
     const scrollContainerRef = useRef(null);

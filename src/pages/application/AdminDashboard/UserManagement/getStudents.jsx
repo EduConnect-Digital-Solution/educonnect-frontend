@@ -7,7 +7,7 @@ import {Sidebar} from "../adminUtils/a_utils.jsx";
 const getInitials = (name) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 };
-// TODO: change user management drop down to view teachers, parents, students
+
 // Helper to get role badge styling
 const getRoleBadgeStyle = (role) => {
     const styles = {

@@ -1,7 +1,7 @@
 import React, {Fragment, useState} from 'react';
 import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import {Header} from "../dashboardUtilities.jsx";
-import {CircularProgress, Sidebar} from "./teacherUtils/t_utils.jsx";
+import {CircularProgress, Sidebar} from "./teacherUtils/teacherComponents.jsx";
 import { Dialog, Transition } from '@headlessui/react';
 import {getInitials, getStatusStyles, students} from "../../../utils/imports.jsx";
 import StudentAnalytics from './StudentAnalytics.jsx';
