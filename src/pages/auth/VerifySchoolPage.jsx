@@ -1,25 +1,27 @@
-import { Button } from "../ui/button.jsx"
+import { Button } from "../../components/ui/button.jsx"
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
-} from "../ui/input-otp.jsx"
+} from "../../components/ui/input-otp.jsx"
 import React, {useEffect, useState} from "react";
 import { ArrowLeft } from 'lucide-react';
-import {Images} from "../images.jsx";
-import {NavLink} from "react-router-dom";
+import {Images} from "../../components/images.jsx";
+import {NavLink, useNavigate} from "react-router-dom";
+import {RegSchool, verifyOTP} from "./authAPIs.js";
+import {Toast} from "../../components/Toast.jsx";
 
 export function VerifySchoolPage({ onNavigate }) {
     // State variable to hold the user-entered verification code.
-// setVerificationCode is the function used to update this state.
+    // setVerificationCode is the function used to update this state.
     const [verificationCode, setVerificationCode] = useState('');
 
-// State variable to manage the resend button cooldown timer (in seconds).
-// setCooldown is the function used to update the cooldown time.
+    // State variable to manage the resend button cooldown timer (in seconds).
+    // setCooldown is the function used to update the cooldown time.
     const [cooldown, setCooldown] = useState(0);
 
-// useEffect hook to manage the countdown timer logic.
-// It runs whenever the 'cooldown' state changes.
+    // useEffect hook to manage the countdown timer logic.
+    // It runs whenever the 'cooldown' state changes.
     useEffect(() => {
         let timer; // Variable to hold the interval ID
 
@@ -43,7 +45,7 @@ export function VerifySchoolPage({ onNavigate }) {
 // This is crucial for stopping the timer when 'cooldown' hits 0.
     }, [cooldown]);
 
-// Handler function for the "Resend Code" action.
+    // Handler function for the "Resend Code" action.
     const handleResend = () => {
         // 1. Check if the cooldown is still active. If it is (cooldown > 0),
         //    do nothing and exit the function early to prevent resending.
@@ -109,17 +111,45 @@ export function VerifySchoolPage({ onNavigate }) {
         </div>
     );
 }
+
 function OtpForm() {
     const [pin, setPin] = useState("")
+    const userEmail = location.state?.email;
+    const navigate = useNavigate();
+    const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+
+    const showToast = (message, type = 'error') => {
+        setToast({ show: true, message, type });
+    };
 
     const handleSubmit = () => {
         console.log("Submitted PIN:", pin)
+        try {
+            verifyOTP({email: userEmail, code: pin})
+                .then(() => {
+                    showToast('School registered successfully', 'success');
+                    navigate('/dashboard/admin');
+                });
+
+        } catch (err) {
+            const message = err?.message || err?.error || 'Registration failed';
+            showToast(message, 'error');
+        }
+
     }
 
 
 
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 mx-auto w-auto items-center content-center justify-center">
+        <div className="space-y-6 mx-auto w-auto items-center content-center justify-center">
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
             <div className="space-y-2">
                 <InputOTP
                     id="otp-input"
@@ -139,11 +169,9 @@ function OtpForm() {
 
             </div>
 
-            <div className={``}>
-                <NavLink to={`/dashboard/admin`} className={`flex justify-center`}>
-                    <Button type="submit" className={`w-2/5  mx-auto items-center content-center justify-center`}>Submit</Button>
-                </NavLink>
+            <div className={`flex justify-center`}>
+                <Button onClick={() => {handleSubmit()}} className={`w-2/5 mx-auto items-center content-center justify-center`}>Submit</Button>
             </div>
-        </form>
+        </div>
     )
 }

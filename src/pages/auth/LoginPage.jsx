@@ -4,24 +4,78 @@ import {useNavigate, NavLink} from 'react-router-dom';
 import {Building2, Mail, Lock, ArrowLeft} from 'lucide-react';
 import {Images} from "../../components/images.jsx";
 import { useSearchParams } from 'react-router-dom';
+import {LoginSchool, RegSchool} from "./authAPIs.js";
+import {Toast} from "../../components/Toast.jsx";
 
 export function LoginPage() {
     const [searchParams] = useSearchParams();
     const role = searchParams.get('role');
     const [formData, setFormData] = useState({
-        schoolID: '',
-        schoolEmail: '',
-        schoolPassword: ''
+        schoolId: '',
+        email: '',
+        password: ''
     });
+    const [toast, setToast] = useState({ show: false, message: '', type: 'error', onClose: null });
+
+    const showToast = (message, type = 'error', duration = 2000, onClose = null) => {
+        setToast({ show: true, message, type, onClose });
+
+        // Automatically hide toast and trigger callback after duration
+        setTimeout(() => {
+            setToast((prev) => ({ ...prev, show: false }));
+
+            // If a callback was provided (like navigate), run it now
+            if (onClose) {
+                onClose();
+            }
+        }, duration);
+    };
 
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        // Handle login logic here
-        console.log('Login data:', formData);
-        navigate(`/dashboard/${role}`);
-    };
+    const handleLogin = async () => {
+        if (!formData?.schoolId) {
+            showToast("Please input your School ID");
+            return;
+        }
 
+        if (!formData?.email) {
+            showToast("Please provide an email address.");
+            return;
+        }
+
+
+        if (!formData?.password) {
+            showToast("Please provide a password.");
+            return;
+        }
+
+
+        const payload = {
+            schoolId: formData.schoolId.trim(),
+            email: formData.email.trim().toLowerCase(),
+            password: formData.password,
+        };
+
+        console.log('Login data:', formData);
+
+        try {
+            const loginData = await LoginSchool(payload);
+            if (loginData.success === true){
+                showToast('Login successful', 'success', 2000, () => {
+                    navigate(`/dashboard/${role}`);
+                });
+            } else{
+                showToast('Login Failed, Please try again');
+            }
+
+        } catch (err) {
+            const message = err?.message || err?.error || 'Registration failed';
+            console.log(err?.message)
+            console.log(err?.error)
+            showToast(message, 'error');
+        }
+    };
 
 
     return (
@@ -35,6 +89,15 @@ export function LoginPage() {
                     />
                 </NavLink>
             </div>
+
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
+
             <div className="min-h-screen flex bg-[#F4F5F9] items-center justify-center p-4">
                 <img
                     alt={``}
@@ -62,9 +125,9 @@ export function LoginPage() {
                                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                     <input
                                         type="text"
-                                        name="schoolID"
-                                        value={formData?.schoolID || ''}
-                                        onChange={(e) => setFormData({ ...formData, schoolID: e.target.value })}
+                                        name="schoolId"
+                                        value={formData?.schoolId || ''}
+                                        onChange={(e) => setFormData({ ...formData, schoolId: e.target.value })}
                                         placeholder="Enter school ID"
                                         className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                     />
@@ -77,9 +140,9 @@ export function LoginPage() {
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                     <input
                                         type="text"
-                                        name="schoolEmail"
-                                        value={formData?.schoolEmail || ''}
-                                        onChange={(e) => setFormData({ ...formData, schoolEmail: e.target.value })}
+                                        name="email"
+                                        value={formData?.email || ''}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         placeholder="Enter email"
                                         className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                     />
@@ -92,9 +155,9 @@ export function LoginPage() {
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                     <input
                                         type="password"
-                                        name="schoolPassword"
-                                        value={formData?.schoolPassword || ''}
-                                        onChange={(e) => setFormData({ ...formData, schoolPassword: e.target.value })}
+                                        name="password"
+                                        value={formData?.password || ''}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                         placeholder="Enter password"
                                         className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                     />

@@ -1,12 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Home } from "./pages/Home.jsx";
-import {VerifySchoolPage}  from "./components/auth/VerifySchoolPage.jsx";
-import { SuccessPage } from "./components/auth/SuccessPage.jsx";
+import {VerifySchoolPage}  from "./pages/auth/VerifySchoolPage.jsx";
 import { AuthLayout } from "./components/auth/AuthLayout.jsx";
 import { LoginPage } from "./pages/auth/LoginPage.jsx";
-import { SchoolInfo } from "./pages/auth/SchoolInfo.jsx";
-import { AdminInfo } from "./pages/auth/AdminInfo.jsx";
+import { RegisterSchool } from "./pages/auth/RegisterSchool.jsx";
 import TeacherDashboard from "./pages/application/TeacherDashboard/TeacherDashboard.jsx";
 import StudentList from "./pages/application/TeacherDashboard/MyStudents.jsx";
 import TeacherProfile from "./pages/application/TeacherDashboard/UserProfile.jsx";
@@ -35,15 +33,13 @@ function App() {
 
                 {/* Auth Routes with Layout */}
                 <Route element={<AuthLayout />}>
-                    <Route path="/register/school" element={<SchoolInfo />} />
+                    <Route path="/register/school" element={<RegisterSchool />} />
                     <Route path="/login/welcome" element={<AuthWelcome />} />
                     <Route path="/register" element={<Navigate to="/register/school" />} />
-                    <Route path="/register/school" element={<SchoolInfo />} />
-                    <Route path="/register/admin" element={<AdminInfo />} />
+                    <Route path="/register/admin" element={<RegisterSchool />} />
                 </Route>
 
                 <Route path="/verify" element={<VerifySchoolPage />} />
-                <Route path="/success" element={<SuccessPage />} />
 
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
                 <Route path="/dashboard/admin/school-profile" element={<SchoolSettings />} />
