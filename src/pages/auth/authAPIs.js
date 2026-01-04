@@ -18,12 +18,16 @@ export async function RegSchool(payload) {
 
 
 export async function LoginSchool(payload) {
+    const baseURL = import.meta.env.DEV
+        ? '' // In Dev, use the proxy (empty string)
+        : 'https://educonnect-backend-t7j1.onrender.com';
+
     try {
-        const {data} = await axios.post(
-            '/api/school/auth/login',
+        const { data } = await axios.post(
+            `${baseURL}/api/school/auth/login`, // 2. Combine them here
             payload,
             {
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             }
         );
