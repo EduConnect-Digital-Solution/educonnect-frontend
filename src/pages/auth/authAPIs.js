@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// TODO: prevent APIs responses from showing in browser inspect
+
 export async function RegSchool(payload) {
     try {
         const { data } = await axios.post(
@@ -18,9 +20,12 @@ export async function RegSchool(payload) {
 export async function LoginSchool(payload) {
     try {
         const {data} = await axios.post(
-            'https://educonnect-backend-t7j1.onrender.com/api/school/auth/login',
+            '/api/school/auth/login',
             payload,
-            {headers: {'Content-Type': 'application/json'}}
+            {
+                headers: {'Content-Type': 'application/json'},
+                withCredentials: true
+            }
         );
         return data;
     } catch (error) {
