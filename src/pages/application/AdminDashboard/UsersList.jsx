@@ -1,7 +1,8 @@
-import React, { Fragment, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X, UserCircle2, Plus, Trash2  } from 'lucide-react';
 import {Sidebar} from "./adminUtils/a_utils.jsx";
 import {Header} from "../dashboardUtilities.jsx";
+import {getDashboardUsers} from "../../auth/authAPIs.js";
 
 // Helper to get initials for avatar fallback
 const getInitials = (name) => {
@@ -10,10 +11,10 @@ const getInitials = (name) => {
 
 const getRoleBadgeStyle = (role) => {
     const styles = {
-        Teacher: 'bg-blue-100 text-blue-700',
-        Parent: 'bg-purple-100 text-purple-700',
-        Admin: 'bg-red-100 text-red-700',
-        Student: 'bg-green-100 text-green-700'
+        teacher: 'bg-blue-100 text-blue-700',
+        parent: 'bg-purple-100 text-purple-700',
+        admin: 'bg-red-100 text-red-700',
+        student: 'bg-green-100 text-green-700'
     };
     return styles[role] || 'bg-gray-100 text-gray-700';
 };
@@ -29,20 +30,6 @@ const getStatusBadgeStyle = (status) => {
     return styles[status] || 'bg-gray-100 text-gray-700';
 };
 
-// Mock users data - replace with your actual data
-const mockUsers = [
-    { id: 1, name: 'John Doe', email: 'john.doe@school.com', role: 'Teacher', status: 'Active', lastLogin: '2 hours ago' },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@parent.com', role: 'Parent', status: 'Active', lastLogin: '1 day ago' },
-    { id: 3, name: 'Michael Brown', email: 'mbrown@school.com', role: 'Teacher', status: 'Active', lastLogin: '3 hours ago' },
-    { id: 4, name: 'Sarah Johnson', email: 'sarah.j@parent.com', role: 'Parent', status: 'Inactive', lastLogin: '2 weeks ago' },
-    { id: 5, name: 'David Wilson', email: 'dwilson@school.com', role: 'Admin', status: 'Active', lastLogin: '30 mins ago' },
-    { id: 6, name: 'Emily Davis', email: 'emily.d@parent.com', role: 'Parent', status: 'Active', lastLogin: '5 hours ago' },
-    { id: 7, name: 'Robert Taylor', email: 'rtaylor@school.com', role: 'Teacher', status: 'Suspended', lastLogin: '1 month ago' },
-    { id: 8, name: 'Lisa Anderson', email: 'lisa.a@parent.com', role: 'Parent', status: 'Active', lastLogin: '1 hour ago' },
-    { id: 9, name: 'James Martinez', email: 'jmartinez@school.com', role: 'Teacher', status: 'Active', lastLogin: 'Just now' },
-    { id: 10, name: 'Mary Garcia', email: 'mary.g@parent.com', role: 'Parent', status: 'Pending', lastLogin: 'Never' },
-];
-
 const UserList = () => {
     const [statusChangeUser, setStatusChangeUser] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -50,15 +37,44 @@ const UserList = () => {
     const [userToDelete, setUserToDelete] = useState(null);
     const [deleteReason, setDeleteReason] = useState('');
     const [showAddUserDropdown, setShowAddUserDropdown] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [mockUsers, setMockUsers] = useState([]);
+
     // Items per page
     const itemsPerPage = 8;
 
     // Filter users based on search
+
+    useEffect( () => {
+        const fetchUsers = async () => {
+            try {
+                const getUsers = await getDashboardUsers()
+                const userList = getUsers.data.users.map(userInfo => ({
+                    id: userInfo.id,
+                    firstName: userInfo.firstName,
+                    lastName: userInfo.lastName,
+                    name: userInfo.firstName + " " + userInfo.lastName,
+                    email: userInfo.email,
+                    role: userInfo.role,
+                    status: userInfo.statusDisplay,
+                    inviteSentBy: userInfo.invitedBy?.name || 'n/a'
+                }))
+                setMockUsers(userList)
+            } catch (error) {
+                console.error('Failed to fetch analytics:', error);
+            }finally {
+                setLoading(false);
+            }
+        }
+        fetchUsers()
+    }, []);
+
     const filteredUsers = mockUsers.filter(user =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.role.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
 
     // Calculate pagination
     const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
@@ -112,6 +128,7 @@ const UserList = () => {
         return pages;
     };
 
+
     return (
         <div className="flex h-screen bg-gray-50">
             {/* Sidebar - Fixed */}
@@ -122,172 +139,185 @@ const UserList = () => {
                 <Header />
 
                 {/* Main Content */}
-                <main className="flex-1 p-6 flex flex-col">
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
-                        {/* Header Section */}
-                        <div className="p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 flex-shrink-0">
-                            <div>
-                                <h2 className="text-xl font-bold text-gray-800">User Management</h2>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)} of {filteredUsers.length} users
-                                </p>
-                            </div>
 
-                            <div className="flex items-center gap-3 w-full md:w-auto">
-                                <div className="relative">
-                                    <button
-                                        onClick={() => setShowAddUserDropdown(!showAddUserDropdown)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm"
-                                    >
-                                        <Plus size={18} />
-                                        Add New User
-                                    </button>
+                    <main className="flex-1 p-6 flex flex-col">
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+                            {/* Header Section */}
 
-                                    {showAddUserDropdown && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden py-1">
-                                            {['Teacher', 'Parent'].map((role) => (
+                            {loading && (
+                                <div className="min-h-screen flex items-center justify-center">
+                                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+                                </div>
+                            )}
+                            {!loading && (
+                                <>
+                                    <div className="p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 flex-shrink-0">
+                                        <div>
+                                            <h2 className="text-xl font-bold text-gray-800">User Management</h2>
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                Showing {startIndex + 1}-{Math.min(endIndex, filteredUsers.length)} of {filteredUsers.length} users
+                                            </p>
+                                        </div>
+
+                                        <div className="flex items-center gap-3 w-full md:w-auto">
+                                            <div className="relative">
                                                 <button
-                                                    key={role}
-                                                    className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                                                    onClick={() => {
-                                                        console.log(`Maps to add ${role}`);
-                                                        setShowAddUserDropdown(false);
-                                                    }}
+                                                    onClick={() => setShowAddUserDropdown(!showAddUserDropdown)}
+                                                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-sm"
                                                 >
-                                                    Add {role}
+                                                    <Plus size={18} />
+                                                    Add New User
                                                 </button>
+
+                                                {showAddUserDropdown && (
+                                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden py-1">
+                                                        {['Teacher', 'Parent'].map((role) => (
+                                                            <button
+                                                                key={role}
+                                                                className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                                                                onClick={() => {
+                                                                    console.log(`Maps to add ${role}`);
+                                                                    setShowAddUserDropdown(false);
+                                                                }}
+                                                            >
+                                                                Add {role}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {/* Search Bar */}
+                                            <div className="relative flex-1 md:w-64">
+                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search users..."
+                                                    value={searchQuery}
+                                                    onChange={handleSearch}
+                                                    className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                                />
+                                            </div>
+
+                                            {/* Actions */}
+                                            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
+                                                <Filter size={20} />
+                                            </button>
+                                            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
+                                                <ArrowDownUp size={20} />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Table Section */}
+                                    <div className="flex-1 overflow-y-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead className="bg-gray-50/50 sticky top-0">
+                                            <tr>
+                                                {['S/N', 'Name', 'Email', 'Role', 'Status', 'Invited By', 'Actions'].map((header) => (
+                                                    <th key={header} className="p-4 text-sm font-semibold text-gray-600 whitespace-nowrap">
+                                                        {header}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100">
+                                            {currentUsers.length > 0 ? (
+                                                currentUsers.map((user, index) => (
+                                                    <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
+                                                        <td className="p-4 text-sm text-gray-600">{startIndex + index + 1}.</td>
+                                                        <td className="p-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
+                                                                    <span className="text-xs font-medium text-gray-600">{getInitials(user.name)}</span>
+                                                                </div>
+                                                                <span className="text-sm font-medium text-gray-800 whitespace-nowrap">{user.name}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.email}</td>
+                                                        <td className="p-4">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeStyle(user.role)} whitespace-nowrap`}>
+                                                            {user.role}
+                                                        </span>
+                                                        </td>
+                                                        <td className="p-4">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(user.status)} whitespace-nowrap`}>
+                                                            {user.status}
+                                                        </span>
+                                                        </td>
+                                                        <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.inviteSentBy}</td>
+                                                        <td className="p-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <button
+                                                                    onClick={() => handleChangeStatus(user)}
+                                                                    className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                                                >
+                                                                    Change Status
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => setUserToDelete(user)} // Changed from handleRemoveUser(user)
+                                                                    className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="7" className="p-8 text-center text-gray-500">
+                                                        No users found.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* Pagination Section */}
+                                    <div className="p-4 flex justify-center items-center gap-4 border-t border-gray-100 flex-shrink-0">
+                                        <button
+                                            onClick={() => goToPage(currentPage - 1)}
+                                            disabled={currentPage === 1}
+                                            className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                                        >
+                                            <ChevronLeft size={20} />
+                                        </button>
+
+                                        <div className="flex items-center gap-1">
+                                            {getPageNumbers().map((page, index) => (
+                                                page === '...' ? (
+                                                    <span key={`ellipsis-${index}`} className="px-2 text-gray-400">...</span>
+                                                ) : (
+                                                    <button
+                                                        key={page}
+                                                        onClick={() => goToPage(page)}
+                                                        className={`min-w-[32px] h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                                                            currentPage === page
+                                                                ? 'bg-blue-600 text-white shadow-sm'
+                                                                : 'text-gray-600 hover:bg-gray-100'
+                                                        }`}
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                )
                                             ))}
                                         </div>
-                                    )}
-                                </div>
-                                {/* Search Bar */}
-                                <div className="relative flex-1 md:w-64">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                    <input
-                                        type="text"
-                                        placeholder="Search users..."
-                                        value={searchQuery}
-                                        onChange={handleSearch}
-                                        className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                    />
-                                </div>
 
-                                {/* Actions */}
-                                <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
-                                    <Filter size={20} />
-                                </button>
-                                <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
-                                    <ArrowDownUp size={20} />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Table Section */}
-                        <div className="flex-1 overflow-y-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead className="bg-gray-50/50 sticky top-0">
-                                <tr>
-                                    {['S/N', 'Name', 'Email', 'Role', 'Status', 'Last Login', 'Actions'].map((header) => (
-                                        <th key={header} className="p-4 text-sm font-semibold text-gray-600 whitespace-nowrap">
-                                            {header}
-                                        </th>
-                                    ))}
-                                </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                {currentUsers.length > 0 ? (
-                                    currentUsers.map((user, index) => (
-                                        <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                                            <td className="p-4 text-sm text-gray-600">{startIndex + index + 1}.</td>
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
-                                                        <span className="text-xs font-medium text-gray-600">{getInitials(user.name)}</span>
-                                                    </div>
-                                                    <span className="text-sm font-medium text-gray-800 whitespace-nowrap">{user.name}</span>
-                                                </div>
-                                            </td>
-                                            <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.email}</td>
-                                            <td className="p-4">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeStyle(user.role)} whitespace-nowrap`}>
-                                                        {user.role}
-                                                    </span>
-                                            </td>
-                                            <td className="p-4">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeStyle(user.status)} whitespace-nowrap`}>
-                                                        {user.status}
-                                                    </span>
-                                            </td>
-                                            <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.lastLogin}</td>
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-2">
-                                                    <button
-                                                        onClick={() => handleChangeStatus(user)}
-                                                        className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                                                    >
-                                                        Change Status
-                                                    </button>
-                                                    <button
-                                                        onClick={() => setUserToDelete(user)} // Changed from handleRemoveUser(user)
-                                                        className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="7" className="p-8 text-center text-gray-500">
-                                            No users found matching your search.
-                                        </td>
-                                    </tr>
-                                )}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Pagination Section */}
-                        <div className="p-4 flex justify-center items-center gap-4 border-t border-gray-100 flex-shrink-0">
-                            <button
-                                onClick={() => goToPage(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                            >
-                                <ChevronLeft size={20} />
-                            </button>
-
-                            <div className="flex items-center gap-1">
-                                {getPageNumbers().map((page, index) => (
-                                    page === '...' ? (
-                                        <span key={`ellipsis-${index}`} className="px-2 text-gray-400">...</span>
-                                    ) : (
                                         <button
-                                            key={page}
-                                            onClick={() => goToPage(page)}
-                                            className={`min-w-[32px] h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                                                currentPage === page
-                                                    ? 'bg-blue-600 text-white shadow-sm'
-                                                    : 'text-gray-600 hover:bg-gray-100'
-                                            }`}
+                                            onClick={() => goToPage(currentPage + 1)}
+                                            disabled={currentPage === totalPages}
+                                            className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                                         >
-                                            {page}
+                                            <ChevronRight size={20} />
                                         </button>
-                                    )
-                                ))}
-                            </div>
+                                    </div>
+                                </>
+                            )}
 
-                            <button
-                                onClick={() => goToPage(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
-                            >
-                                <ChevronRight size={20} />
-                            </button>
                         </div>
-                    </div>
-                </main>
+                    </main>
+
                 {/* Change Status Modal */}
                 {statusChangeUser && (
                     <div className="fixed inset-0 z-50 overflow-y-auto">

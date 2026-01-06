@@ -16,7 +16,7 @@ import {
 import {Images} from "../../../../components/images.jsx";
 import {
     createStudent,
-    getAllStudents,
+    getAllStudents, inviteParent,
     inviteTeacher,
     resendInvitation, terminateInvitation,
 } from "../../../auth/authAPIs.js";
@@ -267,6 +267,7 @@ const Input = ({ label, ...props }) => (
 );
 
 export const QuickActions = () => {
+    const inputRef = useRef(null);
 
     const [viewTeacher, setViewTeacher] = useState(false);
     const [viewStudent, setViewStudent] = useState(false);
@@ -292,11 +293,12 @@ export const QuickActions = () => {
     );
 
     const [subjects, setSubjects] = useState([]);
+    const [filteredSubjects, setFilteredSubjects] = useState([]);
+    const [studentsToSubmit, setStudentsToSubmit] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [allStudentsList, setAllStudentsList] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
-    const [filteredSubjects, setFilteredSubjects] = useState([]);
-    const inputRef = useRef(null);
+
     const [teacherFormData, setTeacherFormData] = useState({
         firstName: '',
         lastName: '',
@@ -304,7 +306,13 @@ export const QuickActions = () => {
         subjects: [''],
         message: '',
     });
-
+    const [parentFormData, setParentFormData] = useState({
+        email: '',
+        firstName: '',
+        lastName: '',
+        studentIds: [''],
+        message: '',
+    });
     const [studentFormData, setStudentFormData] = useState({
         firstName: "",
         lastName: "",
@@ -373,6 +381,61 @@ export const QuickActions = () => {
         }
     };
 
+    const handleInviteParent = async () => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        // Validation Checks
+        if (!parentFormData?.email || !emailPattern.test(parentFormData.email)) {
+            showToast("Please provide a valid email address.");
+            return;
+        }
+
+        if (!parentFormData?.firstName) {
+            showToast("Please input first name");
+            return;
+        }
+
+        if (!parentFormData?.lastName) {
+            showToast("Please input last name");
+            return;
+        }
+
+        if (!parentFormData?.studentIds || parentFormData.studentIds.length === 0) {
+            showToast("Please add at least 1 student");
+            return;
+        }
+        if (!parentFormData?.message) {
+            showToast("Please input an invitation message");
+            return;
+        }
+
+        const stud_list = selectedStudents.map(student => {
+            return student.id
+        })
+        if (stud_list.length !== 0) {
+            setStudentsToSubmit(stud_list)
+        }
+
+        const payload = {
+            email: parentFormData.email.trim().toLowerCase(),
+            firstName: parentFormData.firstName.trim(),
+            lastName: parentFormData.lastName.trim(),
+            studentIds: studentsToSubmit,
+            message: parentFormData.message.trim(),
+        };
+
+        console.log(payload)
+
+        try {
+            await inviteParent(payload);
+            showToast('Parent invited successfully', 'success');
+            setViewTeacher(false)
+        } catch (err) {
+            const message = err?.message || err?.error || 'Registration failed';
+            showToast(message, 'error');
+        }
+    };
+
     const handleCreateStudent = async () => {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -428,6 +491,10 @@ export const QuickActions = () => {
             showToast(message, 'error');
         }
     };
+
+
+
+
 
     // Filter subjects based on input
     useEffect(() => {
@@ -886,14 +953,14 @@ export const QuickActions = () => {
                                     <div className="grid grid-cols-2 gap-4">
                                         <Input
                                             label="First Name"
-                                            value={teacherFormData.firstName}
-                                            onChange={(e) => setTeacherFormData({...teacherFormData, firstName: e.target.value})}
+                                            value={parentFormData.firstName}
+                                            onChange={(e) => setParentFormData({...parentFormData, firstName: e.target.value})}
                                             required
                                         />
                                         <Input
                                             label="Last Name"
-                                            value={teacherFormData.lastName}
-                                            onChange={(e) => setTeacherFormData({...teacherFormData, lastName: e.target.value})}
+                                            value={parentFormData.lastName}
+                                            onChange={(e) => setParentFormData({...parentFormData, lastName: e.target.value})}
                                             required
                                         />
                                     </div>
@@ -901,8 +968,8 @@ export const QuickActions = () => {
                                     <Input
                                         label="Email Address"
                                         type="email"
-                                        value={teacherFormData.email}
-                                        onChange={(e) => setTeacherFormData({...teacherFormData, email: e.target.value})}
+                                        value={parentFormData.email}
+                                        onChange={(e) => setParentFormData({...parentFormData, email: e.target.value})}
                                     />
 
                                     {/* Subjects */}
@@ -920,13 +987,13 @@ export const QuickActions = () => {
                                                         className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-sm px-3 py-1 rounded-lg animate-in fade-in zoom-in duration-200"
                                                     >
                                                         <span className="font-medium">
-                                                            {student.fullName || `${student.firstName} ${student.lastName}`}
+                                                            {`${student.firstName} ${student.lastName}`}
                                                         </span>
                                                         <button
                                                             type="button"
                                                             onClick={() => handleRemoveStudent(student)}
                                                             className="hover:text-blue-900 transition-colors p-0.5 rounded-full hover:bg-blue-100"
-                                                            aria-label={`Remove ${student.fullName}`}
+                                                            aria-label={`Remove ${student.firstName} ${student.lastName}`}
                                                         >
                                                             <X size={14} />
                                                         </button>
@@ -934,7 +1001,6 @@ export const QuickActions = () => {
                                                 ))}
                                             </div>
 
-                                            {/* Input and Dropdown Container */}
                                             {/* Input and Dropdown Container */}
                                             <div className="relative">
                                                 <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -968,8 +1034,12 @@ export const QuickActions = () => {
                                                                     className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-blue-50 transition-colors text-left border-b border-gray-50 last:border-0"
                                                                 >
                                                                     <div className="flex flex-col">
-                                                                        <span className="text-gray-700 font-medium">{student.fullName}</span>
-                                                                        <span className="text-[10px] text-gray-400">{student.email}</span>
+                                                                        <span className="text-gray-700 font-medium group-hover:text-blue-700">
+                                                                            {student.fullName}
+                                                                        </span>
+                                                                                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                                                                            {student.studentId} • {student.class}
+                                                                        </span>
                                                                     </div>
                                                                     <Plus size={14} className="text-gray-300" />
                                                                 </button>
@@ -991,8 +1061,8 @@ export const QuickActions = () => {
                                             Invitation Message
                                         </label>
                                         <textarea
-                                            value={teacherFormData.message}
-                                            onChange={(e) => setTeacherFormData({...teacherFormData, message: e.target.value})}
+                                            value={parentFormData.message}
+                                            onChange={(e) => setParentFormData({...parentFormData, message: e.target.value})}
                                             placeholder="Write a brief invitation message..."
                                             className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] resize-none"
                                         />
@@ -1008,7 +1078,7 @@ export const QuickActions = () => {
                                             Cancel
                                         </button>
                                         <button
-                                            onClick={handleInviteTeacher}
+                                            onClick={handleInviteParent}
                                             className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
                                         >
                                             Send Invite

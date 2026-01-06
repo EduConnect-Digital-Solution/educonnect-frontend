@@ -1,9 +1,5 @@
 import apiClient from '../../utils/axiosConfig';
 
-// const baseURL = import.meta.env.DEV
-//     ? ''
-//     : 'https://educonnect-backend-t7j1.onrender.com';
-
 export async function RegSchool(payload) {
     try {
         const { data } = await apiClient.post('/api/school/auth/register', payload);
@@ -50,10 +46,30 @@ export async function getDashboardAnalytics() {
     }
 }
 
+// New API function for dashboard data
+export async function getDashboardUsers() {
+    try {
+        const { data } = await apiClient.get('/api/admin/dashboard/users');
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
 // function to invite a teacher
 export async function inviteTeacher(payload) {
     try {
         const { data } = await apiClient.post('/api/school/auth/invite-teacher', payload);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+// function to invite a teacher
+export async function inviteParent(payload) {
+    try {
+        const { data } = await apiClient.post('/api/school/auth/invite-parent', payload);
         return data;
     } catch (error) {
         throw error?.response?.data || error;
