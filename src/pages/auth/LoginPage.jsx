@@ -1,15 +1,48 @@
-// src/pages/auth/LoginPage.jsx
-import React, { useState } from 'react';
-import {useNavigate, NavLink} from 'react-router-dom';
-import {Building2, Mail, Lock, ArrowLeft} from 'lucide-react';
-import {Images} from "../../components/images.jsx";
+import React, {useEffect, useState} from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { Building2, Mail, Lock } from 'lucide-react';
+import { Images } from "../../components/images.jsx";
 import { useSearchParams } from 'react-router-dom';
-import {LoginSchool, RegSchool} from "./authAPIs.js";
-import {Toast} from "../../components/Toast.jsx";
+import { LoginSchool } from "./authAPIs.js";
+import { Toast } from "../../components/Toast.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+
 
 export function LoginPage() {
+
+    const navigate = useNavigate();
+    const { checkAuthStatus, user, isAuthenticated } = useAuth();
+
+    const getDashboardRoute = (u) => {
+        if (!u) return '/';
+        if (u.isAdmin || u.role === 'admin') return '/admin/dashboard';
+        if (u.schoolId || u.school) return '/school/dashboard';
+        return '/dashboard';
+    };
+
+    useEffect(() => {
+        let mounted = true;
+
+        const redirectIfAuthenticated = async () => {
+            // Rehydrate session and decide
+            const hasSession = await checkAuthStatus(); // forces refresh per your context
+            if (!mounted) return;
+            if (hasSession || isAuthenticated) {
+                navigate(getDashboardRoute(user), { replace: true });
+            }
+        };
+
+        redirectIfAuthenticated();
+
+        return () => {
+            mounted = false;
+        };
+    }, []);
+
     const [searchParams] = useSearchParams();
     const role = searchParams.get('role');
+    const { login } = useAuth();
+
     const [formData, setFormData] = useState({
         schoolId: '',
         email: '',
@@ -30,8 +63,6 @@ export function LoginPage() {
             }
         }, duration);
     };
-
-    const navigate = useNavigate();
 
     const handleLogin = async () => {
         if (!formData?.schoolId) {
@@ -61,20 +92,21 @@ export function LoginPage() {
 
         try {
             const loginData = await LoginSchool(payload);
-            if (loginData.success === true){
-                showToast('Login successful', 'success', 2000, () => {
+            if (loginData.success === true) {
+                // Store in React memory via context
+                await login(loginData);
+
+                showToast('Login successful', 'success', 1500, () => {
                     navigate(`/dashboard/${role}`);
                 });
-            } else{
+            } else {
                 showToast('Login Failed, Please try again');
             }
-
         } catch (err) {
-            const message = err?.message || err?.error || 'Registration failed';
-            console.log(err?.message)
-            console.log(err?.error)
+            const message = err?.message || err?.error || 'Login failed';
             showToast(message, 'error');
         }
+
     };
 
 

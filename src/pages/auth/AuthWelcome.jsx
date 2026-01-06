@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { ShieldCheck, GraduationCap, Users, ArrowRight } from 'lucide-react';
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {Images} from "../../components/images.jsx";
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
 const RoleCard = ({ title, description }) => (
     <button className="group relative w-full p-5 flex items-center justify-between bg-white/80 backdrop-blur-sm border border-gray-100 rounded-2xl hover:border-blue-500 hover:shadow-md hover:shadow-blue-500/10 transition-all duration-300 active:scale-[0.98]">
@@ -16,6 +17,36 @@ const RoleCard = ({ title, description }) => (
 );
 
 export default function AuthWelcome() {
+
+    const navigate = useNavigate();
+    const { checkAuthStatus, user, isAuthenticated } = useAuth();
+
+    const getDashboardRoute = (u) => {
+        if (!u) return '/';
+        if (u.isAdmin || u.role === 'admin') return '/admin/dashboard';
+        if (u.schoolId || u.school) return '/school/dashboard';
+        return '/dashboard';
+    };
+
+    useEffect(() => {
+        let mounted = true;
+
+        const redirectIfAuthenticated = async () => {
+            // Rehydrate session and decide
+            const hasSession = await checkAuthStatus(); // forces refresh per your context
+            if (!mounted) return;
+            if (hasSession || isAuthenticated) {
+                navigate(getDashboardRoute(user), { replace: true });
+            }
+        };
+
+        redirectIfAuthenticated();
+
+        return () => {
+            mounted = false;
+        };
+    }, []);
+
     return (
         <>
             <div className="relative w-full flex items-center justify-center overflow-hidden ">

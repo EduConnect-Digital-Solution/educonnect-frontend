@@ -1,8 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, User, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
 import {NavLink} from "react-router-dom";
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
-export const Header = () => {
+export const Header = ({handleLogout}) => {
+    const auth = useAuth();
+    const firstName = auth.user?.firstName;
+    const role = auth.user?.role;
+    const email = auth.user?.email;
+
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -41,11 +47,11 @@ export const Header = () => {
                         }`}
                     >
                         <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs ring-2 ring-blue-50 ring-offset-1">
-                            M
+                            {firstName[0]}
                         </div>
                         <div className="hidden sm:flex flex-col items-start leading-none">
-                            <span className="text-sm font-bold text-gray-800">Musharof</span>
-                            <span className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">Role</span>
+                            <span className="text-sm font-bold text-gray-800">{firstName}</span>
+                            <span className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">{role}</span>
                         </div>
                         <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
                     </div>
@@ -55,7 +61,7 @@ export const Header = () => {
                         <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 animate-in fade-in zoom-in-95 duration-100 origin-top-right">
                             <div className="px-4 py-3 border-b border-gray-50 mb-1">
                                 <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Account Details</p>
-                                <p className="text-sm font-bold text-gray-700 truncate">musharof@school.com</p>
+                                <p className="text-sm font-bold text-gray-700 truncate">{email}</p>
                             </div>
 
                             <NavLink to={`/dashboard/admin/admin-profile`} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
@@ -70,7 +76,9 @@ export const Header = () => {
 
                             <div className="h-px bg-gray-50 my-1"></div>
 
-                            <button className="flex items-center w-full px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
+                            <button
+                                onClick={() => {handleLogout()}}
+                                className="flex items-center cursor-pointer w-full px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
                                 <LogOut className="w-4 h-4 mr-3" />
                                 Logout
                             </button>

@@ -12,7 +12,6 @@ export default defineConfig({
   ],
     server: {
         proxy: {
-            // This matches any request starting with "/api"
             '/api': {
                 target: 'https://educonnect-backend-t7j1.onrender.com',
                 changeOrigin: true,

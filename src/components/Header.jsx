@@ -1,8 +1,9 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {Images} from "./images.jsx";
 import {Icons} from "./icons.jsx";
 import {navItems} from "../utils/imports.jsx";
+import {useAuth} from "../contexts/AuthContext.jsx";
 
 export const Header = () => {
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -42,7 +43,26 @@ export const Header = () => {
         return () => { document.body.style.overflow = ''; };
     }, [mobileOpen]);
 
+    const navigate = useNavigate();
+    const { checkAuthStatus, user } = useAuth();
 
+    const getDashboardRoute = (u) => {
+        if (!u) return '/';
+        // adjust this to match your user payload (e.g., role, isAdmin, school)
+        if (u.isAdmin || u.role === 'admin') return '/dashboard/admin';
+        // if (u.schoolId || u.school) return '/school/dashboard';
+        return '/dashboard';
+    };
+
+    const handleClick = async () => {
+        // Try to rehydrate session from httpOnly cookie if needed
+        const hasSession = await checkAuthStatus(); // forces refresh in your context
+        if (hasSession) {
+            navigate(getDashboardRoute(user));
+        } else {
+            navigate('/login/welcome'); // or your login route
+        }
+    };
 
     return (
         <>
@@ -81,11 +101,13 @@ export const Header = () => {
 
                 {/* Action Buttons */}
                 <div className=" flex space-x-4">
-                    <NavLink to={`/login/welcome`}>
-                        <button className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">
+                    {/*<NavLink to={`/login/welcome`}>*/}
+                        <button
+                            onClick={handleClick}
+                            className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">
                             Log in
                         </button>
-                    </NavLink>
+                    {/*</NavLink>*/}
 
                     <NavLink to={`/register`}>
                     <button className="px-2 py-2 hidden md:flex border border-gray-300 text-gray-800 rounded-md hover:bg-gray-100 transition duration-150">
