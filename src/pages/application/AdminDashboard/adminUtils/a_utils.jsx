@@ -9,7 +9,7 @@ import {
     Menu, MoreHorizontal, Plus, RefreshCw, Search,
     Settings,
     User,
-    UserCheck, UserCircle2, UserPlus,
+    UserCheck, School, UserPlus,
     Users,
     X, XCircle,
 } from "lucide-react";
@@ -44,19 +44,9 @@ export function Sidebar({ Logout }){
 
     const navItems = [
         { name: 'Dashboard', icon: LayoutDashboard, link: '/dashboard/admin' },
-        {
-            name: 'User Management',
-            icon: Settings,
-            link: '/dashboard/admin/users',
-            hasSubmenu: true,
-            subItems: [
-                { name: 'Parents', link: '/dashboard/admin/users/parents' },
-                { name: 'Students', link: '/dashboard/admin/users/students' },
-                { name: 'Teachers', link: '/dashboard/admin/users/teachers' },
-            ]
-        },
-        { name: 'School Profile', icon: User, link: '/dashboard/admin/school-profile' },
-        { name: 'Admin Profile', icon: User, link: '/dashboard/admin/admin-profile' },
+        { name: 'User Management', icon: Settings, link: '/dashboard/admin/users'},
+        { name: 'Students', icon: GraduationCap, link: '/dashboard/admin/users/students' },
+        { name: 'School Profile', icon: School, link: '/dashboard/admin/school-profile' },
     ];
 
     return (
@@ -254,7 +244,7 @@ export const AdminOverviewDashboard = (overview) => {
     );
 };
 
-const Input = ({ label, ...props }) => (
+export const Input = ({ label, ...props }) => (
     <div>
         <label className="block text-xs font-medium text-gray-500 mb-1">
             {label}
@@ -797,6 +787,173 @@ export const QuickActions = () => {
                     </div>
                 )}
 
+                {viewParent && (
+                    <div className="fixed inset-0 z-50 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-4">
+                            <div
+                                className="fixed inset-0 bg-black/30"
+                                onClick={() => setViewParent(false)}
+                            />
+
+                            <div className="relative w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
+                                {/* Close */}
+                                <button
+                                    onClick={() => setViewParent(false)}
+                                    className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full"
+                                >
+                                    <X size={20} />
+                                </button>
+
+                                {/* Header */}
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900">Invite Parent</h3>
+                                    </div>
+                                </div>
+
+                                {/* Form */}
+                                <div className="space-y-5">
+                                    {/* Names */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <Input
+                                            label="First Name"
+                                            value={parentFormData.firstName}
+                                            onChange={(e) => setParentFormData({...parentFormData, firstName: e.target.value})}
+                                            required
+                                        />
+                                        <Input
+                                            label="Last Name"
+                                            value={parentFormData.lastName}
+                                            onChange={(e) => setParentFormData({...parentFormData, lastName: e.target.value})}
+                                            required
+                                        />
+                                    </div>
+
+                                    <Input
+                                        label="Email Address"
+                                        type="email"
+                                        value={parentFormData.email}
+                                        onChange={(e) => setParentFormData({...parentFormData, email: e.target.value})}
+                                    />
+
+                                    {/* Subjects */}
+                                    <div>
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">
+                                                Children (Students)
+                                            </label>
+
+                                            {/* Selected Students (The "Pills") */}
+                                            <div className="flex flex-wrap gap-2 mb-3">
+                                                {selectedStudents.map((student) => (
+                                                    <div
+                                                        key={student.id}
+                                                        className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-sm px-3 py-1 rounded-lg animate-in fade-in zoom-in duration-200"
+                                                    >
+                                                        <span className="font-medium">
+                                                            {`${student.firstName} ${student.lastName}`}
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveStudent(student)}
+                                                            className="hover:text-blue-900 transition-colors p-0.5 rounded-full hover:bg-blue-100"
+                                                            aria-label={`Remove ${student.firstName} ${student.lastName}`}
+                                                        >
+                                                            <X size={14} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {/* Input and Dropdown Container */}
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                                    <Search size={16} className="text-gray-400" />
+                                                </div>
+                                                <input
+                                                    ref={inputRef}
+                                                    type="text"
+                                                    placeholder="Search for a student to add..."
+                                                    value={inputValue}
+                                                    onChange={(e) => {
+                                                        setInputValue(e.target.value);
+                                                        if (!showDropdown) setShowDropdown(true);
+                                                    }}
+                                                    onKeyDown={handleStudentKeyDown} // Now only prevents default Enter behavior
+                                                    onFocus={handleInputFocus}       // Triggers list on click
+                                                    onBlur={handleInputBlur}        // Closes with the timeout you set earlier
+                                                    className="w-full pl-10 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                                                />
+
+                                                {/* Dropdown List - Now shows even when empty */}
+                                                {showDropdown && (
+                                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-20 max-h-60 overflow-y-auto">
+                                                        {filteredStudents.length > 0 ? (
+                                                            filteredStudents.map((student) => (
+                                                                <button
+                                                                    key={student.id}
+                                                                    type="button"
+                                                                    // User MUST click here to add
+                                                                    onClick={() => handleAddStudent(student)}
+                                                                    className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-blue-50 transition-colors text-left border-b border-gray-50 last:border-0"
+                                                                >
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-gray-700 font-medium group-hover:text-blue-700">
+                                                                            {student.fullName}
+                                                                        </span>
+                                                                        <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                                                                            {student.studentId} • {student.class}
+                                                                        </span>
+                                                                    </div>
+                                                                    <Plus size={14} className="text-gray-300" />
+                                                                </button>
+                                                            ))
+                                                        ) : (
+                                                            <div className="p-4 text-center text-sm text-gray-500">
+                                                                No matching students found
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Invitation Message */}
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                                            Invitation Message
+                                        </label>
+                                        <textarea
+                                            value={parentFormData.message}
+                                            onChange={(e) => setParentFormData({...parentFormData, message: e.target.value})}
+                                            placeholder="Write a brief invitation message..."
+                                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] resize-none"
+                                        />
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex justify-end gap-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setViewParent(false)}
+                                            className="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            onClick={handleInviteParent}
+                                            className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                        >
+                                            Send Invite
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {viewStudent && (
                     <div className="fixed inset-0 z-50 overflow-y-auto">
                         <div className="flex min-h-full items-center justify-center p-4">
@@ -922,173 +1079,6 @@ export const QuickActions = () => {
                     </div>
                 )}
 
-
-                {viewParent && (
-                    <div className="fixed inset-0 z-50 overflow-y-auto">
-                        <div className="flex min-h-full items-center justify-center p-4">
-                            <div
-                                className="fixed inset-0 bg-black/30"
-                                onClick={() => setViewParent(false)}
-                            />
-
-                            <div className="relative w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
-                                {/* Close */}
-                                <button
-                                    onClick={() => setViewParent(false)}
-                                    className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full"
-                                >
-                                    <X size={20} />
-                                </button>
-
-                                {/* Header */}
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-900">Invite Parent</h3>
-                                    </div>
-                                </div>
-
-                                {/* Form */}
-                                <div className="space-y-5">
-                                    {/* Names */}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <Input
-                                            label="First Name"
-                                            value={parentFormData.firstName}
-                                            onChange={(e) => setParentFormData({...parentFormData, firstName: e.target.value})}
-                                            required
-                                        />
-                                        <Input
-                                            label="Last Name"
-                                            value={parentFormData.lastName}
-                                            onChange={(e) => setParentFormData({...parentFormData, lastName: e.target.value})}
-                                            required
-                                        />
-                                    </div>
-
-                                    <Input
-                                        label="Email Address"
-                                        type="email"
-                                        value={parentFormData.email}
-                                        onChange={(e) => setParentFormData({...parentFormData, email: e.target.value})}
-                                    />
-
-                                    {/* Subjects */}
-                                    <div>
-                                        <div>
-                                            <label className="block text-xs font-medium text-gray-500 mb-1">
-                                                Children (Students)
-                                            </label>
-
-                                            {/* Selected Students (The "Pills") */}
-                                            <div className="flex flex-wrap gap-2 mb-3">
-                                                {selectedStudents.map((student) => (
-                                                    <div
-                                                        key={student.id}
-                                                        className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-sm px-3 py-1 rounded-lg animate-in fade-in zoom-in duration-200"
-                                                    >
-                                                        <span className="font-medium">
-                                                            {`${student.firstName} ${student.lastName}`}
-                                                        </span>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleRemoveStudent(student)}
-                                                            className="hover:text-blue-900 transition-colors p-0.5 rounded-full hover:bg-blue-100"
-                                                            aria-label={`Remove ${student.firstName} ${student.lastName}`}
-                                                        >
-                                                            <X size={14} />
-                                                        </button>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            {/* Input and Dropdown Container */}
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                                                    <Search size={16} className="text-gray-400" />
-                                                </div>
-                                                <input
-                                                    ref={inputRef}
-                                                    type="text"
-                                                    placeholder="Search for a student to add..."
-                                                    value={inputValue}
-                                                    onChange={(e) => {
-                                                        setInputValue(e.target.value);
-                                                        if (!showDropdown) setShowDropdown(true);
-                                                    }}
-                                                    onKeyDown={handleStudentKeyDown} // Now only prevents default Enter behavior
-                                                    onFocus={handleInputFocus}       // Triggers list on click
-                                                    onBlur={handleInputBlur}        // Closes with the timeout you set earlier
-                                                    className="w-full pl-10 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
-                                                />
-
-                                                {/* Dropdown List - Now shows even when empty */}
-                                                {showDropdown && (
-                                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-20 max-h-60 overflow-y-auto">
-                                                        {filteredStudents.length > 0 ? (
-                                                            filteredStudents.map((student) => (
-                                                                <button
-                                                                    key={student.id}
-                                                                    type="button"
-                                                                    // User MUST click here to add
-                                                                    onClick={() => handleAddStudent(student)}
-                                                                    className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-blue-50 transition-colors text-left border-b border-gray-50 last:border-0"
-                                                                >
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-gray-700 font-medium group-hover:text-blue-700">
-                                                                            {student.fullName}
-                                                                        </span>
-                                                                                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">
-                                                                            {student.studentId} • {student.class}
-                                                                        </span>
-                                                                    </div>
-                                                                    <Plus size={14} className="text-gray-300" />
-                                                                </button>
-                                                            ))
-                                                        ) : (
-                                                            <div className="p-4 text-center text-sm text-gray-500">
-                                                                No matching students found
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Invitation Message */}
-                                    <div>
-                                        <label className="block text-xs font-medium text-gray-500 mb-1">
-                                            Invitation Message
-                                        </label>
-                                        <textarea
-                                            value={parentFormData.message}
-                                            onChange={(e) => setParentFormData({...parentFormData, message: e.target.value})}
-                                            placeholder="Write a brief invitation message..."
-                                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] resize-none"
-                                        />
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="flex justify-end gap-3 pt-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => setViewParent(false)}
-                                            className="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={handleInviteParent}
-                                            className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                        >
-                                            Send Invite
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
 
             </div>
 
@@ -1259,7 +1249,7 @@ const EducationMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     );
 };
 
-const availableSubjects = [
+export const availableSubjects = [
     "English Language",
     "English Studies",
     "Mathematics",

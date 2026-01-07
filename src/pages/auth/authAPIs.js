@@ -47,9 +47,16 @@ export async function getDashboardAnalytics() {
 }
 
 // New API function for dashboard data
-export async function getDashboardUsers() {
+export async function getDashboardUsers(role = '', status = '') {
     try {
-        const { data } = await apiClient.get('/api/admin/dashboard/users');
+        const { data } = await apiClient.get('/api/admin/dashboard/users', {
+            params: {
+                // If a value is empty, Axios usually omits it or sends it as empty.
+                // We can use undefined to ensure the key isn't sent at all if empty.
+                role: role || undefined,
+                status: status || undefined
+            }
+        });
         return data;
     } catch (error) {
         throw error?.response?.data || error;
