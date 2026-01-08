@@ -4,7 +4,7 @@ import {NavLink, useNavigate} from 'react-router-dom';
 import {ArrowLeft, Building2, Eye, EyeOff, Globe,
         Info, Lock, Mail, MapPin, Phone} from 'lucide-react';
 import {RegSchool} from "./authAPIs.js";
-import {Toast} from "../../components/Toast.jsx";
+import {Toast} from "../application/AdminDashboard/components/ui/Toast.jsx";
 import {Tooltip, TooltipContent, TooltipTrigger,} from "../../components/ui/tooltip.jsx"
 
 export function RegisterSchool() {

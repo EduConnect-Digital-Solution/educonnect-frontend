@@ -5,23 +5,20 @@ import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 // Components that should load immediately (not lazy loaded)
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { AuthLayout } from "./components/auth/AuthLayout.jsx";
-import {DotLottieReact} from "@lottiefiles/dotlottie-react";
 
 // LAZY LOADED PAGES
 const Home = lazy(() => import("./pages/Home.jsx").then(m => ({ default: m.Home })));
 const LoginPage = lazy(() => import("./pages/auth/LoginPage.jsx").then(m => ({ default: m.LoginPage })));
 const RegisterSchool = lazy(() => import("./pages/auth/RegisterSchool.jsx").then(m => ({ default: m.RegisterSchool })));
-const VerifySchoolPage = lazy(() => import("./pages/auth/VerifySchoolPage.jsx").then(m => ({ default: m.VerifySchoolPage })));
+const VerifySchoolPage = lazy(() => import("./pages/auth/VerifySchoolPage.jsx").then(m => ({ default: m.VerifySchoolPage })))
 const AuthWelcome = lazy(() => import("./pages/auth/AuthWelcome.jsx"));
 
 // Admin Pages
-const AdminDashboard = lazy(() => import("./pages/application/AdminDashboard/AdminDashboard.jsx"));
-const UserList = lazy(() => import("./pages/application/AdminDashboard/UsersList.jsx"));
-const ParentsList = lazy(() => import("./pages/application/AdminDashboard/UserManagement/getParents.jsx"));
-const TeachersList = lazy(() => import("./pages/application/AdminDashboard/UserManagement/getTeachers.jsx"));
-const StudentsList = lazy(() => import("./pages/application/AdminDashboard/UserManagement/getStudents.jsx"));
-const SchoolSettings = lazy(() => import("./pages/application/AdminDashboard/UserManagement/SchoolProfile.jsx"));
-const AdminProfile = lazy(() => import("./pages/application/AdminDashboard/AdminProfile.jsx"));
+const DashboardPage = lazy(() => import("./pages/application/AdminDashboard/pages/DashboardPage.jsx"));
+const UserManagementPage = lazy(() => import("./pages/application/AdminDashboard/pages/UserManagementPage.jsx"));
+const Students = lazy(() => import("./pages/application/AdminDashboard/pages/StudentManagement.jsx"));
+const SchoolProfilePage = lazy(() => import("./pages/application/AdminDashboard/pages/SchoolProfilePage.jsx"));
+const AdminProfilePage = lazy(() => import("./pages/application/AdminDashboard/pages/AdminProfilePage.jsx"));
 
 // Parent Pages
 const ParentDashboard = lazy(() => import("./pages/application/ParentDashboard/ParentDashboard.jsx"));
@@ -50,9 +47,8 @@ function AuthContextBridge() {
 }
 
 const LoadingFallback = () => (
-    <div className="h-screen w-full  flex items-center justify-center font-[Outfit]">
+    <div className="h-screen w-full flex items-center justify-center font-[Outfit]">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-
     </div>
 );
 
@@ -75,13 +71,13 @@ function AppRoutes() {
                     <Route path="/verify" element={<VerifySchoolPage />} />
 
                     {/* Admin Protected Routes */}
-                    <Route path="/dashboard/admin" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
-                    <Route path="/dashboard/admin/school-profile" element={<ProtectedRoute requiredRole="admin"><SchoolSettings /></ProtectedRoute>} />
-                    <Route path="/dashboard/admin/admin-profile" element={<ProtectedRoute requiredRole="admin"><AdminProfile /></ProtectedRoute>} />
-                    <Route path="/dashboard/admin/users" element={<ProtectedRoute requiredRole="admin"><UserList /></ProtectedRoute>} />
-                    <Route path="/dashboard/admin/users/parents" element={<ProtectedRoute requiredRole="admin"><ParentsList /></ProtectedRoute>} />
-                    <Route path="/dashboard/admin/users/students" element={<ProtectedRoute requiredRole="admin"><StudentsList /></ProtectedRoute>} />
-                    <Route path="/dashboard/admin/users/teachers" element={<ProtectedRoute requiredRole="admin"><TeachersList /></ProtectedRoute>} />
+                    <Route path="/dashboard/admin" element={<ProtectedRoute requiredRole="admin"><DashboardPage /></ProtectedRoute>} />
+                    <Route path="/dashboard/admin/school-profile" element={<ProtectedRoute requiredRole="admin"><SchoolProfilePage /></ProtectedRoute>} />
+                    <Route path="/dashboard/admin/profile" element={<ProtectedRoute requiredRole="admin"><AdminProfilePage /></ProtectedRoute>} />
+                    <Route path="/dashboard/admin/users" element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
+                    <Route path="/dashboard/admin/users/parents" element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
+                    <Route path="/dashboard/admin/students" element={<ProtectedRoute requiredRole="admin"><Students /></ProtectedRoute>} />
+                    <Route path="/dashboard/admin/users/teachers" element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
 
                     {/* Parent Protected Routes */}
                     <Route path="/dashboard/parent" element={<ProtectedRoute requiredRole="parent"><ParentDashboard /></ProtectedRoute>} />

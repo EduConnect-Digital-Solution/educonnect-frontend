@@ -6,6 +6,8 @@ import {useAuth} from "../../contexts/AuthContext.jsx";
 export const Header = ({handleLogout}) => {
     const auth = useAuth();
     const firstName = auth.user?.firstName;
+    const lastName = auth.user?.lastName;
+    const fullName = lastName + ' ' + firstName;
     const role = auth.user?.role;
     const email = auth.user?.email;
 
@@ -29,13 +31,13 @@ export const Header = ({handleLogout}) => {
 
                 <div className="flex items-center space-x-3 relative" ref={dropdownRef}>
                     {/* Notifications Icon */}
-                    <button
-                        className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-50 transition duration-150 relative"
-                        aria-label="Notifications"
-                    >
-                        <Bell className="w-5 h-5" />
-                        <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                    </button>
+                    {/*<button*/}
+                    {/*    className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-50 transition duration-150 relative"*/}
+                    {/*    aria-label="Notifications"*/}
+                    {/*>*/}
+                    {/*    <Bell className="w-5 h-5" />*/}
+                    {/*    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>*/}
+                    {/*</button>*/}
 
                     <div className="h-6 w-px bg-gray-200 mx-1"></div>
 
@@ -50,7 +52,7 @@ export const Header = ({handleLogout}) => {
                             {firstName[0]}
                         </div>
                         <div className="hidden sm:flex flex-col items-start leading-none">
-                            <span className="text-sm font-bold text-gray-800">{firstName}</span>
+                            <span className="text-sm font-bold text-gray-800">{fullName}</span>
                             <span className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">{role}</span>
                         </div>
                         <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
@@ -64,15 +66,10 @@ export const Header = ({handleLogout}) => {
                                 <p className="text-sm font-bold text-gray-700 truncate">{email}</p>
                             </div>
 
-                            <NavLink to={`/dashboard/admin/admin-profile`} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                            <NavLink to={`/dashboard/${role}/profile`} className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                                 <UserCircle className="w-4 h-4 mr-3" />
                                 Account Profile
                             </NavLink>
-
-                            {/*<button className="flex items-center w-full px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">*/}
-                            {/*    <Settings className="w-4 h-4 mr-3" />*/}
-                            {/*    Settings*/}
-                            {/*</button>*/}
 
                             <div className="h-px bg-gray-50 my-1"></div>
 

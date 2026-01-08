@@ -5,7 +5,7 @@ import {Building2, Mail, Lock, ArrowLeft} from 'lucide-react';
 import {Images} from "../../components/images.jsx";
 import { useSearchParams } from 'react-router-dom';
 import {LoginSchool, RegSchool} from "./authAPIs.js";
-import {Toast} from "../../components/Toast.jsx";
+import {Toast} from "../application/AdminDashboard/components/ui/Toast.jsx";
 
 export function LoginPage() {
     const [searchParams] = useSearchParams();

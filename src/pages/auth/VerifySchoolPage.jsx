@@ -9,7 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import {Images} from "../../components/images.jsx";
 import {NavLink, useNavigate} from "react-router-dom";
 import {RegSchool, verifyOTP} from "./authAPIs.js";
-import {Toast} from "../../components/Toast.jsx";
+import {Toast} from "../application/AdminDashboard/components/ui/Toast.jsx";
 
 export function VerifySchoolPage({ onNavigate }) {
     // State variable to hold the user-entered verification code.
