@@ -149,7 +149,7 @@ const UserManagementPage = () => {
                 schoolId={user.schoolId}
             />}
 
-            {/* Manage CompleteRegistration-Student Links Modal */}
+            {/* Manage Parent-Student Links Modal */}
             {showManageLinksModal && <ManageParentStudentLinkModal
                 onClose={() => setShowManageLinksModal(false)}
                 showToast={showToast}

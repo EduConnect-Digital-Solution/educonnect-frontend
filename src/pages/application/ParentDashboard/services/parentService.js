@@ -4,4 +4,6 @@
 
 export {
     getParentDashboard,
+    getStudentInfo,
+    getParentProfile,
 } from '../../../auth/authAPIs.js';

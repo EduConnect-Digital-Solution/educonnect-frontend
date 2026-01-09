@@ -18,6 +18,33 @@ export async function LoginSchool(payload) {
     }
 }
 
+export async function LoginUser(payload) {
+    try {
+        const { data } = await apiClient.post('/api/user/auth/login', payload);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+export async function getStudentInfo(studentId) {
+    try {
+        const { data } = await apiClient.get(`/api/parent/children/${studentId}`);
+        return data.data.children[0];
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+export async function getParentProfile() {
+    try {
+        const { data } = await apiClient.get(`/api/parent/profile`);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
 export async function verifyOTP(payload) {
     try {
         const { data } = await apiClient.post('/api/school/auth/verify-email', payload);
@@ -312,6 +339,17 @@ export async function assignSubjects(payload) {
 export async function completeRegistration(payload) {
     try {
         const { data } = await apiClient.post(`/api/user/auth/complete-registration`,
+            payload);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+export async function updateParentProfile(payload) {
+    try {
+        const { data } = await apiClient.put(`/api/parent/profile`,
             payload);
         return data;
     } catch (error) {

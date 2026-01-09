@@ -1,4 +1,4 @@
-// File containing components and utilities for the CompleteRegistration Dashboard
+// File containing components and utilities for the Parent Dashboard
 import {
     Bell,
     BookOpen,
@@ -24,35 +24,7 @@ import {Images} from "../../../../components/images.jsx";
 import {getParentDashboard} from "../../../auth/authAPIs.js";
 import {useAnalytics} from "../hooks/useAnalytics";
 import {formatDate} from "../../AdminDashboard/utils/formatters.js";
-
-export const Header = () => {
-    return (
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-            <div className="flex h-16 px-4 sm:px-6 lg:px-8">
-                {/* Right Side: Notifications, Theme Toggle, and Profile */}
-                <div className="flex items-center space-x-3 ml-auto">
-                    {/* Notifications Icon */}
-                    <button
-                        className="p-2 text-gray-500 hover:text-gray-600 rounded-full hover:bg-gray-100 transition duration-150 relative"
-                        aria-label="Notifications"
-                    >
-                        <Bell className="w-6 h-6" />
-                    </button>
-
-                    {/* User Profile */}
-                    <div className="flex items-center px-3 py-2 space-x-2 cursor-pointer rounded-lg hover:bg-gray-100 transition duration-150">
-                        <span className="text-sm font-medium text-gray-800 hidden sm:block">
-                            Musharof
-                        </span>
-
-                        <User className="w-6 h-6 ring-2 rounded-full ring-black" />
-                    </div>
-                </div>
-            </div>
-        </header>
-
-    );
-};
+// TODO: implement Frontend caching
 
 export const StatsMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     return (
@@ -327,9 +299,9 @@ export const AnalyticsAndActions = ({quickActions}) => {
                 </div>
 
                 {/* --- Graph Container --- */}
-                <div className="relative h-72 w-full mt-4 bg-white">
-                    {/* Y-axis Labels */}
-                    <div className="absolute left-0 top-0 h-[calc(100%-24px)] flex flex-col justify-between text-[10px] font-bold text-gray-400 z-10">
+                <div className="relative h-72 w-full mt-4 bg-white rounded-xl border border-slate-100 overflow-hidden">
+                    {/* Y-axis Labels (Grayscale) */}
+                    <div className="absolute left-4 top-4 h-[calc(100%-48px)] flex flex-col justify-between text-[10px] font-semibold text-slate-300 z-10 select-none">
                         <span>100%</span>
                         <span>75%</span>
                         <span>50%</span>
@@ -337,16 +309,43 @@ export const AnalyticsAndActions = ({quickActions}) => {
                         <span>0%</span>
                     </div>
 
-                    {/* X-axis Labels */}
-                    <div className="absolute left-10 right-0 bottom-0 h-6 flex justify-around text-[11px] font-bold text-gray-400 pt-2">
-                        {weeks.map((week) => (
-                            <span key={week}>{week}</span>
+                    {/* Background Grid Lines (Subtle structure) */}
+                    <div className="absolute left-14 right-8 top-4 h-[calc(100%-48px)] flex flex-col justify-between opacity-40">
+                        {[...Array(5)].map((_, i) => (
+                            <div key={i} className="w-full border-t border-slate-100 border-dashed" />
                         ))}
+                    </div>
+
+                    {/* X-axis Labels (Grayscale) */}
+                    <div className="absolute left-14 right-8 bottom-4 h-6 flex justify-around text-[10px] font-semibold text-slate-300 pt-2 select-none">
+                        {weeks.map((week) => (
+                            <span key={week} className="uppercase tracking-tighter">{week}</span>
+                        ))}
+                    </div>
+
+                    {/* Professional Feature Overlay */}
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/60 backdrop-blur-[1px]">
+                        <div className="text-center space-y-3 px-6">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 border border-slate-200 rounded text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]">
+                                Post-MVP Pipeline
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-slate-800 tracking-tight">Advanced Analytics Pending</h3>
+                                <p className="text-[11px] text-slate-500 max-w-[240px] mx-auto leading-relaxed">
+                                    Visualizing historical performance trends and predictive attendance modeling.
+                                </p>
+                            </div>
+                            <div className="pt-2">
+                <span className="text-[10px] font-medium text-slate-400 border-b border-slate-200 pb-0.5">
+                    Scheduled for Release v2.0
+                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* 2. CompleteRegistration Quick Actions Box */}
+            {/* 2. Parent Quick Actions Box */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
@@ -372,7 +371,7 @@ export const AnalyticsAndActions = ({quickActions}) => {
                         buttonText="View progress"
                         icon={FileText}
                         colorClass="bg-purple-100 text-purple-400"
-                        comingSoon={false}
+                        comingSoon={true}
                     />
 
                     {/*3. ACTIVE FEATURE*/}
@@ -383,6 +382,7 @@ export const AnalyticsAndActions = ({quickActions}) => {
                         icon={MessageCircle}
                         colorClass="bg-red-100 text-red-400"
                         comingSoon={false}
+                        buttonFunction={() => navigate('/dashboard/parent/profile')}
                     />
 
                     {/* 2. ACTIVE FEATURE */}

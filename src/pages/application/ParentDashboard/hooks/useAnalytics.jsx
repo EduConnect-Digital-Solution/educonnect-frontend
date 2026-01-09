@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getParentDashboard } from '../services/parentService';
+import { getParentDashboard, getParentProfile } from '../services/parentService';
 import {FileText} from "lucide-react";
 
 export const useAnalytics = () => {
@@ -13,6 +13,7 @@ export const useAnalytics = () => {
 
     const [children, setChildren] = useState();
     const [notifications, setNotifications] = useState();
+    const [parentInfo, setParentInfo] = useState();
 
 
     const [error, setError] = useState(null);
@@ -22,12 +23,14 @@ export const useAnalytics = () => {
             try {
                 setLoading(true);
                 const analyticsData = await getParentDashboard();
+                const profileData = await getParentProfile();
+
                 const totalStudents = analyticsData.data.children;
                 const totalNotifications = analyticsData.data.notifications;
 
                 // Setting Parent Related Analytics Variables
+                setParentInfo(profileData.data.parent);
                 setOverview(analyticsData.data.statistics);
-
                 setChildren(totalStudents.map(child => ({
                     id: child.id,
                     studentId: child.studentId,
@@ -39,7 +42,6 @@ export const useAnalytics = () => {
                     isEnrolled: child.isEnrolled,
                     teachers: child.teachers
                 })));
-
                 setNotifications(totalNotifications.map(notification => ({
                     type: notification.type,
                     title: notification.title,
@@ -47,6 +49,8 @@ export const useAnalytics = () => {
                     timestamp: notification.timestamp,
                     isRead: notification.isRead
                 })));
+
+
 
             } catch (err) {
                 console.error('Failed to fetch analytics:', err);
@@ -59,5 +63,5 @@ export const useAnalytics = () => {
         fetchAnalytics();
     }, []);
 
-    return { loading, overview, error, children, notifications };
+    return { loading, overview, error, children, notifications, parentInfo };
 };

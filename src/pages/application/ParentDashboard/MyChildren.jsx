@@ -1,105 +1,126 @@
-import React from 'react';
-import {Users, BookOpen, GraduationCap, Mail, Phone} from 'lucide-react';
-import {Images} from "../../../components/images.jsx";
-import {SummaryCard, StatRing, ParentSidebar} from "./parentUtils/p_utils.jsx";
-import {Header} from "../dashboardUtilities.jsx";
+import React, {useState} from 'react';
+import { Phone, BookOpen, GraduationCap, X, User, Hash, Info, Mail, Users } from 'lucide-react';
+import { StatRing } from "./parentUtils/p_utils.jsx";
+import ParentLayout from "./components/layout/ParentLayout.jsx";
+import {useAnalytics} from "./hooks/useAnalytics.jsx";
+import {formatDate, getInitials} from "../AdminDashboard/utils/formatters.js";
+import {StudentInfoModal} from "./components/modals.jsx";
+import {getStudentInfo} from "../../auth/authAPIs.js";
+
 
 const ChildSelectionPage = () => {
-    // Mock Data for the 3 Children
-    const children = [
-        {
-            id: 1, name: "Ganiu Abbas Quadri", class: "Primary 1",
-            email: "abbasquadri@x.com", contact: "08034572891", subjects: 'Mathematics, Basic Science, Chemistry',
-            attendance: 98, behavior: 86, participation: 74,
-            image: Images.childPortrait
-        },
-        {
-            id: 2, name: "Daniel Gift Ayomide", class: "Primary 1",
-            email: "danielgift@x.com", contact: "09082936472", subjects: 'Mathematics, Basic Science, Chemistry',
-            attendance: 85, behavior: 80, participation: 88,
-            image: Images.childPortrait
-        },
-        {
-            id: 3, name: "Ilori Mosope Victory", class: "Primary 1",
-            email: "ilorivictory@x.com", contact: "09017286735", subjects: 'Mathematics, Basic Science, Chemistry',
-            attendance: 92, behavior: 90, participation: 82,
-            image: Images.childPortrait
-        }
-    ];
+    const { loading, children } = useAnalytics();
+    const [selectedChild, setSelectedChild] = useState(null);
+
+
+    if (loading) {
+        return (
+            <ParentLayout>
+                <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+                    <div className="relative w-20 h-20">
+                        <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                    </div>
+                    <p className="mt-4 text-gray-500 font-medium animate-pulse">Syncing student records...</p>
+                </div>
+            </ParentLayout>
+        );
+    }
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            {/* Sidebar is fixed on the left */}
-            <ParentSidebar />
-
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
-                <Header />
-                <main className="flex-1 md:p-6">
-                    <div className="p-8 bg-gray-50 min-h-screen">
-                        {/* --- Top Overview Section --- */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                            <SummaryCard title="Enrolled Children" value="3" icon={Users} color="bg-blue-50 text-blue-700" />
-                            <SummaryCard title="Total Subjects" value="18" icon={BookOpen} color="bg-orange-50 text-orange-700" />
-                            <SummaryCard title="Average Performance" value="84%" icon={GraduationCap} color="bg-purple-50 text-purple-700" />
-                        </div>
-
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-gray-800">Child Profiles</h2>
-                            <p className="text-gray-500 text-sm font-medium">Select a child to view detailed reports and subject performance.</p>
-                        </div>
-
-                        {/* --- Main Gallery: Side-by-Side Child Detail Cards --- */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            {children.map((child) => (
-                                <div key={child.id} className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 flex flex-col items-center hover:shadow-md transition-shadow relative group">
-
-                                    {/* Profile Header */}
-                                    <div className="relative mb-6">
-                                        <div className="absolute inset-0 rounded-full scale-110 border-dashed group-hover:animate-spin-slow" />
-                                        <img src={child.image} alt={child.name} className="w-24 h-24 rounded-full border-4 border-white shadow-md relative z-10" />
-                                        {/*<span className="w-24 p-5  h-24 rounded-full border-4  shadow-md relative z-10"> {child.name}</span>*/}
-                                    </div>
-
-                                    <h3 className="text-xl font-bold text-gray-800 text-center">{child.name}</h3>
-                                    <p className="text-sm font-bold text-gray-400 mb-6">{child.class}</p>
-
-                                    <div className="w-full border-t border-gray-50 pt-6 mb-6">
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <Mail size={16} className="text-gray-300" />
-                                            <span className="text-xs font-bold text-gray-600">{child.email}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <Phone size={16} className="text-gray-300" />
-                                            <span className="text-xs font-bold text-gray-600">{child.contact}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <Phone size={16} className="text-gray-300" />
-                                            <span className="text-xs font-bold text-gray-600">{child.subjects}</span>
-                                        </div>
-
-                                    </div>
-
-                                    {/* Performance Stats Rings */}
-                                    <div className="grid grid-cols-3 gap-2 w-full mb-8">
-                                        <StatRing percentage={child.attendance} label="Attendance" />
-                                        <StatRing percentage={child.behavior} label="Overall" />
-                                        <StatRing percentage={child.participation} label="Behaviour" />
-                                    </div>
-
-                                    {/* View More Button (Redirect Action) */}
-                                    {/*<button className="w-full py-4 bg-gray-50 text-blue-600 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-blue-600 hover:text-white transition-all group-hover:shadow-lg group-hover:shadow-blue-100">*/}
-                                    {/*    View More Details <ArrowUpRight size={18} />*/}
-                                    {/*</button>*/}
-                                </div>
-                            ))}
-                        </div>
+        <ParentLayout>
+            <div className="p-10 bg-slate-50 min-h-screen">
+                {/* Header Section */}
+                <div className="mb-12 flex justify-between items-end">
+                    <div>
+                        <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Children Profiles</h2>
+                        <p className="text-slate-500 text-sm mt-1">Select a record to review academic performance and enrollment details.</p>
                     </div>
-                </main>
-            </div>
-        </div>
+                    <div className="bg-white px-4 py-2 rounded-xl border border-slate-200 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                        Records: {children?.length || 0}
+                    </div>
+                </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {children?.map((child) => (
+                        <div key={child.id} className="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+
+                            <div className="p-8 flex-1">
+                                {/* Top Section: Profile Identity */}
+                                <div className="flex justify-between items-start mb-8">
+                                    <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 text-xl font-semibold">
+                                        {getInitials(child.fullName)}
+                                    </div>
+                                    <span className={`text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded border ${
+                                        child.isEnrolled
+                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                            : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+                                        {child.isEnrolled ? 'Enrolled' : 'Pending'}
+                                    </span>
+                                </div>
+
+                                {/* Primary Name & ID */}
+                                <div className="mb-8">
+                                    <h3 className="text-lg font-semibold text-slate-800 tracking-tight leading-none">
+                                        {child.fullName}
+                                    </h3>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Student ID: {child.studentId}</span>
+                                    </div>
+                                </div>
+
+                                {/* Academic Grid - Minimalist */}
+                                <div className="grid grid-cols-2 gap-px bg-slate-100 border border-slate-100 rounded-xl overflow-hidden mb-8">
+                                    <div className="bg-white p-3">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mb-1">Class</p>
+                                        <p className="text-xs font-semibold text-slate-700">{child.classDisplay}</p>
+                                    </div>
+                                    <div className="bg-white p-3">
+                                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight mb-1">Gender</p>
+                                        <p className="text-xs font-semibold text-slate-700 capitalize">{child.gender}</p>
+                                    </div>
+                                </div>
+
+                                {/* Subject Tags - Monochromatic */}
+                                <div className="">
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">Core Subjects</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {['Math', 'English', 'Science'].map(tag => (
+                                            <span key={tag} className="px-2 py-0.5 bg-slate-50 border border-slate-200 text-slate-500 rounded text-[10px] font-medium">
+                                    {tag}
+                                </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {/* Unified Action - Non-Hover Styling */}
+                            <div className={`mx-auto px-3 py-1 mb-6 items-center gap-2 bg-[#0A61A4] hover:cursor-pointer text-white rounded-4xl`}>
+                                <button
+                                    onClick={async () => {
+                                        const childInfo = await getStudentInfo(child.id);
+                                        setSelectedChild(childInfo);
+                                    }}
+                                    className="hover:cursor-pointer text-nowrap flex items-center justify-center gap-2 "
+                                >
+                                    <Info size={14} />
+                                    View Information
+                                </button>
+                            </div>
+
+                        </div>
+                    ))}
+                </div>
+
+                <StudentInfoModal
+                    child={selectedChild}
+                    onClose={() => setSelectedChild(null)}
+                />
+            </div>
+        </ParentLayout>
     );
 };
+
 
 export default ChildSelectionPage;

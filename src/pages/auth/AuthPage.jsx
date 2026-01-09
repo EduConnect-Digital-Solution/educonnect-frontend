@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Building2, Mail, Lock, ArrowRight } from 'lucide-react';
 import { Images } from '../../components/images';
-import { LoginSchool } from './authAPIs';
+import {LoginSchool, LoginUser} from './authAPIs';
 import { Toast } from '../application/AdminDashboard/components/ui/Toast';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -96,12 +96,17 @@ export default function AuthPage() {
             password: formData.password,
         };
 
+
         try {
-            const loginData = await LoginSchool(payload);
+            let loginData;
+            if (selectedRole === 'admin') {
+                loginData = await LoginSchool(payload);
+            } else {
+                loginData = await LoginUser(payload);
+            }
             login(loginData);
 
             if (loginData.success === true) {
-                // wait for auth context to update before relying on `user`
                 await checkAuthStatus();
                 showToast('Login successful', 'success', 2000);
             } else {
@@ -163,7 +168,7 @@ export default function AuthPage() {
                                     onClick={() => handleRoleSelection('teacher')}
                                 />
                                 <RoleCard
-                                    title="CompleteRegistration"
+                                    title="Parent"
                                     description="Monitor your child's progress across classes"
                                     onClick={() => handleRoleSelection('parent')}
                                 />
