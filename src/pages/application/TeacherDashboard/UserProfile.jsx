@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import {AccountInfo} from "./teacherUtils/teacherComponents.jsx";
 import {Images} from "../../../components/images.jsx";
-import ClassSelectionModal from "./ClassSelectionModal.jsx";
+import SubjectSelectionModal from "./SubjectSelectionModal.jsx";
 import TeacherLayout from "./components/layout/TeacherLayout.jsx";
 import {useData} from "./hooks/useData.jsx";
 
@@ -18,18 +18,18 @@ import {useData} from "./hooks/useData.jsx";
 
 const TeacherProfile = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { loading, statistics, error, classes, recentActivity, students, subjects } = useData();
+    const { loading } = useData();
 
-    const [selectedSubject, setSelectedSubject] = useState('');
+    const [selectedClass, setSelectedClass] = useState('');
 
-    const openModal = (subject) => {
-        setSelectedSubject(subject);
+    const openModal = (className) => {
+        setSelectedClass(className);
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setSelectedSubject('');
+        setSelectedClass('');
     };
 
     // Mock Data
@@ -58,6 +58,7 @@ const TeacherProfile = () => {
             </button>
         </div>
     );
+
     if (loading) {
         return (
             <TeacherLayout>
@@ -71,19 +72,20 @@ const TeacherProfile = () => {
             </TeacherLayout>
         );
     }
+
     const assignedClasses = [
         {
-            subject: "Quantitative Reasoning",
+            className: "Primary 1",
             students: 48,
             performance: 78,
         },
         {
-            subject: "Mathematics",
+            className: "Primary 2",
             students: 56,
             performance: 81,
         },
         {
-            subject: "Basic Science",
+            className: "Primary 3",
             students: 50,
             performance: 76,
         }
@@ -152,44 +154,55 @@ const TeacherProfile = () => {
                         </div>
                     </div>
 
-                    {/* --- 2. Three-Column Grid Row (Summary, Professional Details, Subjects) --- */}
+                    {/* --- 2. Two-Column Grid Row (Classes Assigned, Subjects Overview) --- */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                        {/* --- 1. Classes Assigned Card --- */}
+                        {/* --- 1. Classes Assigned Card (NEW FLOW) --- */}
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-xl font-bold text-gray-800">Classes Assigned</h2>
                                 <span className="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-800 font-bold rounded-lg text-sm">
-                        3
-                    </span>
+                                    {assignedClasses.length}
+                                </span>
                             </div>
 
-                            <div className="space-y-8">
+                            <div className="space-y-4">
                                 {assignedClasses.map((item, idx) => (
-                                    <div key={idx} className="group">
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
-                                            All Classes - Subject Teacher ({item.subject})
-                                        </p>
+                                    <div
+                                        key={idx}
+                                        className="group p-4 rounded-xl border border-gray-50 bg-gray-50/30 hover:bg-white hover:border-blue-100 hover:shadow-sm transition-all"
+                                    >
+                                        <div className="flex justify-between items-center mb-3">
+                                            <h3 className="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors">
+                                                {item.className}
+                                            </h3>
+                                            <button
+                                                onClick={() => openModal(item.className)}
+                                                className="px-3 py-1.5 text-[10px] font-bold text-blue-600 border border-blue-200 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-sm"
+                                            >
+                                                View Students
+                                            </button>
+                                        </div>
 
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-2 gap-3">
                                             {/* Student Count */}
-                                            <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50/50 border border-transparent group-hover:border-blue-100 transition-all">
-                                                <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
-                                                    <Users size={18} />
+                                            <div className="flex items-center gap-2 p-2 rounded-lg bg-blue-50/50 border border-transparent group-hover:border-blue-100 transition-all">
+                                                <div className="p-1.5 bg-blue-100 text-blue-600 rounded-md">
+                                                    <Users size={14} />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-gray-800">{item.students} students</p>
+                                                    <p className="text-xs font-bold text-gray-800">{item.students}</p>
+                                                    <p className="text-[9px] text-gray-500 font-medium">Students</p>
                                                 </div>
                                             </div>
 
                                             {/* Performance */}
-                                            <div className="flex flex-col justify-center gap-1 p-3 rounded-xl bg-green-50/50 border border-transparent group-hover:border-green-100 transition-all">
-                                                <div className="flex items-center gap-2">
-                                                    <BarChart3 size={16} className="text-green-600" />
-                                                    <p className="text-sm font-bold text-gray-800">Performance: {item.performance}%</p>
+                                            <div className="flex flex-col justify-center gap-1 p-2 rounded-lg bg-green-50/50 border border-transparent group-hover:border-green-100 transition-all">
+                                                <div className="flex items-center gap-1">
+                                                    <BarChart3 size={12} className="text-green-600" />
+                                                    <p className="text-xs font-bold text-gray-800">{item.performance}%</p>
                                                 </div>
-                                                {/* Enhancement: Performance Bar */}
-                                                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
+                                                <div className="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
                                                     <div
                                                         className="bg-green-500 h-full rounded-full transition-all duration-1000"
                                                         style={{ width: `${item.performance}%` }}
@@ -202,38 +215,46 @@ const TeacherProfile = () => {
                             </div>
                         </div>
 
-                        {/* --- 2. Subjects Taught Card --- */}
+                        {/* --- 2. Subjects Overview Card --- */}
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
-                            <h2 className="text-lg font-bold text-gray-800 mb-6">Subjects Taught</h2>
+                            <h2 className="text-lg font-bold text-gray-800 mb-6">Subjects Overview</h2>
 
-                            <div className="space-y-3 overflow-y-auto max-h-[250px] pr-1">
+                            <div className="space-y-3 overflow-y-auto max-h-[300px] pr-1">
                                 {teacherData.subjects.map((subject, index) => (
                                     <div
                                         key={index}
-                                        className="flex justify-between items-center p-3 rounded-xl border border-gray-50 bg-gray-50/30 hover:bg-white hover:border-blue-100 hover:shadow-sm transition-all group"
+                                        className="flex items-center justify-between p-4 rounded-xl border border-gray-50 bg-gray-50/30 hover:bg-white hover:border-blue-100 hover:shadow-sm transition-all group"
                                     >
-                                            <span className="text-xs font-bold text-gray-700 group-hover:text-blue-700 transition-colors">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-100 transition-colors">
+                                                <GraduationCap size={16} />
+                                            </div>
+                                            <span className="text-sm font-bold text-gray-700 group-hover:text-blue-700 transition-colors">
                                                 {subject}
                                             </span>
-                                        <button
-                                            onClick={() => openModal(subject)} // <--- Trigggers the table view
-                                            className="px-3 py-1.5 text-[10px] font-bold text-blue-600 border border-blue-200 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-sm"
-                                        >
-                                            View Students
-                                        </button>
+                                        </div>
+                                        <div className="px-3 py-1 bg-blue-50/50 text-blue-700 text-[10px] font-bold rounded-full">
+                                            ACTIVE
+                                        </div>
                                     </div>
                                 ))}
                             </div>
+
+                            <p className="mt-4 text-xs text-gray-400 italic">
+                                Select a class above to view students by subject
+                            </p>
                         </div>
 
                     </div>
 
                     <AccountInfo />
                 </div>
-                <ClassSelectionModal
+
+                {/* Updated Modal - Now for Subject Selection */}
+                <SubjectSelectionModal
                     isOpen={isModalOpen}
                     onClose={closeModal}
-                    subject={selectedSubject}
+                    className={selectedClass}
                 />
             </TeacherLayout>
 

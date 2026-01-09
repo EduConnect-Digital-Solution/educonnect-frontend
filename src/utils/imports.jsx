@@ -237,7 +237,7 @@ export const navItems = [
 ];
 
 // TODO: change email to subject taught
-export const students = [
+export const mockStudents = [
     { sn: 1, name: 'Ganiyu Abbas Quadri', class: 'Primary 1', subject: 'Mathematics', email: 'abbasquadri@gmail.com', status: 'Excellent', contact: '08034572891', avatarUrl: User, attendance: 95, behavioral: 90, participation: 98 },
     { sn: 2, name: 'Daniel Gift Ayomide', class: 'Primary 2', subject: 'Mathematics', email: 'danielgift@gmail.com', status: 'Average', contact: '09082936472', avatarUrl: User, attendance: 85, behavioral: 80, participation: 88 },
     { sn: 3, name: 'Ilori Mosope Victory', class: 'Primary 3', subject: 'Mathematics', email: 'ilorivictory@gmail.com', status: 'Needs Support', contact: '09017286735', avatarUrl: User, attendance: 70, behavioral: 65, participation: 75 },
@@ -265,9 +265,10 @@ export const children = [
 
 export const getStatusStyles = (status) => {
     switch (status) {
-        case 'Excellent': return 'bg-green-100/80 text-green-800';
+        case true: return 'bg-green-100/80 text-green-800';
         case 'Average': return 'bg-blue-100/80 text-blue-800';
         case 'Needs Support': return 'bg-red-100/80 text-red-800';
+        case false: return 'bg-gray-100 text-gray-800';
         default: return 'bg-gray-100 text-gray-800';
     }
 };

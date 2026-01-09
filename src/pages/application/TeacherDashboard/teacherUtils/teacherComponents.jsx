@@ -5,14 +5,14 @@ import {
     AlertTriangle, BarChart3, Bell,
     BookOpen, CalendarDays, CheckCircle2, MessageSquareWarning, ChevronRight, Clock,
     GraduationCap,
-    LayoutDashboard, Calendar ,
+    LayoutDashboard, Calendar,
     LogOut, Mail,
     Menu, MessageCircle, MessageSquare,
     MoreHorizontal, Search, ShieldCheck, Upload,
     User,
     UserCheck, UserCog,
     Users,
-    X
+    X, ChevronLeft
 } from "lucide-react";
 import {Images} from "../../../../components/images.jsx";
 import {formatDate} from "../../AdminDashboard/utils/formatters.js";
@@ -619,6 +619,47 @@ export const TeacherResponsibilities = ({classes, students}) => {
     );
 };
 
+export const Pagination = ({ currentPage, totalPages, getPageNumbers }) => {
+    return (
+        <div className="p-4 flex justify-center items-center gap-4 border-t border-gray-100 shrink-0">
+            <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            >
+                <ChevronLeft size={20} />
+            </button>
+
+            <div className="flex items-center gap-1">
+                {getPageNumbers().map((page, index) => (
+                    page === '...' ? (
+                        <span key={`ellipsis-${index}`} className="px-2 text-gray-400">...</span>
+                    ) : (
+                        <button
+                            key={page}
+                            onClick={() => goToPage(page)}
+                            className={`min-w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                                currentPage === page
+                                    ? 'bg-blue-600 text-white shadow-sm'
+                                    : 'text-gray-600 hover:bg-gray-100'
+                            }`}
+                        >
+                            {page}
+                        </button>
+                    )
+                ))}
+            </div>
+
+            <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+            >
+                <ChevronRight size={20} />
+            </button>
+        </div>
+    )
+}
 
 export const CircularProgress = ({ value, label, colorClass }) => {
     const radius = 30;

@@ -2,24 +2,25 @@ import React, { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useNavigate } from 'react-router-dom';
 
-// Mock function to get classes for a subject
-const getClassesForSubject = (subject) => {
+// Mock function to get subjects for a class
+const getSubjectsForClass = (className) => {
     // In a real app, this would fetch data from an API
-    const allClasses = {
-        "Quantitative Reasoning": ["Primary 1", "Primary 2"],
-        "Mathematics": ["Primary 1", "Primary 2", "Primary 3"],
-        "Basic Science": ["Primary 1", "Primary 3"],
+    const allSubjects = {
+        "Primary 1": ["Mathematics", "Quantitative Reasoning", "Basic Science"],
+        "Primary 2": ["Mathematics", "Quantitative Reasoning"],
+        "Primary 3": ["Mathematics", "Basic Science"],
     };
-    return allClasses[subject] || [];
+    return allSubjects[className] || [];
 };
 
-const ClassSelectionModal = ({ isOpen, onClose, subject }) => {
+const SubjectSelectionModal = ({ isOpen, onClose, className }) => {
     const navigate = useNavigate();
-    const classes = getClassesForSubject(subject);
+    const subjects = getSubjectsForClass(className);
 
-    const handleClassSelect = (selectedClass) => {
+    const handleSubjectSelect = (selectedSubject) => {
         onClose();
-        navigate(`/dashboard/teacher/students/${encodeURIComponent(subject)}/${encodeURIComponent(selectedClass)}`);
+        // Navigate with class first, then subject
+        navigate(`/dashboard/teacher/students/${encodeURIComponent(className)}/${encodeURIComponent(selectedSubject)}`);
     };
 
     return (
@@ -50,21 +51,21 @@ const ClassSelectionModal = ({ isOpen, onClose, subject }) => {
                         >
                             <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                                 <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                                    Select a Class for {subject}
+                                    Select a Subject for {className}
                                 </Dialog.Title>
                                 <div className="mt-4 space-y-2">
-                                    {classes.length > 0 ? (
-                                        classes.map((c) => (
+                                    {subjects.length > 0 ? (
+                                        subjects.map((subject) => (
                                             <button
-                                                key={c}
-                                                onClick={() => handleClassSelect(c)}
+                                                key={subject}
+                                                onClick={() => handleSubjectSelect(subject)}
                                                 className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors"
                                             >
-                                                {c}
+                                                {subject}
                                             </button>
                                         ))
                                     ) : (
-                                        <p className="text-sm text-gray-500">No classes found for this subject.</p>
+                                        <p className="text-sm text-gray-500">No subjects found for this class.</p>
                                     )}
                                 </div>
 
@@ -86,4 +87,4 @@ const ClassSelectionModal = ({ isOpen, onClose, subject }) => {
     );
 };
 
-export default ClassSelectionModal;
+export default SubjectSelectionModal;

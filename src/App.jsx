@@ -106,7 +106,9 @@ function AppRoutes() {
                             <TeacherProfile />
                          </ProtectedRoute>
                     } />
-                    <Route path="/dashboard/teacher/students/:subject/:class" element={
+
+                    {/* UPDATED: Route now expects class first, then subject */}
+                    <Route path="/dashboard/teacher/students/:class/:subject" element={
                         <ProtectedRoute requiredRole="teacher">
                             <ClassStudents />
                         </ProtectedRoute>
