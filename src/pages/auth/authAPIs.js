@@ -105,6 +105,15 @@ export async function getTeacherClasses() {
     }
 }
 
+export async function getTeacherStudents() {
+    try {
+        const { data } = await apiClient.get('/api/teacher/students');
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
 
 // New API function for dashboard data
 export async function getDashboardUsers(role = '', status = '') {

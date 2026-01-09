@@ -371,17 +371,46 @@ export const TeacherAnalyticsBox = () => {
     )
 }
 
-export const TeacherResponsibilities = ({classes}) => {
-    const classesList = classes.map(cls => ({
-         name: cls.name, count: cls.studentCount, max: 35 ,
-    }))
+export const TeacherResponsibilities = ({classes, students}) => {
+    // Prepare classes and tabs
+    const classesList = (classes || []).map(cls => ({
+        name: cls.name, count: cls.studentCount, max: 35,
+    }));
     const [activeTab, setActiveTab] = useState('overview');
 
-    const children = [
-        { id: 1, name: "Sandra J", class: "Pry 3", teacher: "Mrs Okafor", status: "Active", attendance: "98%", nextPayment: "3.45" },
-        { id: 2, name: "David J", class: "Pry 1", teacher: "Mr James", status: "Inactive", attendance: "45%", nextPayment: "3.45" },
-        { id: 3, name: "Daniel J", class: "Nursery 2", teacher: "Miss Shade", status: "Active", attendance: "92%", nextPayment: "3.45" },
-    ];
+    // Search state
+    const [searchTerm, setSearchTerm] = useState('');
+    const [expandedParentId, setExpandedParentId] = useState(null);
+
+    // Normalize search term once per render
+    const normalizedTerm = (searchTerm || '').toLowerCase().trim();
+
+    // Filter students safely (guard against null/undefined fields)
+    const filteredStudents = (students || []).filter((stud) => {
+        if (!normalizedTerm) return true; // no filtering when empty
+        const fullName = (stud.fullName || stud.name || '').toString().toLowerCase();
+        const email = (stud.email || '').toString().toLowerCase();
+        const studentId = (stud.studentId || '').toString().toLowerCase();
+        const cls = (stud.class || '').toString().toLowerCase();
+        return (
+            fullName.includes(normalizedTerm) ||
+            email.includes(normalizedTerm) ||
+            studentId.includes(normalizedTerm) ||
+            cls.includes(normalizedTerm)
+        );
+    });
+
+    // Map filtered students to the table-friendly shape with safe fallbacks
+    const children = filteredStudents.map((stud) => ({
+        id: stud.id,
+        name: stud.fullName || stud.name || 'Unnamed',
+        class: stud.class || '—',
+        gender: stud.gender || '—',
+        parents: (stud.parents || []).map(p => p.email || p || '—'),
+        status: stud.isEnrolled ? 'Active' : 'Inactive',
+        attendance: stud.age || '—',
+        nextPayment: stud.email || '—'
+    }));
 
     return (
         <>
@@ -427,8 +456,10 @@ export const TeacherResponsibilities = ({classes}) => {
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                             <input
-                                                placeholder="Search child..."
+                                                placeholder="Search child, email, id or class..."
                                                 className="pl-9 pr-4 py-2 bg-gray-50 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
                                             />
                                         </div>
                                         <NavLink to={`/dashboard/teacher/students`} className="px-4 py-2 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all flex items-center gap-1">
@@ -443,45 +474,96 @@ export const TeacherResponsibilities = ({classes}) => {
                                             <thead className="sticky top-0 bg-gray-50/80 backdrop-blur z-10">
                                             <tr className="text-gray-400 text-[11px] uppercase tracking-wider font-bold">
                                                 <th className="px-6 py-4">Student</th>
-                                                <th className="px-6 py-4">Class/Teacher</th>
-                                                <th className="px-6 py-4">Attendance</th>
-                                                <th className="px-6 py-4">Overall Grade</th>
+                                                <th className="px-6 py-4">Class/Parent</th>
+                                                <th className="px-6 py-4">Age</th>
+                                                <th className="px-6 py-4">Email</th>
                                                 <th className="px-6 py-4 text-center">Status</th>
                                             </tr>
                                             </thead>
 
-                                            <tbody className="divide-y divide-gray-100">
-                                            {children.map((child) => (
-                                                <tr key={child.id} className="hover:bg-gray-50/50 transition-colors">
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
-                                                                {child.name.charAt(0)}
-                                                            </div>
-                                                            <span className="font-bold text-gray-800">{child.name}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <p className="text-sm font-semibold text-gray-700">{child.class}</p>
-                                                        <p className="text-xs text-gray-400">{child.teacher}</p>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="text-sm font-bold text-gray-700">{child.attendance}</span>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex items-center gap-2 text-xs font-medium text-gray-600">
-                                                            {child.nextPayment}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 text-center">
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                                                    child.status === 'Active' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                                                }`}>
-                                                    {child.status}
-                                                </span>
+                                            <tbody className="divide-y divide-slate-100">
+                                            {children.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan={5} className="px-8 py-10 text-center text-sm text-gray-500">
+                                                        No students match "{searchTerm}"
                                                     </td>
                                                 </tr>
-                                            ))}
+                                            ) : children.map((child) => {
+                                                const parentEmails = child.parents || [];
+                                                const hasMultipleParents = parentEmails.length > 1;
+                                                const isExpanded = expandedParentId === child.id;
+
+                                                return (
+                                                    <tr key={child.id} className="transition-all">
+                                                        <td className="px-8 py-5">
+                                                            <div className="flex items-center gap-4">
+                                                                {/* Geometric Avatar */}
+                                                                <div className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-600 text-xs">
+                                                                    {(child.name || ' ').charAt(0)}
+                                                                </div>
+                                                                <span className="text-[15px] font-semibold text-slate-800 tracking-tight">{child.name}</span>
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="px-8 py-5">
+                                                            <p className="text-[15px] font-bold text-slate-700 mb-1">{child.class}</p>
+
+                                                            {/* Minimalist Parent List */}
+                                                            <div className="flex flex-col gap-1">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-[11px] text-slate-700 font-medium truncate max-w-[150px]">
+                                                                        {parentEmails[0] || '—'}
+                                                                    </span>
+                                                                    {hasMultipleParents && !isExpanded && (
+                                                                        <button
+                                                                            onClick={() => setExpandedParentId(child.id)}
+                                                                            className="px-1.5 py-0.5 bg-slate-100 border border-slate-600 rounded text-[9px] font-bold text-slate-500 uppercase hover:bg-slate-200"
+                                                                        >
+                                                                            +{parentEmails.length - 1} more
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+
+                                                                {/* Expandable Emails */}
+                                                                {isExpanded && (
+                                                                    <div className="flex flex-col gap-1 mt-1 border-l-2 border-slate-100 pl-2 animate-in slide-in-from-top-1 duration-200">
+                                                                        {parentEmails.slice(1).map((email, idx) => (
+                                                                            <span key={idx} className="text-[11px] text-slate-700 font-medium">{email}</span>
+                                                                        ))}
+                                                                        <button
+                                                                            onClick={() => setExpandedParentId(null)}
+                                                                            className="text-[9px] font-bold text-slate-900 uppercase text-left mt-1"
+                                                                        >
+                                                                            Collapse
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="px-8 py-5">
+                                                            <span className="text-[12px] font-medium text-slate-600">{child.attendance} Yrs</span>
+                                                        </td>
+
+                                                        <td className="px-8 py-5">
+                                                            <div className="flex items-center gap-2 text-[15px] font-medium text-slate-700">
+                                                                <Mail size={12} className="text-slate-500" />
+                                                                {child.nextPayment}
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="px-8 py-5 text-center">
+                                                            <span className={`px-2 py-0.5 rounded text-[12px] font-bold uppercase tracking-widest border ${
+                                                                child.status === 'Active'
+                                                                    ? 'bg-green-50 text-green-700 border-green-200'
+                                                                    : 'bg-white text-slate-300 border-slate-100'
+                                                            }`}>
+                                                                {child.status}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
                                             </tbody>
                                         </table>
                                     </div>
@@ -537,6 +619,7 @@ export const TeacherResponsibilities = ({classes}) => {
     );
 };
 
+
 export const CircularProgress = ({ value, label, colorClass }) => {
     const radius = 30;
     const circumference = 2 * Math.PI * radius;
@@ -576,25 +659,9 @@ export const CircularProgress = ({ value, label, colorClass }) => {
     );
 };
 
-export const AccountAndClasses = () => {
+export const AccountInfo = () => {
     // Mock Data
-    const assignedClasses = [
-        {
-            subject: "Quantitative Reasoning",
-            students: 48,
-            performance: 78,
-        },
-        {
-            subject: "Mathematics",
-            students: 56,
-            performance: 81,
-        },
-        {
-            subject: "Basic Science",
-            students: 50,
-            performance: 76,
-        }
-    ];
+
 
     const permissions = [
         { label: "Create Assignments", enabled: true },
@@ -604,55 +671,7 @@ export const AccountAndClasses = () => {
     ];
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-
-            {/* --- 1. Classes Assigned Card --- */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-gray-800">Classes Assigned</h2>
-                    <span className="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-800 font-bold rounded-lg text-sm">
-            3
-          </span>
-                </div>
-
-                <div className="space-y-8">
-                    {assignedClasses.map((item, idx) => (
-                        <div key={idx} className="group">
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
-                                All Classes - Subject Teacher ({item.subject})
-                            </p>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                {/* Student Count */}
-                                <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50/50 border border-transparent group-hover:border-blue-100 transition-all">
-                                    <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
-                                        <Users size={18} />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold text-gray-800">{item.students} students</p>
-                                    </div>
-                                </div>
-
-                                {/* Performance */}
-                                <div className="flex flex-col justify-center gap-1 p-3 rounded-xl bg-green-50/50 border border-transparent group-hover:border-green-100 transition-all">
-                                    <div className="flex items-center gap-2">
-                                        <BarChart3 size={16} className="text-green-600" />
-                                        <p className="text-sm font-bold text-gray-800">Performance: {item.performance}%</p>
-                                    </div>
-                                    {/* Enhancement: Performance Bar */}
-                                    <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
-                                        <div
-                                            className="bg-green-500 h-full rounded-full transition-all duration-1000"
-                                            style={{ width: `${item.performance}%` }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
+        <div className="mt-8">
             {/* --- 2. Account Status Card --- */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6">

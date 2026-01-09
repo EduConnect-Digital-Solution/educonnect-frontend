@@ -8,8 +8,9 @@ import {useData} from "./hooks/useData.jsx";
 import TeacherLayout from "./components/layout/TeacherLayout.jsx";
 
 export default function TeacherDashboard() {
-    const { loading, statistics, error, classes, recentActivity } = useData();
+    const { loading, statistics, error, classes, recentActivity, students, subjects } = useData();
 
+    console.log(subjects)
 
     if (loading) {
         return (
@@ -30,7 +31,7 @@ export default function TeacherDashboard() {
                 <EducationOverviewDashboard statistics={statistics}/>
 
                 <div className="grid grid-cols-1 p-2 lg:grid-cols-3 gap-6">
-                    <TeacherResponsibilities classes={classes} />
+                    <TeacherResponsibilities classes={classes} students={students} />
                     <QuickActions />
                 </div>
 

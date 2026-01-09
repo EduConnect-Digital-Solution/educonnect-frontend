@@ -6,17 +6,20 @@ import {
     Briefcase,
     Phone,
     GraduationCap,
-    Award,
+    Award, Users, BarChart3,
 } from 'lucide-react';
-import {Header} from "../dashboardUtilities.jsx";
-import {Sidebar, AccountAndClasses} from "./teacherUtils/teacherComponents.jsx";
+import {AccountInfo} from "./teacherUtils/teacherComponents.jsx";
 import {Images} from "../../../components/images.jsx";
 import ClassSelectionModal from "./ClassSelectionModal.jsx";
+import TeacherLayout from "./components/layout/TeacherLayout.jsx";
+import {useData} from "./hooks/useData.jsx";
 
 
 
 const TeacherProfile = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { loading, statistics, error, classes, recentActivity, students, subjects } = useData();
+
     const [selectedSubject, setSelectedSubject] = useState('');
 
     const openModal = (subject) => {
@@ -55,140 +58,185 @@ const TeacherProfile = () => {
             </button>
         </div>
     );
-
+    if (loading) {
+        return (
+            <TeacherLayout>
+                <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+                    <div className="relative w-20 h-20">
+                        <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                    </div>
+                    <p className="mt-4 text-gray-500 font-medium animate-pulse">Loading Teacher Profile...</p>
+                </div>
+            </TeacherLayout>
+        );
+    }
+    const assignedClasses = [
+        {
+            subject: "Quantitative Reasoning",
+            students: 48,
+            performance: 78,
+        },
+        {
+            subject: "Mathematics",
+            students: 56,
+            performance: 81,
+        },
+        {
+            subject: "Basic Science",
+            students: 50,
+            performance: 76,
+        }
+    ];
 
     return (
         <>
-            <div className="flex min-h-screen bg-gray-50">
-                {/* Sidebar is fixed on the left */}
-                <Sidebar />
+            <TeacherLayout>
+                <div className="space-y-6 mt-8">
 
-                {/* Main Content Area */}
-                <div className="flex-1 flex flex-col">
-                    <Header />
-                    <main className="flex-1 p-6">
-                        <div className="space-y-6 mt-8">
-
-                            {/* --- 1. Personal Details Card (Full Width) --- */}
-                            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                                <SectionHeader title="Personal Details" />
-                                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mt-2">
-                                    <div className="relative group">
-                                        <div className="w-24 h-24 rounded-full bg-blue-100 border-4 border-white shadow-md overflow-hidden ring-1 ring-gray-100">
-                                            <img
-                                                src={`${Images.profile_picture}`}
-                                                alt="Profile"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        <button className="absolute bottom-0 right-0 p-1.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-500 hover:text-blue-600">
-                                            <PencilLine size={12} />
-                                        </button>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-12 flex-1 w-full">
-                                        <div>
-                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Full Name</p>
-                                            <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                                                <User size={14} className="text-blue-500" /> {teacherData.name}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Email</p>
-                                            <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                                                <Mail size={14} className="text-blue-500" /> {teacherData.email}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Role</p>
-                                            <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                                                <Briefcase size={14} className="text-blue-500" /> {teacherData.role}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Employee ID</p>
-                                            <p className="text-sm font-bold text-gray-800 flex items-center gap-2 hover:text-blue-600">
-                                                {teacherData.employeeId}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Contact Number</p>
-                                            <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                                                <Phone size={14} className="text-blue-500" /> {teacherData.contact}
-                                            </p>
-                                        </div>
-                                    </div>
+                    {/* --- 1. Personal Details Card (Full Width) --- */}
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <SectionHeader title="Personal Details" />
+                        <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mt-2">
+                            <div className="relative group">
+                                <div className="w-24 h-24 rounded-full bg-blue-100 border-4 border-white shadow-md overflow-hidden ring-1 ring-gray-100">
+                                    <img
+                                        src={`${Images.profile_picture}`}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
+                                <button className="absolute bottom-0 right-0 p-1.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-500 hover:text-blue-600">
+                                    <PencilLine size={12} />
+                                </button>
                             </div>
 
-                            {/* --- 2. Three-Column Grid Row (Summary, Professional Details, Subjects) --- */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                                {/* Teacher's Summary */}
-                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
-                                    <SectionHeader title="Teacher’s Summary" />
-                                    <p className="text-sm leading-relaxed text-gray-600 font-medium italic mt-2">
-                                        "{teacherData.summary}"
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-12 flex-1 w-full">
+                                <div>
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Full Name</p>
+                                    <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                        <User size={14} className="text-blue-500" /> {teacherData.name}
                                     </p>
                                 </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Email</p>
+                                    <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                        <Mail size={14} className="text-blue-500" /> {teacherData.email}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Role</p>
+                                    <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                        <Briefcase size={14} className="text-blue-500" /> {teacherData.role}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Employee ID</p>
+                                    <p className="text-sm font-bold text-gray-800 flex items-center gap-2 hover:text-blue-600">
+                                        {teacherData.employeeId}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Contact Number</p>
+                                    <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                        <Phone size={14} className="text-blue-500" /> {teacherData.contact}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Qualifications</p>
+                                    <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
+                                        <GraduationCap size={16} className="text-blue-500" /> {teacherData.qualifications}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                {/* Professional Details */}
-                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
-                                    <SectionHeader title="Professional Details" />
-                                    <div className="space-y-6 mt-4">
-                                        <div>
-                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Years of Experience</p>
-                                            <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                                                <Award size={16} className="text-orange-500" /> {teacherData.yearsExperience}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Qualifications</p>
-                                            <p className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                                                <GraduationCap size={16} className="text-blue-500" /> {teacherData.qualifications}
-                                            </p>
+                    {/* --- 2. Three-Column Grid Row (Summary, Professional Details, Subjects) --- */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                        {/* --- 1. Classes Assigned Card --- */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-xl font-bold text-gray-800">Classes Assigned</h2>
+                                <span className="w-8 h-8 flex items-center justify-center bg-gray-100 text-gray-800 font-bold rounded-lg text-sm">
+                        3
+                    </span>
+                            </div>
+
+                            <div className="space-y-8">
+                                {assignedClasses.map((item, idx) => (
+                                    <div key={idx} className="group">
+                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                            All Classes - Subject Teacher ({item.subject})
+                                        </p>
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                            {/* Student Count */}
+                                            <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50/50 border border-transparent group-hover:border-blue-100 transition-all">
+                                                <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                                                    <Users size={18} />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-bold text-gray-800">{item.students} students</p>
+                                                </div>
+                                            </div>
+
+                                            {/* Performance */}
+                                            <div className="flex flex-col justify-center gap-1 p-3 rounded-xl bg-green-50/50 border border-transparent group-hover:border-green-100 transition-all">
+                                                <div className="flex items-center gap-2">
+                                                    <BarChart3 size={16} className="text-green-600" />
+                                                    <p className="text-sm font-bold text-gray-800">Performance: {item.performance}%</p>
+                                                </div>
+                                                {/* Enhancement: Performance Bar */}
+                                                <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
+                                                    <div
+                                                        className="bg-green-500 h-full rounded-full transition-all duration-1000"
+                                                        style={{ width: `${item.performance}%` }}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
+                            </div>
+                        </div>
 
-                                {/* Subjects Taught */}
-                                {/* --- 3. Subjects Taught Card --- */}
-                                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
-                                    <h2 className="text-lg font-bold text-gray-800 mb-6">Subjects Taught</h2>
+                        {/* --- 2. Subjects Taught Card --- */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+                            <h2 className="text-lg font-bold text-gray-800 mb-6">Subjects Taught</h2>
 
-                                    <div className="space-y-3 overflow-y-auto max-h-[250px] pr-1">
-                                        {teacherData.subjects.map((subject, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex justify-between items-center p-3 rounded-xl border border-gray-50 bg-gray-50/30 hover:bg-white hover:border-blue-100 hover:shadow-sm transition-all group"
-                                            >
+                            <div className="space-y-3 overflow-y-auto max-h-[250px] pr-1">
+                                {teacherData.subjects.map((subject, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex justify-between items-center p-3 rounded-xl border border-gray-50 bg-gray-50/30 hover:bg-white hover:border-blue-100 hover:shadow-sm transition-all group"
+                                    >
                                             <span className="text-xs font-bold text-gray-700 group-hover:text-blue-700 transition-colors">
                                                 {subject}
                                             </span>
-                                                <button
-                                                    onClick={() => openModal(subject)} // <--- Trigggers the table view
-                                                    className="px-3 py-1.5 text-[10px] font-bold text-blue-600 border border-blue-200 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-sm"
-                                                >
-                                                    View Students
-                                                </button>
-                                            </div>
-                                        ))}
+                                        <button
+                                            onClick={() => openModal(subject)} // <--- Trigggers the table view
+                                            className="px-3 py-1.5 text-[10px] font-bold text-blue-600 border border-blue-200 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all active:scale-95 shadow-sm"
+                                        >
+                                            View Students
+                                        </button>
                                     </div>
-                                </div>
-
+                                ))}
                             </div>
-
-                            <AccountAndClasses />
                         </div>
-                    </main>
-                </div>
-            </div>
 
-            <ClassSelectionModal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                subject={selectedSubject}
-            />
+                    </div>
+
+                    <AccountInfo />
+                </div>
+                <ClassSelectionModal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    subject={selectedSubject}
+                />
+            </TeacherLayout>
+
         </>
     );
 };
