@@ -17,6 +17,13 @@ import {useAuth} from "../../../../contexts/AuthContext.jsx";
 // The modal for adding/editing users would be complex, so for this refactor,
 // the logic is simplified here. In a real app, this would be a separate component.
 
+/* TODO:
+*   1) Implement Assign / Unassign Classes to Teacher
+*   2) Implement Assign / Unassign Student to Teacher
+*   3) Implement Assign / Unassign Subject to Teacher
+* */
+
+
 const UserManagementPage = () => {
     const {
         users,

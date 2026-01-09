@@ -83,6 +83,29 @@ export async function getParentDashboard() {
     }
 }
 
+
+// New API function for dashboard data
+export async function getTeacherDashboard() {
+    try {
+        const { data } = await apiClient.get('/api/teacher/dashboard');
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+// New API function for dashboard data
+export async function getTeacherClasses() {
+    try {
+        const { data } = await apiClient.get('/api/teacher/classes');
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
 // New API function for dashboard data
 export async function getDashboardUsers(role = '', status = '') {
     try {

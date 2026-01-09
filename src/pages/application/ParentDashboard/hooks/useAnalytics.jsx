@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getParentDashboard, getParentProfile } from '../services/parentService';
-import {FileText} from "lucide-react";
 
 export const useAnalytics = () => {
     const [loading, setLoading] = useState(true);

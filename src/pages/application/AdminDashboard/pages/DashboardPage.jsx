@@ -397,8 +397,12 @@ const DashboardPage = () => {
     if (loading) {
         return (
             <AdminLayout>
-                <div className="flex items-center justify-center h-full">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+                <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+                    <div className="relative w-20 h-20">
+                        <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                    </div>
+                    <p className="mt-4 text-gray-500 font-medium animate-pulse">Loading Admin Dashboard...</p>
                 </div>
             </AdminLayout>
         );

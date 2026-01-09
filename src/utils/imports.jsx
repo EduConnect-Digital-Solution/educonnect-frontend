@@ -194,12 +194,12 @@ export const faqs = [
     {
         question: "How long does it take to set up EduConnect?",
         answer:
-            "We continually evaluate service quality through audits and customer feedback.",
+            "We continually evaluate services quality through audits and customer feedback.",
     },
     {
         question: "Can you Import our existing Student Data",
         answer:
-            "We continually evaluate service quality through audits and customer feedback.",
+            "We continually evaluate services quality through audits and customer feedback.",
     },
 ];
 

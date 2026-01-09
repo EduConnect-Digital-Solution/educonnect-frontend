@@ -91,10 +91,26 @@ function AppRoutes() {
                     <Route path="/dashboard/parent/profile" element={<ProtectedRoute requiredRole="parent"><ParentProfilePage /></ProtectedRoute>} />
 
                     {/* Teacher Protected Routes */}
-                    <Route path="/dashboard/teacher" element={<ProtectedRoute requiredRole="teacher"><TeacherDashboard /></ProtectedRoute>} />
-                    <Route path="/dashboard/teacher/students" element={<ProtectedRoute requiredRole="teacher"><StudentList /></ProtectedRoute>} />
-                    <Route path="/dashboard/teacher/profile" element={<ProtectedRoute requiredRole="teacher"><TeacherProfile /></ProtectedRoute>} />
-                    <Route path="/dashboard/teacher/students/:subject/:class" element={<ProtectedRoute requiredRole="teacher"><ClassStudents /></ProtectedRoute>} />
+                    <Route path="/dashboard/teacher" element={
+                        <ProtectedRoute requiredRole="teacher">
+                            <TeacherDashboard />
+                         </ProtectedRoute>
+                        } />
+                    <Route path="/dashboard/teacher/students" element={
+                        <ProtectedRoute requiredRole="teacher">
+                            <StudentList />
+                         </ProtectedRoute>
+                    } />
+                    <Route path="/dashboard/teacher/profile" element={
+                        <ProtectedRoute requiredRole="teacher">
+                            <TeacherProfile />
+                         </ProtectedRoute>
+                    } />
+                    <Route path="/dashboard/teacher/students/:subject/:class" element={
+                        <ProtectedRoute requiredRole="teacher">
+                            <ClassStudents />
+                        </ProtectedRoute>
+                    } />
 
                     {/*<Route path="*" element={<Navigate to="/" />} />*/}
                 </Routes>

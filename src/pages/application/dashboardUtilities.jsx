@@ -2,14 +2,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bell, User, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
 import {NavLink} from "react-router-dom";
 import {useAuth} from "../../contexts/AuthContext.jsx";
+import {getInitials} from "./AdminDashboard/utils/formatters.js";
 
 export const Header = ({handleLogout}) => {
-    const auth = useAuth();
-    const firstName = auth.user?.firstName;
-    const lastName = auth.user?.lastName;
-    const fullName = lastName + ' ' + firstName;
-    const role = auth.user?.role;
-    const email = auth.user?.email;
+    const {user} = useAuth();
+    const role = user?.role;
+    const email = user?.email;
+    const displayName = user?.firstName
+        ? `${user.firstName} ${user.lastName ?? ''}`
+        : (user?.fullName ?? 'User');
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -28,20 +29,8 @@ export const Header = ({handleLogout}) => {
     return (
         <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
             <div className="flex h-16 px-4 sm:px-6 lg:px-8 items-center justify-end">
-
                 <div className="flex items-center space-x-3 relative" ref={dropdownRef}>
-                    {/* Notifications Icon */}
-                    {/*<button*/}
-                    {/*    className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-50 transition duration-150 relative"*/}
-                    {/*    aria-label="Notifications"*/}
-                    {/*>*/}
-                    {/*    <Bell className="w-5 h-5" />*/}
-                    {/*    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>*/}
-                    {/*</button>*/}
-
                     <div className="h-6 w-px bg-gray-200 mx-1"></div>
-
-                    {/* User Profile Trigger */}
                     <div
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
                         className={`flex items-center px-2 py-1.5 space-x-2 cursor-pointer rounded-xl transition-all duration-150 ${
@@ -49,10 +38,10 @@ export const Header = ({handleLogout}) => {
                         }`}
                     >
                         <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs ring-2 ring-blue-50 ring-offset-1">
-                            {firstName[0]}{lastName[0]}
+                            {getInitials(displayName)}
                         </div>
                         <div className="hidden sm:flex flex-col items-start leading-none">
-                            <span className="text-sm font-bold text-gray-800">{fullName}</span>
+                            <span className="text-sm font-bold text-gray-800">{displayName}</span>
                             <span className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">{role}</span>
                         </div>
                         <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
