@@ -57,7 +57,7 @@ const UserManagementPage = () => {
         setAddUserRole(role);
         if (role === 'Teacher'){
             setViewTeacher(true)
-        } else if (role === 'Parent'){
+        } else if (role === 'CompleteRegistration'){
             setViewParent(true)
         }
     };
@@ -149,7 +149,7 @@ const UserManagementPage = () => {
                 schoolId={user.schoolId}
             />}
 
-            {/* Manage Parent-Student Links Modal */}
+            {/* Manage CompleteRegistration-Student Links Modal */}
             {showManageLinksModal && <ManageParentStudentLinkModal
                 onClose={() => setShowManageLinksModal(false)}
                 showToast={showToast}

@@ -1,20 +1,29 @@
-// File containing components and utilities for the Parent Dashboard
+// File containing components and utilities for the CompleteRegistration Dashboard
 import {
     Bell,
-    BookOpen, Calendar,
-    ChevronDown, FileText,
+    BookOpen,
+    Calendar,
+    ChevronDown,
+    FileText,
     GraduationCap,
     LayoutDashboard,
-    LogOut, LucideMail,
-    Menu, MessageCircle, MoreHorizontal, Search,
+    LogOut,
+    LucideMail,
+    Menu,
+    MessageCircle,
+    MoreHorizontal,
+    Search,
     User,
     UserCheck,
     Users,
     X
 } from "lucide-react";
 import React, {useEffect, useState} from "react";
-import {NavLink, useLocation} from "react-router-dom";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import {Images} from "../../../../components/images.jsx";
+import {getParentDashboard} from "../../../auth/authAPIs.js";
+import {useAnalytics} from "../hooks/useAnalytics";
+import {formatDate} from "../../AdminDashboard/utils/formatters.js";
 
 export const Header = () => {
     return (
@@ -196,42 +205,17 @@ export const ParentSidebar = () => {
     );
 };
 
-export const ParentsQuickStatsInfo = () => {
-
-    // Define the metric data, colors, and icons
+export const ParentsOverviewDashboard = ({ overview }) => {
     const metrics = [
-        {
-            title: 'Total Children',
-            value: 3,
-            icon: UserCheck, // Icon for 'My Students'
-            colorClass: 'bg-blue-100/50 text-gray-800', // Light blue-gray background
-        },
-        {
-            title: 'Enrolled',
-            value: 3,
-            icon: Users, // Icon for 'Total Students'
-            colorClass: 'bg-yellow-100/50 text-gray-800', // Light yellow background
-        },
-        {
-            title: 'Active',
-            value: 5,
-            icon: BookOpen, // Icon for 'Subjects Taught'
-            colorClass: 'bg-green-100/50 text-gray-800', // Light green background
-        },
-        {
-            title: 'Classes',
-            value: 3,
-            icon: GraduationCap, // Icon for 'Classes Assigned'
-            colorClass: 'bg-purple-100/50 text-gray-800', // Light purple background
-        },
+        { title: 'Total Children', value: overview.totalChildren, icon: UserCheck,colorClass: 'bg-blue-100/50 text-gray-800'},
+        { title: 'Enrolled', value: overview.enrolledChildren, icon: Users, colorClass: 'bg-yellow-100/50 text-gray-800'},
+        { title: 'Active', value: overview.activeChildren, icon: BookOpen, colorClass: 'bg-green-100/50 text-gray-800', },
+        { title: 'Classes Represented', value: overview.classesRepresented, icon: GraduationCap, colorClass: 'bg-purple-100/50 text-gray-800' },
     ];
 
     return (
-        <div className="md:p-6">
-            {/* Overview Heading (Kept from original design) */}
+        <div className="p-6">
             <h1 className="text-xl font-semibold text-gray-900 mb-6">Overview</h1>
-
-            {/* Metrics Container */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {metrics.map((metric) => (
                     <StatsMetricCard
@@ -247,7 +231,8 @@ export const ParentsQuickStatsInfo = () => {
     );
 };
 
-export const AnalyticsAndActions = () => {
+
+export const AnalyticsAndActions = ({quickActions}) => {
     const [selectedChild, setSelectedChild] = useState('Sandra J');
     const [selectedSubject, setSelectedSubject] = useState('All Subjects');
 
@@ -255,7 +240,9 @@ export const AnalyticsAndActions = () => {
     const subjects = ['All Subjects', 'Mathematics', 'Basic Science', 'English'];
     const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
 
-    const QuickActionCard = ({ title, description, buttonText, icon: Icon, colorClass, comingSoon }) => (
+    const navigate = useNavigate();
+
+    const QuickActionCard = ({ title, description, buttonFunction, buttonText, icon: Icon, colorClass, comingSoon }) => (
         <div className={`group p-4 rounded-xl border transition-all duration-200 ${
             comingSoon ? 'bg-gray-50/50 border-gray-100 opacity-75' : 'bg-white border-gray-100 hover:border-blue-200 hover:shadow-md'
         }`}>
@@ -272,6 +259,7 @@ export const AnalyticsAndActions = () => {
                     </div>
                     <p className="text-gray-500 text-xs mb-3 leading-relaxed">{description}</p>
                     <button
+                        onClick={buttonFunction}
                         disabled={comingSoon}
                         className={`w-full py-2 text-xs font-bold rounded-lg transition-colors ${
                             comingSoon
@@ -358,7 +346,7 @@ export const AnalyticsAndActions = () => {
                 </div>
             </div>
 
-            {/* 2. Parent Quick Actions Box */}
+            {/* 2. CompleteRegistration Quick Actions Box */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
@@ -370,62 +358,68 @@ export const AnalyticsAndActions = () => {
                 <div className="space-y-4 flex-1">
                     {/* 1. COMING SOON FEATURE */}
                     <QuickActionCard
-                        title="View Report Cards"
-                        description="Download latest terminal results and assessments"
-                        buttonText="Coming Soon"
+                        title="View Children"
+                        description="See all your children's information"
+                        buttonText="View Children"
                         icon={FileText}
-                        colorClass="bg-gray-100 text-gray-400"
-                        comingSoon={true} // New prop to handle post-MVP state
+                        colorClass="bg-blue-100 text-blue-400"
+                        comingSoon={false}
+                        buttonFunction={() => navigate('/dashboard/parent/children')}
                     />
-
-                    {/* 2. ACTIVE FEATURE */}
                     <QuickActionCard
-                        title="Contact Teacher"
-                        description="Get in touch with the school admin or teachers"
-                        buttonText="Coming Soon"
-                        icon={LucideMail}
-                        // colorClass="bg-green-50 text-green-600"
-                        comingSoon={true} // New prop to handle po
-                        colorClass="bg-gray-100 text-gray-400"
-                        // st-MVP state
+                        title="Academic Progress"
+                        description="Check grades and performance"
+                        buttonText="View progress"
+                        icon={FileText}
+                        colorClass="bg-purple-100 text-purple-400"
+                        comingSoon={false}
                     />
 
                     {/*3. ACTIVE FEATURE*/}
                     <QuickActionCard
-                        title="Contact Support"
+                        title="Update Profile"
+                        description="Manage your contact information"
+                        buttonText="Update Profile"
+                        icon={MessageCircle}
+                        colorClass="bg-red-100 text-red-400"
+                        comingSoon={false}
+                    />
+
+                    {/* 2. ACTIVE FEATURE */}
+                    <QuickActionCard
+                        title="Contact Teachers"
                         description="Get in touch with the school admin or teachers"
                         buttonText="Coming Soon"
-                        icon={MessageCircle}
-                        colorClass="bg-gray-100 text-gray-400"
-                        comingSoon={true} // New prop to handle post-MVP state
+                        icon={LucideMail}
+                        colorClass="bg-gray-50 text-gray-600"
+                        comingSoon={true}
                     />
+
+
                 </div>
             </div>
         </div>
     );
 };
 
-export const ChildListandNotification = () => {
+export const ChildListandNotification = ({ children, notifications }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Mock Data
-    const children = [
-        { id: 1, name: "Sandra J", class: "Pry 3", teacher: "Mrs Okafor", status: "Active", attendance: "98%", nextPayment: "3.45" },
-        { id: 2, name: "David J", class: "Pry 1", teacher: "Mr James", status: "Inactive", attendance: "45%", nextPayment: "3.45" },
-        { id: 3, name: "Daniel J", class: "Nursery 2", teacher: "Miss Shade", status: "Active", attendance: "92%", nextPayment: "3.45" },
-    ];
+    const childrenList = children.map(child => ({
+        id: child.studentId, name: child.fullName,
+        class: child.classDisplay, teacher: child.teachers[0]?.name || '-',
+        status: child.isEnrolled ? 'Active' : 'Inactive'}));
 
-    const allNotifications = [
-        { id: 1, text: "Your child has a new assignment", time: "1 hour ago" },
-        { id: 2, text: "School resumes Monday 7:30AM", time: "1 day ago" },
-        { id: 3, text: "PTA meeting this Friday at 4PM", time: "3 days ago" },
-        { id: 4, text: "Term 2 Result portal is now open", time: "4 days ago" },
-        { id: 5, text: "New sports equipment fee update", time: "1 week ago" },
-        { id: 6, text: "Health checkup scheduled for Monday", time: "1 week ago" },
-    ];
+    const notificationsList = notifications.map((notif, index) => ({
+        id: index + 1,
+        text: notif.message,
+        title: notif.title,
+        isRead: notif.isRead,
+        time: formatDate(notif.timestamp)
+    }));
 
-    const displayNotifications = allNotifications.slice(0, 4);
-    const hiddenCount = allNotifications.length - displayNotifications.length;
+    const displayNotifications = notificationsList.slice(0, 4);
+    const hiddenCount = notificationsList.length - displayNotifications.length;
 
     return (
         <div className="py-5 bg-gray-50">
@@ -452,36 +446,26 @@ export const ChildListandNotification = () => {
                         <table className="w-full text-left">
                             <thead>
                             <tr className="bg-gray-50/50 text-gray-400 text-[11px] uppercase tracking-wider font-bold">
+                                <th className="px-6 py-4">Student Id</th>
                                 <th className="px-6 py-4">Child</th>
                                 <th className="px-6 py-4">Class/Teacher</th>
-                                <th className="px-6 py-4">Attendance</th>
-                                <th className="px-6 py-4">Overall Grade</th>
-                                <th className="px-6 py-4 text-center">Status</th>
+                                <th className="px-6 py-4 text-center">Enrolled Status</th>
                             </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                            {children.map((child) => (
+                            {childrenList.map((child) => (
                                 <tr key={child.id} className="hover:bg-gray-50/50 transition-colors">
                                     <td className="px-6 py-4">
+                                        <span className="text-sm font-bold text-gray-700">{child.id}</span>
+                                    </td>
+                                    <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
-                                                {child.name.charAt(0)}
-                                            </div>
                                             <span className="font-bold text-gray-800">{child.name}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
                                         <p className="text-sm font-semibold text-gray-700">{child.class}</p>
                                         <p className="text-xs text-gray-400">{child.teacher}</p>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm font-bold text-gray-700">{child.attendance}</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2 text-xs font-medium text-gray-600">
-                                            {/*<CreditCard size={14} className="text-gray-400" />*/}
-                                            {child.nextPayment}
-                                        </div>
                                     </td>
                                     <td className="px-6 py-4 text-center">
                                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
@@ -522,7 +506,8 @@ export const ChildListandNotification = () => {
                             <div key={notif.id} className="flex gap-4 group cursor-pointer">
                                 <div className="mt-1 w-2 h-2 rounded-full bg-blue-500 ring-4 ring-blue-50" />
                                 <div>
-                                    <p className="text-sm font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">
+                                    <p className="text-sm font-bold text-gray-800">{notif.title}</p>
+                                    <p className="text-xs font-medium text-gray-600 group-hover:text-blue-600 transition-colors">
                                         {notif.text}
                                     </p>
                                     <p className="text-[10px] font-medium text-gray-400 mt-1 uppercase tracking-wide">
@@ -540,7 +525,7 @@ export const ChildListandNotification = () => {
                         </div>
                         <div>
                             <p className="text-xs font-bold text-orange-700 uppercase">Upcoming Event</p>
-                            <p className="text-sm font-bold text-gray-800">Parent-Teacher Night</p>
+                            <p className="text-sm font-bold text-gray-500">Upcoming Notifications will appear here</p>
                         </div>
                     </div>
                 </div>
@@ -560,9 +545,10 @@ export const ChildListandNotification = () => {
                             </button>
                         </div>
                         <div className="p-2 max-h-[400px] overflow-y-auto">
-                            {allNotifications.map((notif) => (
+                            {notificationsList.map((notif) => (
                                 <div key={notif.id} className="p-4 hover:bg-gray-50 rounded-xl transition-colors border-b border-gray-50 last:border-0">
-                                    <p className="text-sm font-bold text-gray-800">{notif.text}</p>
+                                    <p className="text-sm font-bold text-gray-800">{notif.title}</p>
+                                    <p className="text-xs font-medium text-gray-600">{notif.text}</p>
                                     <p className="text-xs text-gray-400 mt-1">{notif.time}</p>
                                 </div>
                             ))}

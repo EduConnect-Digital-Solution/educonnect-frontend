@@ -33,7 +33,7 @@ A school management system built with React and Vite, providing a platform for A
 - **Teacher Dashboard:**
   - View and manage assigned classes and students.
   - Track student performance and analytics.
-- **Parent Dashboard:**
+- **CompleteRegistration Dashboard:**
   - View their children's progress and school-related information.
 - **Modern UI:** Built with Tailwind CSS and a mix of headless UI libraries for a clean and responsive user experience.
 - **Form Handling:** Robust and type-safe forms powered by React Hook Form and Zod.

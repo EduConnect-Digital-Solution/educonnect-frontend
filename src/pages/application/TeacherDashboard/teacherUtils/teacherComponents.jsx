@@ -214,7 +214,7 @@ export const TeacherDashboardHome = () => {
             iconColor: 'text-gray-500',
         },
         {
-            title: 'Parent Escalations',
+            title: 'CompleteRegistration Escalations',
             description: 'You have 1 urgent message from a parent',
             cta: 'Open Message',
             type: 'warning',

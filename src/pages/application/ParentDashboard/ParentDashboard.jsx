@@ -1,29 +1,30 @@
 import React from 'react';
-import {
-    ParentSidebar,
-    ParentsQuickStatsInfo,
-    AnalyticsAndActions, ChildListandNotification
-} from "./parentUtils/p_utils.jsx";
-import {Header} from "../dashboardUtilities.jsx";
+import {AnalyticsAndActions, ChildListandNotification, ParentsOverviewDashboard} from "./parentUtils/p_utils.jsx";
+import {useAnalytics} from "./hooks/useAnalytics.jsx";
+import ParentLayout from "./components/layout/ParentLayout.jsx";
 
 
 export default function ParentDashboard() {
+    const { loading, overview, error, children, notifications, quickActions } = useAnalytics();
+    console.log(children);
+
+    if (loading) {
+        return (
+            <ParentLayout>
+                <div className="flex items-center justify-center h-full">
+                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+                </div>
+            </ParentLayout>
+        );
+    }
+
     return (
         <>
-            <div className="flex min-h-screen bg-gray-50">
-                {/* Sidebar is fixed on the left */}
-                <ParentSidebar />
-
-                {/* Main Content Area */}
-                <div className="flex-1 flex flex-col">
-                    <Header />
-                    <main className="flex-1 p-6">
-                        <ParentsQuickStatsInfo />
-                        <AnalyticsAndActions />
-                        <ChildListandNotification />
-                    </main>
-                </div>
-            </div>
+            <ParentLayout>
+                <ParentsOverviewDashboard overview={overview}/>
+                <AnalyticsAndActions />
+                <ChildListandNotification children={children} notifications={notifications}/>
+            </ParentLayout>
         </>
     )
 }

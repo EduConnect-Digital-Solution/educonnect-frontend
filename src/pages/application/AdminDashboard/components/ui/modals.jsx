@@ -381,7 +381,7 @@ export const InviteParentModal = ({ onClose, showToast }) => {
 
     // Simplified student selection
     return (
-        <Modal title="Invite Parent" onClose={onClose} onSubmit={handleInvite}>
+        <Modal title="Invite CompleteRegistration" onClose={onClose} onSubmit={handleInvite}>
 
             <div className="space-y-5">
                 {/* Names */}
@@ -729,11 +729,11 @@ export const ManageParentStudentLinkModal = ({ onClose, showToast, schoolId }) =
 
 
     return (
-        <Modal title="Manage Parent-Student Links" onClose={onClose}>
+        <Modal title="Manage CompleteRegistration-Student Links" onClose={onClose}>
             <div className="space-y-6">
-                {/* Parent Selection */}
+                {/* CompleteRegistration Selection */}
                 <div>
-                    <h4 className="text-md font-semibold text-gray-800 mb-2">Select Parent</h4>
+                    <h4 className="text-md font-semibold text-gray-800 mb-2">Select CompleteRegistration</h4>
                     <Input
                         placeholder="Search parent by name or email"
                         value={parentSearchQuery}
@@ -758,7 +758,7 @@ export const ManageParentStudentLinkModal = ({ onClose, showToast, schoolId }) =
                         )}
                     </div>
                     {selectedParent && (
-                        <p className="mt-2 text-sm text-gray-600">Selected Parent: <span className="font-medium">{selectedParent.firstName} {selectedParent.lastName}</span></p>
+                        <p className="mt-2 text-sm text-gray-600">Selected CompleteRegistration: <span className="font-medium">{selectedParent.firstName} {selectedParent.lastName}</span></p>
                     )}
                 </div>
 

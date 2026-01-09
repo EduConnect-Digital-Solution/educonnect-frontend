@@ -55,7 +55,7 @@ export function RegisterSchool() {
 
 
         if (!formData?.password || !passwordPattern.test(formData.password)) {
-            showToast("Please provide a valid password.");
+            showToast("Please provide a valid strong password.");
             return;
         }
 
@@ -238,7 +238,7 @@ export function RegisterSchool() {
                     <p className="text-center text-sm text-gray-600 mt-6">
                         Already registered?{" "}
                         <NavLink
-                            to={`/login/welcome`}
+                            to={`/login`}
                             className="text-[#0A61A4] font-semibold hover:underline"
                         >
                             Sign in

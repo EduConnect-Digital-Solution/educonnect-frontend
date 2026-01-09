@@ -6,7 +6,7 @@ import {CreateStudentModal, DeleteUserModal, StatusChangeModal} from "../compone
 import Input from "../components/ui/Input.jsx";
 import {Toast} from "../components/ui/Toast.jsx";
 import {getStatusBadgeStyle} from "../utils/styleHelpers.js";
-import {getAllStudents, updateStudent, verifySession} from "../../../auth/authAPIs.js";
+import {getAllStudents, updateStudent} from "../../../auth/authAPIs.js";
 import {formatDate, getInitials} from "../utils/formatters.js";
 import {useAuth} from "../../../../contexts/AuthContext.jsx";
 
@@ -263,7 +263,7 @@ const StudentsList = () => {
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-gray-50/50 sticky top-0">
                                     <tr>
-                                        {['S/N', 'Name', 'Parent Email', 'Parent No.', 'Status', 'Last Updated', 'Actions'].map((header) => (
+                                        {['S/N', 'Name', 'CompleteRegistration Email', 'CompleteRegistration No.', 'Status', 'Last Updated', 'Actions'].map((header) => (
                                             <th key={header}
                                                 className="p-4 text-sm font-semibold text-gray-600 whitespace-nowrap">
                                                 {header}
@@ -489,13 +489,13 @@ const StudentsList = () => {
                                 <Input label="Address" name="address" value={formData.address}
                                        onChange={handleInputChange}/>
 
-                                {/* Parent Linking */}
+                                {/* CompleteRegistration Linking */}
                                 <div className="border-t border-gray-100 pt-4">
                                     <h4 className="text-sm font-semibold text-gray-700 mb-3">
                                         Linked Parents
                                     </h4>
 
-                                    {/* Existing Parent IDs */}
+                                    {/* Existing CompleteRegistration IDs */}
                                     <div className="flex flex-wrap gap-2 mb-3">
                                         {viewStudent.parents?.length > 0 ? (viewStudent.parents.map((id, index) => (
                                                 <span

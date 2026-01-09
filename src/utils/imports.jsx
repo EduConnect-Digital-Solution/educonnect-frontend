@@ -63,7 +63,7 @@ export const features = [
     },
     {
         icon: Icons.communication, // Placeholder for desktop icon
-        title: 'Parent Communication System',
+        title: 'CompleteRegistration Communication System',
         description: 'Instant updates for parents on attendance,\n' +
             'performance, and school activities, improving\n' +
             'engagement and trust.',

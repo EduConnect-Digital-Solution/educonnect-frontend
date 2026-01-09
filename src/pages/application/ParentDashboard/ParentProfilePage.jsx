@@ -8,7 +8,7 @@ import {ParentSidebar} from "./parentUtils/p_utils.jsx";
 import {Header} from "../dashboardUtilities.jsx";
 
 const ParentProfilePage = () => {
-    // Mock Parent Data based on your screenshots
+    // Mock CompleteRegistration Data based on your screenshots
     const parent = {
         name: "Okediji Racheal",
         email: "okedijiprincess@gmail.com",

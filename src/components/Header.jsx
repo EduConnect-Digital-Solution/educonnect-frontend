@@ -60,7 +60,7 @@ export const Header = () => {
         if (hasSession) {
             navigate(getDashboardRoute(user));
         } else {
-            navigate('/login/welcome'); // or your login route
+            navigate('/login'); // or your login route
         }
     };
 
@@ -161,7 +161,7 @@ export const Header = () => {
                                 Get Started →
                             </NavLink>
 
-                            <NavLink to={`/login/welcome`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">
+                            <NavLink to={`/login`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">
                                 Log in
                             </NavLink>
                         </div>

@@ -49,7 +49,7 @@ export const Header = ({handleLogout}) => {
                         }`}
                     >
                         <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs ring-2 ring-blue-50 ring-offset-1">
-                            {firstName[0]}
+                            {firstName[0]}{lastName[0]}
                         </div>
                         <div className="hidden sm:flex flex-col items-start leading-none">
                             <span className="text-sm font-bold text-gray-800">{fullName}</span>

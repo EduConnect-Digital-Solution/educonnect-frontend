@@ -30,10 +30,19 @@ apiClient.interceptors.request.use(
     async (config) => {
         const authContext = window.authContext;
 
+        // Skip token attachment for auth endpoints that use httpOnly cookies
+        const authEndpoints = ['/api/user/auth/me', '/api/school/auth/login', '/api/school/auth/logout'];
+        const isAuthEndpoint = authEndpoints.some(endpoint => config.url?.includes(endpoint));
+
+        if (isAuthEndpoint) {
+            return config;
+        }
+
+        // For all other endpoints, ensure we have a valid access token
         if (authContext && authContext.getValidAccessToken) {
             try {
                 const token = await authContext.getValidAccessToken();
-                if (token) {
+                if (token && token !== 'session-valid') {
                     config.headers.Authorization = `Bearer ${token}`;
                 }
             } catch (error) {
@@ -52,13 +61,28 @@ apiClient.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // Handle 401 errors (token expired or invalid)
         if (error.response?.status === 401 && !originalRequest._retry) {
+            // Prevent infinite loops
+            if (originalRequest.url?.includes('/refresh-token') ||
+                originalRequest.url?.includes('/auth/me')) {
+                // If refresh or session check failed, logout
+                const authContext = window.authContext;
+                if (authContext && authContext.logout) {
+                    await authContext.logout();
+                }
+                window.location.href = '/login/welcome';
+                return Promise.reject(error);
+            }
+
             if (isRefreshing) {
                 // If already refreshing, queue the request
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
                 }).then(token => {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                    if (token && token !== 'session-valid') {
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                    }
                     return apiClient(originalRequest);
                 }).catch(err => {
                     return Promise.reject(err);
@@ -72,12 +96,14 @@ apiClient.interceptors.response.use(
                 const authContext = window.authContext;
 
                 if (authContext && authContext.refreshAccessToken) {
-                    const newToken = await authContext.refreshAccessToken(true); // Force refresh
+                    const newToken = await authContext.refreshAccessToken(true);
 
-                    if (newToken) {
+                    if (newToken && newToken !== 'session-valid') {
                         processQueue(null, newToken);
                         originalRequest.headers.Authorization = `Bearer ${newToken}`;
                         return apiClient(originalRequest);
+                    } else {
+                        throw new Error('Failed to refresh token');
                     }
                 }
             } catch (refreshError) {
@@ -88,7 +114,7 @@ apiClient.interceptors.response.use(
                 if (authContext && authContext.logout) {
                     await authContext.logout();
                 }
-                window.location.href = '/login/welcome';
+                window.location.href = '/login';
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;

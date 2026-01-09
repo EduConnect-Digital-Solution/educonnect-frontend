@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -37,7 +36,7 @@ export const AuthProvider = ({ children }) => {
     const isTokenExpiredOrExpiringSoon = (expiry, bufferMinutes = 5) => {
         if (!expiry) return true;
         const now = Date.now();
-        const bufferTime = bufferMinutes * 60 * 1000; // Convert to milliseconds
+        const bufferTime = bufferMinutes * 60 * 1000;
         return expiry <= (now + bufferTime);
     };
 
@@ -49,7 +48,6 @@ export const AuthProvider = ({ children }) => {
                 return accessToken; // Return existing token if still valid
             }
 
-            // console.log('Refreshing access token...');
             const response = await axios.post(
                 `${baseURL}/api/school/auth/refresh-token`,
                 {},
@@ -65,7 +63,6 @@ export const AuthProvider = ({ children }) => {
                 setUser(userData);
                 setTokenExpiry(expiry);
 
-                // console.log('Token refreshed successfully');
                 return newToken;
             }
             return null;
@@ -81,36 +78,45 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Function to check if user has a valid session
+    // NEW: Function to check session using /auth/me endpoint
     const checkAuthStatus = async () => {
         try {
-            setLoading(true);
+            const response = await axios.get(
+                `${baseURL}/api/user/auth/me`,
+                { withCredentials: true }
+            );
 
-            // First, try to refresh token to see if we have a valid session
-            const token = await refreshAccessToken(true); // Force refresh to check session
+            if (response.data.success && response.data.user) {
+                const userData = response.data.user;
 
-            if (token) {
-                // console.log('Valid session found');
+                // Set user data from /auth/me response
+                setUser(userData);
+
+                // Note: /auth/me doesn't return accessToken, so we'll get it on first API call
+                // The axios interceptor will handle getting a fresh token when needed
+                setAccessToken('session-valid'); // Placeholder to indicate valid session
+
                 return true;
-            } else {
-                // console.log('No valid session');
-                return false;
             }
+
+            return false;
         } catch (error) {
             console.error('Auth check failed:', error);
+            // Clear state on authentication errors
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                setAccessToken(null);
+                setUser(null);
+                setTokenExpiry(null);
+            }
             return false;
-        } finally {
-            setLoading(false);
         }
     };
 
     // Function to get a valid access token (refreshes if needed)
     const getValidAccessToken = async () => {
-        if (!accessToken || !tokenExpiry) {
-            return await refreshAccessToken(true);
-        }
-
-        if (isTokenExpiredOrExpiringSoon(tokenExpiry)) {
+        // If we don't have a token or it's expired, refresh it
+        if (!accessToken || accessToken === 'session-valid' ||
+            (tokenExpiry && isTokenExpiredOrExpiringSoon(tokenExpiry))) {
             return await refreshAccessToken(true);
         }
 
@@ -125,8 +131,6 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(token);
         setUser(loginData.data.user);
         setTokenExpiry(expiry);
-
-        // console.log('User logged in successfully');
     };
 
     // Logout function
@@ -135,33 +139,25 @@ export const AuthProvider = ({ children }) => {
             await axios.post(`${baseURL}/api/school/auth/logout`, {}, {
                 withCredentials: true
             });
-            // console.log('Logout API called successfully');
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
             setAccessToken(null);
             setUser(null);
             setTokenExpiry(null);
-            // console.log('Auth state cleared');
         }
     };
 
-    // Check auth status only once on app load
+    // UPDATED: Check auth status only once on app load using /auth/me
     useEffect(() => {
         let mounted = true;
 
         const initAuth = async () => {
             try {
-                // Only check auth status if we don't already have a valid token
-                if (!accessToken || !tokenExpiry || isTokenExpiredOrExpiringSoon(tokenExpiry)) {
-                    const isAuthenticated = await checkAuthStatus();
-                    if (mounted) {
-                        // console.log('Initial auth check completed:', isAuthenticated);
-                    }
-                } else {
-                    // We already have a valid token, just stop loading
+                const isAuthenticated = await checkAuthStatus();
+
+                if (mounted) {
                     setLoading(false);
-                    // console.log('Using existing valid token');
                 }
             } catch (error) {
                 if (mounted) {
@@ -180,13 +176,12 @@ export const AuthProvider = ({ children }) => {
 
     // Set up automatic token refresh before expiry
     useEffect(() => {
-        if (!tokenExpiry || !accessToken) return;
+        if (!tokenExpiry || !accessToken || accessToken === 'session-valid') return;
 
         const timeUntilExpiry = tokenExpiry - Date.now();
-        const refreshTime = Math.max(timeUntilExpiry - (5 * 60 * 1000), 1000); // Refresh 5 minutes before expiry, minimum 1 second
+        const refreshTime = Math.max(timeUntilExpiry - (5 * 60 * 1000), 1000);
 
         const timer = setTimeout(() => {
-            // console.log('Auto-refreshing token before expiry');
             refreshAccessToken(true);
         }, refreshTime);
 
@@ -201,8 +196,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         refreshAccessToken,
         checkAuthStatus,
-        getValidAccessToken, // New function to get valid token
-        isAuthenticated: !!accessToken && !!user && tokenExpiry && !isTokenExpiredOrExpiringSoon(tokenExpiry)
+        getValidAccessToken,
+        isAuthenticated: !!user && !!accessToken
     };
 
     return (

@@ -40,7 +40,7 @@ export default function AnalyticsComponent(userStatsAnalytics) {
             verified: userStats.byRole.teacher.verified
         },
         {
-            role: 'Parent',
+            role: 'CompleteRegistration',
             total: userStats.byRole.parent.total,
             active: userStats.byRole.parent.active,
             verified: userStats.byRole.parent.verified

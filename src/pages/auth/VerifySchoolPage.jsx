@@ -61,7 +61,7 @@ export function VerifySchoolPage({ onNavigate }) {
         <div className="min-h-screen flex bg-[#f1fbf7] items-center justify-center p-4">
             <div className="max-w-md w-full z-30">
                 {/* Back button */}
-                <NavLink to={`/register/admin`}>
+                <NavLink to={`/register/school`}>
                     <button
                         className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
                     >

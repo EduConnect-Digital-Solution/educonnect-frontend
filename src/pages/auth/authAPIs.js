@@ -47,6 +47,16 @@ export async function getDashboardAnalytics() {
 }
 
 // New API function for dashboard data
+export async function getParentDashboard() {
+    try {
+        const { data } = await apiClient.get('/api/parent/dashboard');
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+// New API function for dashboard data
 export async function getDashboardUsers(role = '', status = '') {
     try {
         const { data } = await apiClient.get('/api/admin/dashboard/users', {
@@ -188,7 +198,7 @@ export async function reactivateSchool(payload) {
 
 export async function verifySession() {
     try {
-        const { data } = await apiClient.get('/api/school/auth/me');
+        const { data } = await apiClient.get('/api/user/auth/me');
         return data;
     } catch (error) {
         throw error?.response?.data || error;
@@ -274,5 +284,41 @@ export async function unlinkStudentToParent(payload, parentId) {
         throw error?.response?.data || error;
     }
 }
+
+
+export async function assignClass(payload) {
+    try {
+        const { data } = await apiClient.post(`/api/admin/teachers/assign-classes`,
+            payload);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+export async function assignSubjects(payload) {
+    try {
+        const { data } = await apiClient.post(`/api/admin/teachers/assign-subjects`,
+            payload);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+
+export async function completeRegistration(payload) {
+    try {
+        const { data } = await apiClient.post(`/api/user/auth/complete-registration`,
+            payload);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
 
 
