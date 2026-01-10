@@ -1,57 +1,139 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Dialog, Transition } from '@headlessui/react';
-import {getInitials, getStatusStyles, mockStudents} from "../../../utils/imports.jsx";
+import {getInitials, getStatusStyles} from "../../../utils/imports.jsx";
 import StudentAnalytics from './StudentAnalytics.jsx';
-import {CircularProgress, Pagination} from "./teacherUtils/teacherComponents.jsx";
+import {Pagination} from "./teacherUtils/teacherComponents.jsx";
 import TeacherLayout from "./components/layout/TeacherLayout.jsx";
-import {useAnalytics} from "../ParentDashboard/hooks/useAnalytics.jsx";
 import {useData} from "./hooks/useData.jsx";
-
+import {assignGrade, getStudentsByClassandSubject} from "../../auth/authAPIs.js";
+import {Toast} from "../AdminDashboard/components/ui/Toast.jsx";
 
 const ClassStudents = () => {
-    const { loading } = useData();
-
-    // UPDATED: Route params now expect class first, then subject
+    const { subjects: teacherSubjects } = useData();
     const { class: studentClass, subject } = useParams();
-    const [selectedStudentForSummary, setSelectedStudentForSummary] = useState(null);
+
+    const [students, setStudents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [stats, setStats] = useState(null);
+
     const [selectedStudentForDetails, setSelectedStudentForDetails] = useState(null);
+    const [selectedStudentForGrade, setSelectedStudentForGrade] = useState(null);
+    const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
+    const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+    const [gradeData, setGradeData] = useState(null);
+    const [publishData, setPublishData] = useState({ term: 'First Term', academicYear: '2024-2025' });
 
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
-
-    // Items per page - adjust this based on your screen height preference
     const itemsPerPage = 8;
+    const [toast, setToast] = useState({show: false, message: '', type: 'error'});
 
-    // Filter students based on search and URL params
-    const filteredStudents = mockStudents.filter(student =>
-        student.subject.toLowerCase() === subject.toLowerCase() &&
-        student.class.toLowerCase() === studentClass.toLowerCase() &&
-        (student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            student.email.toLowerCase().includes(searchQuery.toLowerCase()))
+    const showToast = (message, type = 'error') => {
+        setToast({show: true, message, type});
+    };
+
+    const handleSubmitGrade = async () => {
+        try {
+            // 1. Basic Information Validation
+            if (!gradeData.subject || !gradeData.term || !gradeData.academicYear) {
+                showToast("Please complete all header fields (Subject, Term, and Year).");
+            }
+
+            // 2. Assessment List Validation
+            if (gradeData.assessments.length === 0) {
+                showToast("Please add at least one assessment.");
+            }
+
+            // 3. Detailed Assessment Validation (Looping through entries)
+            for (let i = 0; i < gradeData.assessments.length; i++) {
+                const entry = gradeData.assessments[i];
+                const assessmentNum = i + 1;
+
+                if (!entry.title.trim()) {
+                    showToast(`Assessment #${assessmentNum}: Title is required.`);
+                }
+
+                if (isNaN(entry.score) || entry.score < 0) {
+                    showToast(`Assessment #${assessmentNum}: Please enter a valid score.`);
+                }
+
+                if (entry.score > entry.maxScore) {
+                    showToast(`Assessment #${assessmentNum}: Score (${entry.score}) cannot exceed Max Score (${entry.maxScore}).`);
+                }
+
+                if (!entry.date) {
+                    showToast(`Assessment #${assessmentNum}: Please select a date.`);
+                }
+            }
+
+            // 4. Submission
+            // Assuming assignGrade is an async function from your props/hooks
+            const response = await assignGrade({
+                ...gradeData
+            });
+
+            // 5. Success Handling
+            showToast(`Grades assigned successfully to ${selectedStudentForGrade.fullName}`, 'success');
+            setIsGradeModalOpen(false); // Close modal only on success
+
+        } catch (error) {
+            console.error("Grade Submission Error:", error);
+            showToast(error.message || "Failed to submit grades. Please try again.");
+        }
+    };
+
+
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            setLoading(true);
+            try {
+                const response = await getStudentsByClassandSubject(studentClass, subject);
+                setStudents(response.data.students);
+                setStats(response.data.statistics);
+            } catch (err) {
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStudents();
+    }, [studentClass, subject]);
+
+    const handleAssignGrade = (student) => {
+        const [stClass, section] = student.class.split('-');
+        setSelectedStudentForGrade(student);
+        setGradeData({
+            studentId: student.id,
+            subject: subject,
+            class: stClass,
+            section: section ? section.toUpperCase() : '',
+            term: "First Term",
+            academicYear: "2024-2025",
+            assessments: [{ type: "Test", title: "", score: 0, maxScore: 100, weight: 1, date: new Date().toISOString().split('T')[0], remarks: "" }],
+            remarks: ""
+        });
+        setIsGradeModalOpen(true);
+    };
+
+
+    const filteredStudents = students.filter(student =>
+        student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.email?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Calculate pagination
     const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentStudents = filteredStudents.slice(startIndex, endIndex);
 
-    // Handle page changes
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
-
-    // Reset to page 1 when search changes
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
         setCurrentPage(1);
     };
-
-    const closePopup = () => setSelectedStudentForSummary(null);
 
     const handleViewDetails = (student) => {
         setSelectedStudentForDetails(student);
@@ -59,6 +141,13 @@ const ClassStudents = () => {
 
     const handleBackFromDetails = () => {
         setSelectedStudentForDetails(null);
+    };
+
+    // Handle page changes
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
     };
 
     // Generate page numbers for pagination
@@ -83,7 +172,7 @@ const ClassStudents = () => {
         return pages;
     };
 
-    // If viewing student details, show analytics page
+
     if (selectedStudentForDetails) {
         return <StudentAnalytics student={selectedStudentForDetails} onBack={handleBackFromDetails} />;
     }
@@ -96,187 +185,428 @@ const ClassStudents = () => {
                         <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
                         <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
                     </div>
-                    <p className="mt-4 text-gray-500 font-medium animate-pulse">Loading Data...</p>
+                    <p className="mt-4 text-gray-500 font-medium animate-pulse">Fetching students...</p>
+                </div>
+            </TeacherLayout>
+        );
+    }
+    
+    if (error) {
+        return (
+            <TeacherLayout>
+                <div className="flex flex-col items-center justify-center h-screen bg-red-50 text-red-700">
+                    <p className="text-lg">Error loading students: {error.message}</p>
                 </div>
             </TeacherLayout>
         );
     }
 
     return (
-        <>
-            <TeacherLayout>
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
-                    {/* Header Section - Fixed - UPDATED: Display class first, then subject */}
-                    <div className="p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 shrink-0">
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-800">Students in {studentClass} - {subject}</h2>
-                            <p className="text-sm text-gray-500 mt-1">
-                                Showing {startIndex + 1}-{Math.min(endIndex, filteredStudents.length)} of {filteredStudents.length} students
-                            </p>
-                        </div>
-
-                        <div className="flex items-center gap-3 w-full md:w-auto">
-                            {/* Search Bar */}
-                            <div className="relative flex-1 md:w-64">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <input
-                                    type="text"
-                                    placeholder="Search students..."
-                                    value={searchQuery}
-                                    onChange={handleSearch}
-                                    className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                />
-                            </div>
-
-                            {/* Actions */}
-                            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
-                                <Filter size={20} />
-                            </button>
-                            <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
-                                <ArrowDownUp size={20} />
-                            </button>
-                        </div>
+        <TeacherLayout>
+            {toast.show && (<Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({...toast, show: false})}
+            />)}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+                <div className="p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 shrink-0">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-800">Students in {studentClass} - {subject}</h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                            Showing {startIndex + 1}-{Math.min(endIndex, filteredStudents.length)} of {filteredStudents.length} students
+                        </p>
                     </div>
+                    <div className="flex items-center gap-3 w-full md:w-auto">
+                        <div className="relative flex-1 md:w-64">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search students..."
+                                value={searchQuery}
+                                onChange={handleSearch}
+                                className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            />
+                        </div>
+                        <button
+                            onClick={() => setIsPublishModalOpen(true)}
+                            className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+                        >
+                            Publish Grades
+                        </button>
+                    </div>
+                </div>
 
-                    {/* Table Section - Takes remaining space, no scroll */}
-                    <div className="flex-1 overflow-y-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="bg-gray-50/50 sticky top-0">
-                            <tr>
-                                {['S/N', 'Student Name', 'Class', 'Email', 'Performance Status', 'Actions'].map((header) => (
-                                    <th key={header} className="p-4 text-sm font-semibold text-gray-600 whitespace-nowrap">
-                                        {header}
-                                    </th>
-                                ))}
-                            </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                            {currentStudents.length > 0 ? (
-                                currentStudents.map((student, index) => (
-                                    <tr key={student.sn} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="p-4 text-sm text-gray-600">{startIndex + index + 1}.</td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
-                                                    <span className="text-xs font-medium text-gray-600">{getInitials(student.name)}</span>
-                                                </div>
-                                                <span className="text-sm font-medium text-gray-800 whitespace-nowrap">{student.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.class}</td>
-                                        <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.email}</td>
-                                        <td className="p-4">
-                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(student.status)} whitespace-nowrap`}>
-                                                    {student.status}
-                                                </span>
-                                        </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-2">
-                                                <button
-                                                    onClick={() => setSelectedStudentForSummary(student)}
-                                                    className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                                                >
-                                                    Summary
-                                                </button>
-                                                <button
-                                                    onClick={() => handleViewDetails(student)}
-                                                    className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-                                                >
-                                                    Details
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="6" className="p-8 text-center text-gray-500">
-                                        No students found for this class and subject.
+                <div className="flex-1 overflow-y-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead className="bg-gray-50/50 sticky top-0">
+                        <tr>
+                            {['S/N', 'Student Id', 'Student Name', 'Class', 'Section', 'Grade', 'Actions'].map((header) => (
+                                <th key={header} className="p-4 text-sm font-semibold text-gray-600 whitespace-nowrap">
+                                    {header}
+                                </th>
+                            ))}
+                        </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                        {currentStudents.length > 0 ? (
+                            currentStudents.map((student, index) => (
+                                <tr key={student.id} className="hover:bg-gray-50/50 transition-colors">
+                                    <td className="p-4 text-sm text-gray-600">{startIndex + index + 1}.</td>
+                                    <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.studentId}</td>
+
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-sm font-medium text-gray-800 whitespace-nowrap">{student.fullName}</span>
+                                        </div>
+                                    </td>
+                                    <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.class}</td>
+                                    <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.section}</td>
+                                    <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.hasGrade ? student.grade :'Not Graded!'}</td>
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleAssignGrade(student)}
+                                                className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                            >
+                                                Assign Grade
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
-                            )}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <Pagination currentPage={currentPage} totalPages={totalPages} getPageNumbers={getPageNumbers}/>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="8" className="p-8 text-center text-gray-500">
+                                    No students found for this class and subject.
+                                </td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
                 </div>
-                <Transition appear show={selectedStudentForSummary !== null} as={Fragment}>
-                    <Dialog as="div" className="relative z-50" onClose={closePopup}>
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                        >
-                            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-                        </Transition.Child>
 
-                        <div className="fixed inset-0 overflow-y-auto">
-                            <div className="flex min-h-full items-center justify-center p-4 text-center">
-                                <Transition.Child
-                                    as={Fragment}
-                                    enter="ease-out duration-300"
-                                    enterFrom="opacity-0 scale-95"
-                                    enterTo="opacity-100 scale-100"
-                                    leave="ease-in duration-200"
-                                    leaveFrom="opacity-100 scale-100"
-                                    leaveTo="opacity-0 scale-95"
-                                >
-                                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all relative">
-                                        <button
-                                            onClick={closePopup}
-                                            className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors focus:outline-none"
-                                        >
-                                            <X size={20} />
+                <Pagination currentPage={currentPage} totalPages={totalPages} getPageNumbers={getPageNumbers}/>
+            </div>
+
+            <Transition appear show={isPublishModalOpen} as={Fragment}>
+                <Dialog as="div" className="relative z-50" onClose={() => setIsPublishModalOpen(false)}>
+                    <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
+                        <div className="fixed inset-0 bg-slate-900/40" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-6 text-center">
+                            <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100" leave="ease-in duration-200" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95">
+                                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-3xl bg-white p-10 text-left align-middle shadow-2xl border border-slate-200 transition-all relative">
+                                    <div className="mb-8">
+                                        <Dialog.Title as="h3" className="text-lg font-bold text-slate-900 tracking-tight leading-6">
+                                            Publish Grades
+                                        </Dialog.Title>
+                                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                            {studentClass} — {subject}
+                                        </p>
+                                    </div>
+
+                                    <div className="space-y-5">
+                                        <div className="space-y-2.5">
+                                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Target Term</label>
+                                            <select
+                                                value={publishData.term}
+                                                onChange={(e) => setPublishData({...publishData, term: e.target.value})}
+                                                className="block w-full rounded-lg border border-slate-200 py-3 px-3.5 text-sm font-medium text-slate-700 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all"
+                                            >
+                                                <option>First Term</option>
+                                                <option>Second Term</option>
+                                                <option>Third Term</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="space-y-2.5">
+                                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Academic Year</label>
+                                            <input
+                                                type="text"
+                                                placeholder="2024-2025"
+                                                value={publishData.academicYear}
+                                                onChange={(e) => setPublishData({...publishData, academicYear: e.target.value})}
+                                                className="block w-full rounded-lg border border-slate-200 py-3 px-3.5 text-sm font-medium text-slate-700 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-10 flex flex-col gap-3">
+                                        <button type="button" className="w-full py-3.5 bg-slate-900 text-white rounded-lg text-[11px] font-bold uppercase tracking-[0.2em] shadow-sm hover:bg-slate-800 transition-all active:scale-[0.98]">
+                                            Publish to Portal
                                         </button>
+                                        <button type="button" className="w-full py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors" onClick={() => setIsPublishModalOpen(false)}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
 
-                                        {selectedStudentForSummary && (
-                                            <div className="flex flex-col items-center">
-                                                <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shadow-sm mb-4">
-                                                    {selectedStudentForSummary.avatarUrl ? (
-                                                        <img src={selectedStudentForSummary.avatarUrl} alt={selectedStudentForSummary.name} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <span className="text-2xl font-medium text-gray-600">{getInitials(selectedStudentForSummary.name)}</span>
-                                                    )}
-                                                </div>
+            <Transition appear show={isGradeModalOpen} as={Fragment}>
+                <Dialog as="div" className="relative z-50" onClose={() => setIsGradeModalOpen(false)}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+                    </Transition.Child>
 
-                                                <Dialog.Title as="h3" className="text-xl font-bold text-gray-800 text-center">
-                                                    {selectedStudentForSummary.name}
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex min-h-full items-center justify-center p-6 text-center">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-3xl bg-white p-10 text-left align-middle shadow-xl transition-all relative">
+                                    <button
+                                        onClick={() => setIsGradeModalOpen(false)}
+                                        className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors focus:outline-none"
+                                    >
+                                        <X size={20} />
+                                    </button>
+
+                                    {selectedStudentForGrade && gradeData && (
+                                        <div className="space-y-10">
+                                            {/* Header Section */}
+                                            <div>
+                                                <Dialog.Title as="h3" className="text-xl font-bold text-gray-900 tracking-tight">
+                                                    Assign Grade to {selectedStudentForGrade.fullName}
                                                 </Dialog.Title>
-                                                <p className="text-sm text-gray-500 font-medium mb-6">{selectedStudentForSummary.class}</p>
+                                                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                                    Class Registry: {selectedStudentForGrade.class}
+                                                </p>
+                                            </div>
 
-                                                <div className="w-full border-t border-gray-100 pt-4 mb-6">
-                                                    <div className="flex justify-between items-center mb-2">
-                                                        <span className="text-sm font-semibold text-gray-600">Email:</span>
-                                                        <span className="text-sm text-gray-800">{selectedStudentForSummary.email}</span>
+                                            <div className="space-y-8">
+                                                {/* Primary Info Grid */}
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                    <div className="space-y-2.5">
+                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Subject</label>
+                                                        <select
+                                                            value={gradeData.subject}
+                                                            onChange={(e) => setGradeData({...gradeData, subject: e.target.value})}
+                                                            className="block w-full rounded-lg border border-gray-200 py-2.5 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                        >
+                                                            {teacherSubjects.map(subject => <option key={subject} value={subject}>{subject}</option>)}
+                                                        </select>
                                                     </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-sm font-semibold text-gray-600">Parent Contact:</span>
-                                                        <span className="text-sm text-gray-800">{selectedStudentForSummary.contact}</span>
+                                                    <div className="space-y-2.5">
+                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Term</label>
+                                                        <select
+                                                            value={gradeData.term}
+                                                            onChange={(e) => setGradeData({...gradeData, term: e.target.value})}
+                                                            className="block w-full rounded-lg border border-gray-200 py-2.5 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                        >
+                                                            <option>First Term</option>
+                                                            <option>Second Term</option>
+                                                            <option>Third Term</option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="space-y-2.5">
+                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Academic Year</label>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="2024-2025"
+                                                            value={gradeData.academicYear}
+                                                            onChange={(e) => setGradeData({...gradeData, academicYear: e.target.value})}
+                                                            className="block w-full rounded-lg border border-gray-200 py-2.5 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                        />
                                                     </div>
                                                 </div>
 
-                                                <div className="w-full border-t border-gray-100 pt-6 grid grid-cols-3 gap-4">
-                                                    <CircularProgress value={selectedStudentForSummary.attendance} label="Attendance Rate" colorClass="text-green-500" />
-                                                    <CircularProgress value={selectedStudentForSummary.behavioral} label="Behavioral Rate" colorClass="text-green-500" />
-                                                    <CircularProgress value={selectedStudentForSummary.participation} label="Class Participation" colorClass="text-green-500" />
+                                                {/* Assessments Section */}
+                                                <div className="space-y-5">
+                                                    <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                                                        <h4 className="text-sm font-bold text-gray-800 uppercase tracking-widest">Assessments</h4>
+                                                        <button
+                                                            onClick={() => {
+                                                                const newAssessment = {
+                                                                    type: "Test",
+                                                                    title: "",
+                                                                    score: 0,
+                                                                    maxScore: 100,
+                                                                    weight: 1,
+                                                                    date: new Date().toISOString().split('T')[0],
+                                                                    remarks: ""
+                                                                };
+                                                                setGradeData({...gradeData, assessments: [...gradeData.assessments, newAssessment]});
+                                                            }}
+                                                            className="px-4 py-2 text-[11px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                                        >
+                                                            Add Assessment
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="space-y-5">
+                                                        {gradeData.assessments.map((assessment, index) => (
+                                                            <div key={index} className="p-6 border border-gray-200 rounded-xl bg-gray-50/50 space-y-5">
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                                    <div className="space-y-2.5">
+                                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Type</label>
+                                                                        <select
+                                                                            value={assessment.type}
+                                                                            onChange={(e) => {
+                                                                                const newAssessments = [...gradeData.assessments];
+                                                                                newAssessments[index].type = e.target.value;
+                                                                                setGradeData({...gradeData, assessments: newAssessments});
+                                                                            }}
+                                                                            className="block w-full rounded-lg border border-gray-200 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                                        >
+                                                                            <option>Test</option>
+                                                                            <option>Assignment</option>
+                                                                            <option>Exam</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="space-y-2.5 lg:col-span-2">
+                                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Title</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Mid-term Mathematics Test"
+                                                                            value={assessment.title}
+                                                                            onChange={(e) => {
+                                                                                const newAssessments = [...gradeData.assessments];
+                                                                                newAssessments[index].title = e.target.value;
+                                                                                setGradeData({...gradeData, assessments: newAssessments});
+                                                                            }}
+                                                                            className="block w-full rounded-lg border border-gray-200 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2.5">
+                                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Score</label>
+                                                                        <input
+                                                                            type="number"
+                                                                            value={assessment.score}
+                                                                            onChange={(e) => {
+                                                                                const newAssessments = [...gradeData.assessments];
+                                                                                newAssessments[index].score = parseInt(e.target.value);
+                                                                                setGradeData({...gradeData, assessments: newAssessments});
+                                                                            }}
+                                                                            className="block w-full rounded-lg border border-gray-200 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2.5">
+                                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Max Score</label>
+                                                                        <input
+                                                                            type="number"
+                                                                            value={assessment.maxScore}
+                                                                            onChange={(e) => {
+                                                                                const newAssessments = [...gradeData.assessments];
+                                                                                newAssessments[index].maxScore = parseInt(e.target.value);
+                                                                                setGradeData({...gradeData, assessments: newAssessments});
+                                                                            }}
+                                                                            className="block w-full rounded-lg border border-gray-200 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2.5">
+                                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Weight</label>
+                                                                        <input
+                                                                            type="number"
+                                                                            value={assessment.weight}
+                                                                            onChange={(e) => {
+                                                                                const newAssessments = [...gradeData.assessments];
+                                                                                newAssessments[index].weight = parseInt(e.target.value);
+                                                                                setGradeData({...gradeData, assessments: newAssessments});
+                                                                            }}
+                                                                            className="block w-full rounded-lg border border-gray-200 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="space-y-2.5">
+                                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Date</label>
+                                                                        <input
+                                                                            type="date"
+                                                                            value={assessment.date}
+                                                                            onChange={(e) => {
+                                                                                const newAssessments = [...gradeData.assessments];
+                                                                                newAssessments[index].date = e.target.value;
+                                                                                setGradeData({...gradeData, assessments: newAssessments});
+                                                                            }}
+                                                                            className="block w-full rounded-lg border border-gray-200 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="lg:col-span-2 space-y-2.5">
+                                                                        <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Remarks</label>
+                                                                        <textarea
+                                                                            rows={1}
+                                                                            placeholder="Good performance in algebra"
+                                                                            value={assessment.remarks}
+                                                                            onChange={(e) => {
+                                                                                const newAssessments = [...gradeData.assessments];
+                                                                                newAssessments[index].remarks = e.target.value;
+                                                                                setGradeData({...gradeData, assessments: newAssessments});
+                                                                            }}
+                                                                            className="block w-full rounded-lg border border-gray-200 py-2 px-3 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex justify-end pt-3 border-t border-gray-100">
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            const newAssessments = gradeData.assessments.filter((_, i) => i !== index);
+                                                                            setGradeData({...gradeData, assessments: newAssessments});
+                                                                        }}
+                                                                        className="text-[10px] font-bold text-red-400 hover:text-red-600 uppercase tracking-widest transition-colors"
+                                                                    >
+                                                                        Remove Assessment
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* Overall Remarks */}
+                                                <div className="space-y-2.5">
+                                                    <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider">Final Executive Summary</label>
+                                                    <textarea
+                                                        rows={3}
+                                                        placeholder="Overall good performance. Needs improvement in geometry."
+                                                        value={gradeData.remarks}
+                                                        onChange={(e) => setGradeData({...gradeData, remarks: e.target.value})}
+                                                        className="block w-full rounded-lg border border-gray-200 py-3 px-3.5 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                                                    />
+                                                </div>
+
+                                                {/* Footer Actions */}
+                                                <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                                                    <button
+                                                        onClick={() => setIsGradeModalOpen(false)}
+                                                        className="px-6 py-2.5 text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        onClick={handleSubmitGrade}
+                                                        className="px-8 py-2.5 bg-slate-900 text-white rounded-lg text-[11px] font-bold uppercase tracking-widest shadow-sm hover:bg-slate-800 transition-all"
+                                                    >
+                                                        Finalize & Submit
+                                                    </button>
                                                 </div>
                                             </div>
-                                        )}
-                                    </Dialog.Panel>
-                                </Transition.Child>
-                            </div>
+                                        </div>
+                                    )}
+                                </Dialog.Panel>
+                            </Transition.Child>
                         </div>
-                    </Dialog>
-                </Transition>
-            </TeacherLayout>
-
-        </>
-
+                    </div>
+                </Dialog>
+            </Transition>
+        </TeacherLayout>
     );
 };
 

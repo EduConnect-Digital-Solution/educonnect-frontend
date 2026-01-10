@@ -8,6 +8,7 @@ import {CircularProgress} from "./teacherUtils/teacherComponents.jsx"; // Assumi
 
 
 const StudentAnalytics = ({ student, onBack }) => {
+    console.log(student)
     // Mock Data for New Sections
     const recentActivities = [
         { id: 1, type: 'Quiz', title: 'Mathematics: Algebra II', score: '18/20', date: '2 hours ago', status: 'Excellent' },
@@ -53,9 +54,9 @@ const StudentAnalytics = ({ student, onBack }) => {
                             {/*) : (*/}
                             {/*    <span className="text-3xl font-bold text-gray-400">{getInitials(student.name)}</span>*/}
                             {/*)}*/}
-                            <span className="text-3xl font-bold text-gray-400">{getInitials(student.name)}</span>
+                            <span className="text-3xl font-bold text-gray-400">{getInitials(student.fullName)}</span>
                         </div>
-                        <h2 className="text-xl font-bold text-gray-800">{student.name}</h2>
+                        <h2 className="text-xl font-bold text-gray-800">{student.fullName}</h2>
                         <p className="text-sm font-medium text-blue-600 mb-6">{student.class} Student</p>
 
                         <div className="w-full space-y-3 pt-6 border-t border-gray-50">

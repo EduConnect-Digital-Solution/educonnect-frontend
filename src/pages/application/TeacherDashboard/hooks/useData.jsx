@@ -13,6 +13,7 @@ export const useData = () => {
     const [recentActivity, setRecentActivity] = useState();
     const [students, setStudents] = useState([]);
     const [subjects, setSubjects] = useState([]);
+    const [teacher, setTeacher] = useState(null);
 
     const [error, setError] = useState(null);
 
@@ -37,6 +38,7 @@ export const useData = () => {
         fetchAnalytics()
             .then(([dashboardRes, classRes, StudentsRes]) => {
                 setStatistics(dashboardRes.data.statistics);
+                setTeacher(dashboardRes.data.teacher);
                 setSubjects(dashboardRes.data.teacher.subjects);
                 setClasses(classRes.data.classes);
                 setRecentActivity(dashboardRes.data.recentActivity.map(notification => ({
@@ -62,5 +64,5 @@ export const useData = () => {
             });
     }, []);
 
-    return { loading, statistics, error, classes, recentActivity, students, subjects};
+    return { loading, statistics, error, classes, recentActivity, students, subjects, teacher};
 };

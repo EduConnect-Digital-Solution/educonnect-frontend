@@ -11,6 +11,8 @@ import {resendInvitation, terminateInvitation} from "../../../auth/authAPIs.js";
 // TODO: make it so that the school get a drop down of the class style they used, grade or class,
 //  and then the drop down should have all the grades, grade 1-12 and then primary 1 to SS3
 
+// TODO: Remove all white space before and after any form submit across all dashboards.
+
 const EducationMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     return (
         <div className={`p-6 rounded-xl shadow-md flex items-center justify-between min-w-[200px] ${colorClass}`}>

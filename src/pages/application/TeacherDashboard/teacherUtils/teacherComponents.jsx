@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {NavLink, useLocation} from "react-router-dom";
+import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import {
     AlertCircle,
     AlertTriangle, BarChart3, Bell,
@@ -121,6 +121,7 @@ const QuickActionCard = ({ title, description, buttonText, buttonFunction, icon:
 );
 
 export const QuickActions = () => {
+    const navigate = useNavigate()
     return (
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
         <div className="flex justify-between items-center mb-6">
@@ -138,11 +139,12 @@ export const QuickActions = () => {
                 comingSoon={true}
             />
             <QuickActionCard
-                title="Subject Overview"
-                description="Review subjects you teach"
-                buttonText="View Subjects"
-                icon={BookOpen}
-                colorClass="bg-blue-50 text-blue-600"
+                title="Manage Classes"
+                description="View and manage your classes"
+                buttonText="Manage Classes"
+                icon={Mail}
+                colorClass="bg-orange-50 text-orange-600"
+                buttonFunction={() => navigate('/dashboard/teacher/classes')}
                 comingSoon={false}
             />
             <QuickActionCard
@@ -151,14 +153,6 @@ export const QuickActions = () => {
                 icon={BookOpen}
                 colorClass="bg-gray-50 text-gray-600"
                 comingSoon={true}
-            />
-            <QuickActionCard
-                title="Manage Classes"
-                description="View and manage your classes"
-                buttonText="Manage Classes"
-                icon={Mail}
-                colorClass="bg-orange-50 text-orange-600"
-                comingSoon={false}
             />
         </div>
     </div>
@@ -376,7 +370,7 @@ export const TeacherResponsibilities = ({classes, students}) => {
     const classesList = (classes || []).map(cls => ({
         name: cls.name, count: cls.studentCount, max: 35,
     }));
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeTab, setActiveTab] = useState('students');
 
     // Search state
     const [searchTerm, setSearchTerm] = useState('');
@@ -415,11 +409,21 @@ export const TeacherResponsibilities = ({classes, students}) => {
     return (
         <>
             {/*Classes taught and Students */}
-            <div className="col-span-2 h-[540px]">
+            <div className="col-span-2 h-[500px]">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 h-full flex flex-col overflow-hidden">
 
                     {/* Tabs Header (INSIDE the card) */}
                     <div className="flex gap-1 p-2 bg-gray-50 border-b border-gray-100">
+                        <button
+                            onClick={() => setActiveTab('students')}
+                            className={`flex-1 py-2 text-sm font-bold rounded-xl transition ${
+                                activeTab === 'students'
+                                    ? 'bg-white text-blue-600 shadow-sm'
+                                    : 'text-gray-500 hover:text-gray-700'
+                            }`}
+                        >
+                            List of Students
+                        </button>
                         <button
                             onClick={() => setActiveTab('overview')}
                             className={`flex-1 py-2 text-sm font-bold rounded-xl transition ${
@@ -431,16 +435,6 @@ export const TeacherResponsibilities = ({classes, students}) => {
                             Class Overview
                         </button>
 
-                        <button
-                            onClick={() => setActiveTab('students')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-xl transition ${
-                                activeTab === 'students'
-                                    ? 'bg-white text-blue-600 shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                        >
-                            List of Students
-                        </button>
                     </div>
 
 
@@ -462,9 +456,6 @@ export const TeacherResponsibilities = ({classes, students}) => {
                                                 onChange={(e) => setSearchTerm(e.target.value)}
                                             />
                                         </div>
-                                        <NavLink to={`/dashboard/teacher/students`} className="px-4 py-2 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all flex items-center gap-1">
-                                            View All <ChevronRight size={14} />
-                                        </NavLink>
                                     </div>
                                 </div>
 
@@ -581,7 +572,7 @@ export const TeacherResponsibilities = ({classes, students}) => {
                                     </div>
 
                                     {/* Relocated View All Button */}
-                                    <NavLink to={``} className="px-4 py-2 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all flex items-center gap-1">
+                                    <NavLink to={`/dashboard/teacher/classes`} className="px-4 py-2 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all flex items-center gap-1">
                                         View All <ChevronRight size={14} />
                                     </NavLink>
                                 </div>
@@ -700,7 +691,7 @@ export const CircularProgress = ({ value, label, colorClass }) => {
     );
 };
 
-export const AccountInfo = () => {
+export const AccountInfo = ({role}) => {
     // Mock Data
 
 
@@ -712,7 +703,7 @@ export const AccountInfo = () => {
     ];
 
     return (
-        <div className="mt-8">
+        <div>
             {/* --- 2. Account Status Card --- */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6">
@@ -741,7 +732,7 @@ export const AccountInfo = () => {
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Role & Permissions</p>
                     <div className="flex items-center gap-2 mb-4">
                         <ShieldCheck size={16} className="text-blue-600" />
-                        <span className="text-sm font-bold text-gray-800">Role: <span className="text-blue-600">Subject Teacher</span></span>
+                        <span className="text-sm font-bold text-gray-800">Role: <span className="text-blue-600">{role}</span></span>
                     </div>
 
                     <div className="space-y-3">
@@ -758,24 +749,6 @@ export const AccountInfo = () => {
                     <p className="text-[10px] text-gray-400 mt-2 italic font-medium">Note: Permissions can only be edited by Admin</p>
                 </section>
 
-                {/* Account Activity */}
-                <section className="pt-6 border-t border-gray-100">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Account Activity</p>
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <Clock size={16} className="text-gray-400" />
-                            <p className="text-xs text-gray-500">Last Login: <span className="font-bold text-gray-800">Today at 12:04 PM</span></p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <CalendarDays size={16} className="text-gray-400" />
-                            <p className="text-xs text-gray-500">Date Joined: <span className="font-bold text-gray-800">Friday, 20th Oct, 2023 at 2:40 PM</span></p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <UserCog size={16} className="text-gray-400" />
-                            <p className="text-xs text-gray-500">Created by: <span className="font-bold text-gray-800">Admin (ID: 0123456789)</span></p>
-                        </div>
-                    </div>
-                </section>
             </div>
 
         </div>

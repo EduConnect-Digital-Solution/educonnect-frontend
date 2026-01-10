@@ -115,6 +115,87 @@ export async function getTeacherStudents() {
 }
 
 
+export async function getSubjectsByClass(className) {
+
+    // expected response:
+    // {
+    //     "success": true,
+    //     "message": "Subjects retrieved successfully",
+    //     "data": {
+    //     "className": "JSS1",
+    //         "subjects": [
+    //         {
+    //             "name": "Math",
+    //             "studentCount": 1,
+    //             "gradedCount": 0,
+    //             "gradingProgress": 0
+    //         },
+    //         {
+    //             "name": " english",
+    //             "studentCount": 1,
+    //             "gradedCount": 0,
+    //             "gradingProgress": 0
+    //         },
+    //         {
+    //             "name": " social studies",
+    //             "studentCount": 1,
+    //             "gradedCount": 0,
+    //             "gradingProgress": 0
+    //         }
+    //     ],
+    //         "totalSubjects": 3,
+    //         "generatedAt": "2026-01-10T00:16:34.048Z"
+    // }
+    // }
+
+
+    try {
+        const { data } = await apiClient.get(`/api/teacher/classes/${className}/subjects`);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+export async function getStudentsByClassandSubject(className, subjectName) {
+    try {
+        const { data } = await apiClient.get(`/api/teacher/classes/${className}/subjects/${subjectName}/students`);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+export async function assignGrade(payload) {
+    try {
+        const { data } = await apiClient.post(`/api/teacher/grades`, payload);
+        console.log(data);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+export async function publishGrade(payload) {
+    // expected payload:
+    // {
+    //     "class": "JSS1",
+    //     "subject": "Math",
+    //     "term": "First Term",
+    //     "academicYear": "2024-2025"
+    // }
+
+    try {
+        const { data } = await apiClient.post(`/api/teacher/grades/publish`, payload);
+        console.log(data);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
 // New API function for dashboard data
 export async function getDashboardUsers(role = '', status = '') {
     try {

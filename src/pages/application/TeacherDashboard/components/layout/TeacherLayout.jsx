@@ -30,8 +30,6 @@ export const Sidebar = () => {
     const navItems = [
         { name: 'Dashboard', icon: LayoutDashboard, link: '/dashboard/teacher' },
         { name: 'My Classes', icon: GraduationCap, link: '/dashboard/teacher/classes', label: '' },
-        { name: 'Grades', icon: GraduationCap, link: '/dashboard/teacher/classes', label: 'COMING SOON' },
-        { name: 'My Students', icon: GraduationCap, link: '/dashboard/teacher/students', label: '' },
         { name: 'User Profile', icon: User, link: '/dashboard/teacher/profile' },
     ];
 

@@ -27,9 +27,9 @@ const ParentProfilePage = lazy(() => import("./pages/application/ParentDashboard
 
 // Teacher Pages
 const TeacherDashboard = lazy(() => import("./pages/application/TeacherDashboard/TeacherDashboard.jsx"));
-const StudentList = lazy(() => import("./pages/application/TeacherDashboard/MyStudents.jsx"));
 const TeacherProfile = lazy(() => import("./pages/application/TeacherDashboard/UserProfile.jsx"));
 const ClassStudents = lazy(() => import("./pages/application/TeacherDashboard/ClassStudents.jsx"));
+const TeacherClasses = lazy(() => import("./pages/application/TeacherDashboard/TeacherClasses.jsx"));
 
 const LoadingFallback = () => (
     <div className="h-screen w-full flex items-center justify-center font-[Outfit]">
@@ -96,15 +96,16 @@ function AppRoutes() {
                             <TeacherDashboard />
                          </ProtectedRoute>
                         } />
-                    <Route path="/dashboard/teacher/students" element={
-                        <ProtectedRoute requiredRole="teacher">
-                            <StudentList />
-                         </ProtectedRoute>
-                    } />
+
                     <Route path="/dashboard/teacher/profile" element={
                         <ProtectedRoute requiredRole="teacher">
                             <TeacherProfile />
                          </ProtectedRoute>
+                    } />
+                    <Route path="/dashboard/teacher/classes" element={
+                        <ProtectedRoute requiredRole="teacher">
+                            <TeacherClasses />
+                        </ProtectedRoute>
                     } />
 
                     {/* UPDATED: Route now expects class first, then subject */}
