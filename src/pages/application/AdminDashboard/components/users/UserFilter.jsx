@@ -13,7 +13,7 @@ const UserFilter = ({
 }) => {
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
     const [showAddUserDropdown, setShowAddUserDropdown] = useState(false);
-    const userStatuses = ['Active', 'Inactive', 'Pending', 'Suspended']; // This could be dynamic
+    const userStatuses = ['Active', 'Inactive', 'Pending', 'Suspended'];
 
     return (
         <div className="p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 flex-shrink-0">

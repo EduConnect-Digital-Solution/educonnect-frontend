@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { getInitials } from '../../utils/formatters';
 import { getRoleBadgeStyle, getStatusBadgeStyle } from '../../utils/styleHelpers';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 
-const UserTable = ({ users, startIndex, onEdit, onDelete, onStatusChange }) => {
+const UserTable = ({ users, startIndex, onDelete, onStatusChange, onAssignStudents, onUnassignStudents, onAssignClasses, onManageParentLinks }) => {
+    const [openMenuId, setOpenMenuId] = useState(null);
+
+    const handleMenuToggle = (userId) => {
+        setOpenMenuId(openMenuId === userId ? null : userId);
+    };
+    
     return (
         <div className="flex-1 overflow-y-auto">
             <table className="w-full text-left border-collapse">
@@ -41,20 +47,27 @@ const UserTable = ({ users, startIndex, onEdit, onDelete, onStatusChange }) => {
                                     </span>
                                 </td>
                                 <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.inviteSentBy}</td>
-                                <td className="p-4">
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => onStatusChange(user)}
-                                            className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                                        >
-                                            Change Status
+                                <td className="p-4 relative">
+                                    <div className="relative">
+                                        <button onClick={() => handleMenuToggle(user.id)}>
+                                            <MoreHorizontal size={20} />
                                         </button>
-                                        <button
-                                            onClick={() => onDelete(user)}
-                                            className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-                                        >
-                                            Remove
-                                        </button>
+                                        {openMenuId === user.id && (
+                                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                                                {user.role === 'teacher' && (
+                                                    <>
+                                                        <button onClick={() => { onAssignStudents(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Assign Students</button>
+                                                        <button onClick={() => { onUnassignStudents(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Unassign Students</button>
+                                                        <button onClick={() => { onAssignClasses(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Assign Classes</button>
+                                                    </>
+                                                )}
+                                                {user.role === 'parent' && (
+                                                    <button onClick={() => { onManageParentLinks(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Manage Student Links</button>
+                                                )}
+                                                <button onClick={() => { onStatusChange(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Change Status</button>
+                                                <button onClick={() => { onDelete(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
+                                            </div>
+                                        )}
                                     </div>
                                 </td>
                             </tr>
@@ -133,6 +146,10 @@ const UserTableLayout = ({
     onEdit,
     onDelete,
     onStatusChange,
+    onAssignStudents,
+    onUnassignStudents,
+    onAssignClasses,
+    onManageParentLinks,
     currentPage,
     totalPages,
     goToPage,
@@ -147,6 +164,10 @@ const UserTableLayout = ({
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onStatusChange={onStatusChange}
+                onAssignStudents={onAssignStudents}
+                onUnassignStudents={onUnassignStudents}
+                onAssignClasses={onAssignClasses}
+                onManageParentLinks={onManageParentLinks}
             />
             <Pagination currentPage={currentPage} totalPages={totalPages} goToPage={goToPage} />
         </div>

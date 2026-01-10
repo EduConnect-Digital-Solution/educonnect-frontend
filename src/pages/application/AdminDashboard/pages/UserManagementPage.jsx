@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { X, UserCircle2, Trash2 } from 'lucide-react';
 import AdminLayout from '../components/layout/AdminLayout';
 import { useUsers } from '../hooks/useUsers';
 import UserTableLayout from '../components/users/UserTable';
@@ -10,19 +9,13 @@ import {
     InviteParentModal,
     InviteTeacherModal,
     StatusChangeModal,
-    ManageParentStudentLinkModal
+    ManageParentStudentLinkModal,
+    AssignStudentsToTeacherModal,
+    UnassignStudentFromTeacherModal,
+    AssignClassesModal
 } from "../components/ui/modals.jsx";
-import {Toast} from "../components/ui/Toast.jsx";
-import {useAuth} from "../../../../contexts/AuthContext.jsx";
-// The modal for adding/editing users would be complex, so for this refactor,
-// the logic is simplified here. In a real app, this would be a separate component.
-
-/* TODO:
-*   1) Implement Assign / Unassign Classes to Teacher
-*   2) Implement Assign / Unassign Student to Teacher
-*   3) Implement Assign / Unassign Subject to Teacher
-* */
-
+import { Toast } from "../components/ui/Toast.jsx";
+import { useAuth } from "../../../../contexts/AuthContext.jsx";
 
 const UserManagementPage = () => {
     const {
@@ -41,15 +34,21 @@ const UserManagementPage = () => {
         endIndex
     } = useUsers();
 
-    const {user} = useAuth();
+    const { user } = useAuth();
     const [userToDelete, setUserToDelete] = useState(null);
     const [statusChangeUser, setStatusChangeUser] = useState(null);
     const [addUserRole, setAddUserRole] = useState(null);
-    const [showManageLinksModal, setShowManageLinksModal] = useState(false);
-    const [statusChangeReason, setStatusChangeReason] = useState('');
     const [viewTeacher, setViewTeacher] = useState(false);
     const [viewParent, setViewParent] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+
+    // State for all modals
+    const [showManageLinksModal, setShowManageLinksModal] = useState(false);
+    const [showAssignModal, setShowAssignModal] = useState(false);
+    const [showUnassignModal, setShowUnassignModal] = useState(false);
+    const [showAssignClassesModal, setShowAssignClassesModal] = useState(false);
+    const [selectedTeacher, setSelectedTeacher] = useState(null);
+    const [selectedParent, setSelectedParent] = useState(null);
 
     const showToast = (message, type = 'error') => {
         setToast({ show: true, message, type });
@@ -60,11 +59,10 @@ const UserManagementPage = () => {
     };
 
     const handleAddNew = (role) => {
-        // Logic to open a modal for adding a new user
         setAddUserRole(role);
-        if (role === 'Teacher'){
+        if (role === 'Teacher') {
             setViewTeacher(true)
-        } else if (role === 'Parent'){
+        } else if (role === 'Parent') {
             setViewParent(true)
         }
     };
@@ -76,11 +74,25 @@ const UserManagementPage = () => {
     const handleStatusChange = (user) => {
         setStatusChangeUser(user);
     };
+    
+    const handleOpenAssignModal = (teacher) => {
+        setSelectedTeacher(teacher);
+        setShowAssignModal(true);
+    };
+    
+    const handleOpenUnassignModal = (teacher) => {
+        setSelectedTeacher(teacher);
+        setShowUnassignModal(true);
+    };
 
-    const confirmStatusChange = (newStatus) => {
-        console.log('Change status for:', statusChangeUser, 'to:', newStatus);
-        alert(`Status changed to: ${newStatus} for ${statusChangeUser.name}`);
-        setStatusChangeUser(null);
+    const handleOpenAssignClassesModal = (teacher) => {
+        setSelectedTeacher(teacher);
+        setShowAssignClassesModal(true);
+    };
+
+    const handleOpenManageLinksModal = (parent) => {
+        setSelectedParent(parent);
+        setShowManageLinksModal(true);
     };
 
     if (loading) {
@@ -111,6 +123,10 @@ const UserManagementPage = () => {
                 startIndex={startIndex}
                 onDelete={handleDelete}
                 onStatusChange={handleStatusChange}
+                onAssignStudents={handleOpenAssignModal}
+                onUnassignStudents={handleOpenUnassignModal}
+                onAssignClasses={handleOpenAssignClassesModal}
+                onManageParentLinks={handleOpenManageLinksModal}
                 currentPage={currentPage}
                 totalPages={totalPages}
                 goToPage={goToPage}
@@ -125,22 +141,11 @@ const UserManagementPage = () => {
                     startIndex={startIndex}
                     endIndex={endIndex}
                 />
-                <div className="flex justify-end mt-4">
-                    <button
-                        onClick={() => setShowManageLinksModal(true)}
-                        className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                    >
-                        Manage Parent-Student Links
-                    </button>
-                </div>
             </UserTableLayout>
-
 
             {viewTeacher && <InviteTeacherModal onClose={() => setViewTeacher(false)} showToast={showToast} />}
             {viewParent && <InviteParentModal onClose={() => setViewParent(false)} showToast={showToast} />}
 
-
-            {/* Change Status Modal */}
             {statusChangeUser && <StatusChangeModal
                 onClose={() => setStatusChangeUser(null)}
                 showToast={showToast}
@@ -148,7 +153,6 @@ const UserManagementPage = () => {
                 schoolId={user.schoolId}
             />}
 
-            {/* Delete Confirmation Modal */}
             {userToDelete && <DeleteUserModal
                 onClose={() => setUserToDelete(null)}
                 showToast={showToast}
@@ -156,10 +160,31 @@ const UserManagementPage = () => {
                 schoolId={user.schoolId}
             />}
 
-            {/* Manage Parent-Student Links Modal */}
             {showManageLinksModal && <ManageParentStudentLinkModal
                 onClose={() => setShowManageLinksModal(false)}
                 showToast={showToast}
+                parent={selectedParent}
+                schoolId={user.schoolId}
+            />}
+
+            {showAssignModal && selectedTeacher && <AssignStudentsToTeacherModal
+                onClose={() => setShowAssignModal(false)}
+                showToast={showToast}
+                teacher={selectedTeacher}
+                schoolId={user.schoolId}
+            />}
+
+            {showUnassignModal && selectedTeacher && <UnassignStudentFromTeacherModal
+                onClose={() => setShowUnassignModal(false)}
+                showToast={showToast}
+                teacher={selectedTeacher}
+                schoolId={user.schoolId}
+            />}
+            
+            {showAssignClassesModal && selectedTeacher && <AssignClassesModal
+                onClose={() => setShowAssignClassesModal(false)}
+                showToast={showToast}
+                teacher={selectedTeacher}
                 schoolId={user.schoolId}
             />}
         </AdminLayout>

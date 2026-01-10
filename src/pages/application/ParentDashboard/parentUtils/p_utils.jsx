@@ -24,7 +24,6 @@ import {Images} from "../../../../components/images.jsx";
 import {getParentDashboard} from "../../../auth/authAPIs.js";
 import {useAnalytics} from "../hooks/useAnalytics";
 import {formatDate} from "../../AdminDashboard/utils/formatters.js";
-// TODO: implement Frontend caching
 
 export const StatsMetricCard = ({ title, value, icon: Icon, colorClass }) => {
     return (
