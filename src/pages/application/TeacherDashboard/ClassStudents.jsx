@@ -1,18 +1,21 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, {Fragment, useState, useEffect, useCallback} from 'react';
 import {useParams} from 'react-router-dom';
-import { Search, Filter, ArrowDownUp, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Dialog, Transition } from '@headlessui/react';
-import {getInitials, getStatusStyles} from "../../../utils/imports.jsx";
 import StudentAnalytics from './StudentAnalytics.jsx';
 import {Pagination} from "./teacherUtils/teacherComponents.jsx";
 import TeacherLayout from "./components/layout/TeacherLayout.jsx";
 import {useData} from "./hooks/useData.jsx";
-import {assignGrade, getStudentsByClassandSubject} from "../../auth/authAPIs.js";
+import {assignGrade, getStudentsByClassandSubject, publishGrade, updateGrade} from "../../auth/authAPIs.js";
 import {Toast} from "../AdminDashboard/components/ui/Toast.jsx";
+import {useGradedState} from "./hooks/useGradedState.js";
+import {useAuth} from "../../../contexts/AuthContext.jsx";
 
 const ClassStudents = () => {
     const { subjects: teacherSubjects } = useData();
     const { class: studentClass, subject } = useParams();
+    const { user } = useAuth();
+    const { gradedStudents, updateGradedStatus, clearGradedStatus, isStudentGraded } = useGradedState(user?.id, studentClass, subject);
 
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -34,17 +37,30 @@ const ClassStudents = () => {
     const showToast = (message, type = 'error') => {
         setToast({show: true, message, type});
     };
+    
+    const fetchStudents = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await getStudentsByClassandSubject(studentClass, subject);
+            setStudents(response.data.students);
+            setStats(response.data.statistics);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    }, [studentClass, subject]);
 
     const handleSubmitGrade = async () => {
         try {
             // 1. Basic Information Validation
             if (!gradeData.subject || !gradeData.term || !gradeData.academicYear) {
-                showToast("Please complete all header fields (Subject, Term, and Year).");
+                return showToast("Please complete all header fields (Subject, Term, and Year).");
             }
 
             // 2. Assessment List Validation
             if (gradeData.assessments.length === 0) {
-                showToast("Please add at least one assessment.");
+                return showToast("Please add at least one assessment.");
             }
 
             // 3. Detailed Assessment Validation (Looping through entries)
@@ -53,55 +69,67 @@ const ClassStudents = () => {
                 const assessmentNum = i + 1;
 
                 if (!entry.title.trim()) {
-                    showToast(`Assessment #${assessmentNum}: Title is required.`);
+                    return showToast(`Assessment #${assessmentNum}: Title is required.`);
                 }
 
                 if (isNaN(entry.score) || entry.score < 0) {
-                    showToast(`Assessment #${assessmentNum}: Please enter a valid score.`);
+                    return showToast(`Assessment #${assessmentNum}: Please enter a valid score.`);
                 }
 
                 if (entry.score > entry.maxScore) {
-                    showToast(`Assessment #${assessmentNum}: Score (${entry.score}) cannot exceed Max Score (${entry.maxScore}).`);
+                    return showToast(`Assessment #${assessmentNum}: Score (${entry.score}) cannot exceed Max Score (${entry.maxScore}).`);
                 }
 
                 if (!entry.date) {
-                    showToast(`Assessment #${assessmentNum}: Please select a date.`);
+                    return showToast(`Assessment #${assessmentNum}: Please select a date.`);
                 }
             }
 
+            const isUpdating = isStudentGraded(selectedStudentForGrade.id) || selectedStudentForGrade.hasGrade;
+
             // 4. Submission
-            // Assuming assignGrade is an async function from your props/hooks
-            const response = await assignGrade({
-                ...gradeData
-            });
+            if (isUpdating) {
+                await updateGrade({ ...gradeData });
+            } else {
+                await assignGrade({ ...gradeData });
+            }
 
             // 5. Success Handling
-            showToast(`Grades assigned successfully to ${selectedStudentForGrade.fullName}`, 'success');
-            setIsGradeModalOpen(false); // Close modal only on success
+            showToast(`Grades ${isUpdating ? 'updated' : 'assigned'} successfully to ${selectedStudentForGrade.fullName}`, 'success');
+            updateGradedStatus(selectedStudentForGrade.id);
+            await fetchStudents();
+            setIsGradeModalOpen(false);
 
         } catch (error) {
             console.error("Grade Submission Error:", error);
             showToast(error.message || "Failed to submit grades. Please try again.");
         }
     };
+    
+    const handlePublishGrades = async () => {
+        try {
+            const payload = {
+                class: studentClass,
+                subject: subject,
+                term: publishData.term,
+                academicYear: publishData.academicYear
+            };
+            await publishGrade(payload);
+            showToast('Grades published successfully!', 'success');
+            clearGradedStatus();
+            await fetchStudents();
+            setIsPublishModalOpen(false);
+        } catch (error) {
+            console.error('Publish Error:', error);
+            showToast(error.message || 'Failed to publish grades. Please try again.');
+        }
+    };
 
 
 
     useEffect(() => {
-        const fetchStudents = async () => {
-            setLoading(true);
-            try {
-                const response = await getStudentsByClassandSubject(studentClass, subject);
-                setStudents(response.data.students);
-                setStats(response.data.statistics);
-            } catch (err) {
-                setError(err);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchStudents();
-    }, [studentClass, subject]);
+    }, [fetchStudents]);
 
     const handleAssignGrade = (student) => {
         const [stClass, section] = student.class.split('-');
@@ -261,14 +289,16 @@ const ClassStudents = () => {
                                     </td>
                                     <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.class}</td>
                                     <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.section}</td>
-                                    <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{student.hasGrade ? student.grade :'Not Graded!'}</td>
+                                    <td className="p-4 text-sm text-gray-600 whitespace-nowrap">
+                                        {isStudentGraded(student.id) || student.hasGrade ? student.grade : 'Not Graded!'}
+                                    </td>
                                     <td className="p-4">
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={() => handleAssignGrade(student)}
                                                 className="px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                                             >
-                                                Assign Grade
+                                                {isStudentGraded(student.id) || student.hasGrade ? 'Update Grade' : 'Assign Grade'}
                                             </button>
                                         </div>
                                     </td>
@@ -334,7 +364,11 @@ const ClassStudents = () => {
                                     </div>
 
                                     <div className="mt-10 flex flex-col gap-3">
-                                        <button type="button" className="w-full py-3.5 bg-slate-900 text-white rounded-lg text-[11px] font-bold uppercase tracking-[0.2em] shadow-sm hover:bg-slate-800 transition-all active:scale-[0.98]">
+                                        <button 
+                                            type="button" 
+                                            className="w-full py-3.5 bg-slate-900 text-white rounded-lg text-[11px] font-bold uppercase tracking-[0.2em] shadow-sm hover:bg-slate-800 transition-all active:scale-[0.98]"
+                                            onClick={handlePublishGrades}
+                                        >
                                             Publish to Portal
                                         </button>
                                         <button type="button" className="w-full py-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors" onClick={() => setIsPublishModalOpen(false)}>
@@ -386,7 +420,7 @@ const ClassStudents = () => {
                                             {/* Header Section */}
                                             <div>
                                                 <Dialog.Title as="h3" className="text-xl font-bold text-gray-900 tracking-tight">
-                                                    Assign Grade to {selectedStudentForGrade.fullName}
+                                                    {isStudentGraded(selectedStudentForGrade.id) || selectedStudentForGrade.hasGrade ? 'Update Grade for' : 'Assign Grade to'} {selectedStudentForGrade.fullName}
                                                 </Dialog.Title>
                                                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">
                                                     Class Registry: {selectedStudentForGrade.class}

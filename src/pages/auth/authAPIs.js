@@ -178,16 +178,18 @@ export async function assignGrade(payload) {
 }
 
 export async function publishGrade(payload) {
-    // expected payload:
-    // {
-    //     "class": "JSS1",
-    //     "subject": "Math",
-    //     "term": "First Term",
-    //     "academicYear": "2024-2025"
-    // }
-
     try {
         const { data } = await apiClient.post(`/api/teacher/grades/publish`, payload);
+        console.log(data);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+export async function updateGrade(payload) {
+    try {
+        const { data } = await apiClient.put(`/api/teacher/grades/${payload.studentId}`, payload);
         console.log(data);
         return data;
     } catch (error) {
@@ -403,6 +405,18 @@ export async function deleteStudent(payload) {
         throw error?.response?.data || error;
     }
 }
+
+export async function deleteGrade(payload, studentId) {
+    try {
+        const { data } = await apiClient.delete(`/api/teacher/grades/${studentId}`, {data: payload});
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+
 
 export async function linkStudentToParent(payload, parentId) {
     try {
