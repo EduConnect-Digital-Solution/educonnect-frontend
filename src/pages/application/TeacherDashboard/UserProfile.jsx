@@ -17,8 +17,10 @@ import { Dialog, Transition } from '@headlessui/react';
 import {getSubjectsByClass} from "../../auth/authAPIs.js";
 import {Link} from "react-router-dom";
 import {getInitials} from "../AdminDashboard/utils/formatters.js";
+import {useAuth} from "../../../contexts/AuthContext.jsx";
 
 const TeacherProfile = () => {
+    const {user} = useAuth();
     const { loading, teacher, classes, subjects: teacherSubjects } = useData();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedClass, setSelectedClass] = useState(null);
@@ -166,7 +168,7 @@ const TeacherProfile = () => {
                             </div>
                         </div>
 
-                        <AccountInfo role={teacher.role} />
+                        <AccountInfo role={user.role} />
 
                     </div>
                 </div>

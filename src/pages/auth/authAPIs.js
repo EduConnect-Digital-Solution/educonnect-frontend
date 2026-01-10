@@ -187,9 +187,9 @@ export async function publishGrade(payload) {
     }
 }
 
-export async function updateGrade(payload) {
+export async function updateGrade(payload, gradeId) {
     try {
-        const { data } = await apiClient.put(`/api/teacher/grades/${payload.studentId}`, payload);
+        const { data } = await apiClient.put(`/api/teacher/grades/${gradeId}`, payload);
         console.log(data);
         return data;
     } catch (error) {
@@ -198,13 +198,136 @@ export async function updateGrade(payload) {
 }
 
 
+export async function viewGrade(studentId) {
+    // expected response:
+    // {
+    //     "success": true,
+    //     "message": "Student grades retrieved successfully",
+    //     "data": {
+    //     "student": {
+    //         "id": "69619964c53468428414fe98",
+    //             "studentId": "268491",
+    //             "firstName": "Bryan",
+    //             "lastName": "Mbuemo",
+    //             "fullName": "Bryan Mbuemo",
+    //             "class": "JSS1",
+    //             "section": "A"
+    //     },
+    //     "academicYear": "2026-2027",
+    //         "term": "All Terms",
+    //         "subject": "All Subjects",
+    //         "gradesBySubject": {
+    //         "Math": [
+    //             {
+    //                 "id": "6962543c21164cec62250132",
+    //                 "subject": "Math",
+    //                 "class": "JSS1",
+    //                 "section": "A",
+    //                 "term": "Second Term",
+    //                 "academicYear": "2026-2027",
+    //                 "totalScore": 175,
+    //                 "totalMaxScore": 200,
+    //                 "percentage": 87.5,
+    //                 "letterGrade": "B+",
+    //                 "gradePoints": 3.3,
+    //                 "assessments": [
+    //                     {
+    //                         "type": "Test",
+    //                         "title": "Mid-term Mathematics Test",
+    //                         "score": 85,
+    //                         "maxScore": 100,
+    //                         "weight": 1,
+    //                         "date": "2024-01-15T00:00:00.000Z",
+    //                         "remarks": "Good performance in algebra",
+    //                         "_id": "6962543c21164cec62250133",
+    //                         "id": "6962543c21164cec62250133"
+    //                     },
+    //                     {
+    //                         "type": "Assignment",
+    //                         "title": "Homework Assignment 1",
+    //                         "score": 90,
+    //                         "maxScore": 100,
+    //                         "weight": 1,
+    //                         "date": "2024-01-20T00:00:00.000Z",
+    //                         "remarks": "Excellent work",
+    //                         "_id": "6962543c21164cec62250134",
+    //                         "id": "6962543c21164cec62250134"
+    //                     }
+    //                 ],
+    //                 "remarks": "Overall good performance. Needs improvement in geometry.",
+    //                 "isPublished": true,
+    //                 "teacher": {
+    //                     "id": "69600f7dd2250cd945def81b",
+    //                     "name": "Milos Kerkez"
+    //                 },
+    //                 "createdAt": "2026-01-10T13:29:32.744Z",
+    //                 "updatedAt": "2026-01-10T13:29:47.823Z"
+    //             },
+    //             {
+    //                 "id": "69623d3aae4ba3f66d35c1a5",
+    //                 "subject": "Math",
+    //                 "class": "JSS1",
+    //                 "section": "",
+    //                 "term": "First Term",
+    //                 "academicYear": "2026-2027",
+    //                 "totalScore": 80,
+    //                 "totalMaxScore": 100,
+    //                 "percentage": 80,
+    //                 "letterGrade": "B-",
+    //                 "gradePoints": 2.7,
+    //                 "assessments": [
+    //                     {
+    //                         "type": "Test",
+    //                         "title": "test test",
+    //                         "score": 80,
+    //                         "maxScore": 100,
+    //                         "weight": 1,
+    //                         "date": "2026-01-10T00:00:00.000Z",
+    //                         "remarks": "test",
+    //                         "_id": "69623d3aae4ba3f66d35c1a6",
+    //                         "id": "69623d3aae4ba3f66d35c1a6"
+    //                     }
+    //                 ],
+    //                 "remarks": "test test",
+    //                 "isPublished": true,
+    //                 "teacher": {
+    //                     "id": "69600f7dd2250cd945def81b",
+    //                     "name": "Milos Kerkez"
+    //                 },
+    //                 "createdAt": "2026-01-10T11:51:22.991Z",
+    //                 "updatedAt": "2026-01-10T13:05:34.143Z"
+    //             }
+    //         ]
+    //     },
+    //     "summary": {
+    //         "totalSubjects": 1,
+    //             "totalGrades": 2,
+    //             "publishedGrades": 2,
+    //             "unpublishedGrades": 0,
+    //             "gpa": 3,
+    //             "averagePercentage": 83.75
+    //     },
+    //     "generatedAt": "2026-01-10T13:30:18.535Z"
+    // }
+    // }
+    try {
+        const { data } = await apiClient.get(`/api/teacher/students/${studentId}/grades`);
+        console.log(data);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+
+
 // New API function for dashboard data
 export async function getDashboardUsers(role = '', status = '') {
     try {
         const { data } = await apiClient.get('/api/admin/dashboard/users', {
             params: {
-                // If a value is empty, Axios usually omits it or sends it as empty.
-                // We can use undefined to ensure the key isn't sent at all if empty.
+
                 role: role || undefined,
                 status: status || undefined
             }

@@ -20,7 +20,7 @@ const Students = lazy(() => import("./pages/application/AdminDashboard/pages/Stu
 const SchoolProfilePage = lazy(() => import("./pages/application/AdminDashboard/pages/SchoolProfilePage.jsx"));
 const AdminProfilePage = lazy(() => import("./pages/application/AdminDashboard/pages/AdminProfilePage.jsx"));
 
-// CompleteRegistration Pages
+// Parent Pages
 const ParentDashboard = lazy(() => import("./pages/application/ParentDashboard/ParentDashboard.jsx"));
 const ChildSelectionPage = lazy(() => import("./pages/application/ParentDashboard/MyChildren.jsx"));
 const ParentProfilePage = lazy(() => import("./pages/application/ParentDashboard/ParentProfilePage.jsx"));
@@ -68,9 +68,9 @@ function AppRoutes() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<AuthPage />} />
 
+                    <Route path="/complete-registration" element={<CompleteRegistration />} />
                     <Route element={<AuthLayout />}>
                         <Route path="/register/school" element={<RegisterSchool />} />
-                        <Route path="/complete-registration" element={<CompleteRegistration />} />
                         <Route path="/register" element={<Navigate to="/register/school" />} />
                     </Route>
 
@@ -85,7 +85,7 @@ function AppRoutes() {
                     <Route path="/dashboard/admin/students" element={<ProtectedRoute requiredRole="admin"><Students /></ProtectedRoute>} />
                     <Route path="/dashboard/admin/users/teachers" element={<ProtectedRoute requiredRole="admin"><UserManagementPage /></ProtectedRoute>} />
 
-                    {/* CompleteRegistration Protected Routes */}
+                    {/* Parent Protected Routes */}
                     <Route path="/dashboard/parent" element={<ProtectedRoute requiredRole="parent"><ParentDashboard /></ProtectedRoute>}/>
                     <Route path="/dashboard/parent/children" element={<ProtectedRoute requiredRole="parent"><ChildSelectionPage /></ProtectedRoute>} />
                     <Route path="/dashboard/parent/profile" element={<ProtectedRoute requiredRole="parent"><ParentProfilePage /></ProtectedRoute>} />

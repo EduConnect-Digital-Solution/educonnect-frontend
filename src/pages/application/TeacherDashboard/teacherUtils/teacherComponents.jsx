@@ -476,7 +476,7 @@ export const TeacherResponsibilities = ({classes, students}) => {
                                             {children.length === 0 ? (
                                                 <tr>
                                                     <td colSpan={5} className="px-8 py-10 text-center text-sm text-gray-500">
-                                                        No students match "{searchTerm}"
+                                                        No students found.
                                                     </td>
                                                 </tr>
                                             ) : children.map((child) => {

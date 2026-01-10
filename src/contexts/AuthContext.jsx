@@ -131,6 +131,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(token);
         setUser(loginData.data.user);
         setTokenExpiry(expiry);
+
     };
 
     // Logout function

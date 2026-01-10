@@ -1,12 +1,10 @@
-// javascript
-// File: `src/pages/auth/AuthPage.jsx`
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Building2, Mail, Lock, ArrowRight } from 'lucide-react';
 import { Images } from '../../components/images';
 import {LoginSchool, LoginUser} from './authAPIs';
 import { Toast } from '../application/AdminDashboard/components/ui/Toast';
-import { useAuth } from '../../contexts/AuthContext';
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
 const RoleCard = ({ title, description, onClick }) => (
     <button
@@ -31,38 +29,21 @@ export default function AuthPage() {
         password: ''
     });
     const [toast, setToast] = useState({ show: false, message: '', type: 'error', onClose: null });
-
     const navigate = useNavigate();
-    const { checkAuthStatus, user, isAuthenticated, login } = useAuth();
+    const { user, login } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const getDashboardRoute = (u) => {
-        if (!u || !u.role) return '/';
-        if (u.role === 'admin') return '/dashboard/admin';
-        if (u.role === 'teacher') return '/dashboard/teacher';
-        if (u.role === 'parent') return '/dashboard/parent';
-        return '/';
-    };
-
-    // Ensure auth status is checked on mount
+    // This effect will run when the `user` object in AuthContext changes.
     useEffect(() => {
-        let mounted = true;
-        const init = async () => {
-            try {
-                await checkAuthStatus();
-            } catch (e) {
-                // ignore — user will stay unauthenticated
-            }
-        };
-        if (mounted) init();
-        return () => { mounted = false; };
-    }, [checkAuthStatus]);
-
-    // Redirect only when auth is established and user has a role
-    useEffect(() => {
-        if (isAuthenticated && user?.role) {
-            navigate(getDashboardRoute(user), { replace: true });
+        // If the user object is populated, it means login was successful and the context is updated.
+        if (user) {
+            // Now it's safe to navigate.
+            showToast('Login successful!', 'success', 1500, () => {
+                navigate(`/dashboard/${user.role}`, { replace: true });
+            });
         }
-    }, [isAuthenticated, user, navigate]);
+    }, [user, navigate]);
+
 
     const showToast = (message, type = 'error', duration = 2000, onClose = null) => {
         setToast({ show: true, message, type, onClose });
@@ -76,19 +57,11 @@ export default function AuthPage() {
         setSelectedRole(role);
     };
 
+
     const handleLogin = async () => {
-        if (!formData?.schoolId) {
-            showToast("Please input your School ID");
-            return;
-        }
-        if (!formData?.email) {
-            showToast("Please provide an email address.");
-            return;
-        }
-        if (!formData?.password) {
-            showToast("Please provide a password.");
-            return;
-        }
+        if (!formData?.schoolId) return showToast("Please input your School ID");
+        if (!formData?.email) return showToast("Please provide an email address.");
+        if (!formData?.password) return showToast("Please provide a password.");
 
         const payload = {
             schoolId: formData.schoolId.trim(),
@@ -96,26 +69,30 @@ export default function AuthPage() {
             password: formData.password,
         };
 
-
+        setIsLoading(true);
         try {
-            let loginData;
-            if (selectedRole === 'admin') {
-                loginData = await LoginSchool(payload);
-            } else {
-                loginData = await LoginUser(payload);
-            }
-            login(loginData);
 
-            if (loginData.success === true) {
-                await checkAuthStatus();
-                showToast('Login successful', 'success', 2000);
+            let res;
+            if (selectedRole === 'admin') {
+                res = await LoginSchool(payload);
             } else {
-                showToast('Login Failed, Please try again');
+                res = await LoginUser(payload);
+            }
+
+            if (res.success) {
+                // Just update the context. The useEffect will handle the navigation.
+                await login(res);
+            } else {
+                showToast(res.message || 'Login Failed');
+                setIsLoading(false);
             }
         } catch (err) {
-            const message = err?.message || err?.error || 'Login failed';
+            const message = err?.response?.data?.message || err?.message || 'Login failed';
             showToast(message, 'error');
+            setIsLoading(false);
         }
+        // Don't set isLoading to false here if login is successful,
+        // because we want to show the loading state until navigation happens.
     };
 
     return (
@@ -235,10 +212,10 @@ export default function AuthPage() {
                                 </div>
 
                                 <button
-                                    onClick={handleLogin}
+                                    disabled={isLoading} onClick={handleLogin}
                                     className="w-full py-4 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 mt-6"
                                 >
-                                    Continue
+                                    {isLoading ? 'Verifying...' : 'Continue'}
                                 </button>
                             </div>
 

@@ -64,7 +64,7 @@ const UserManagementPage = () => {
         setAddUserRole(role);
         if (role === 'Teacher'){
             setViewTeacher(true)
-        } else if (role === 'CompleteRegistration'){
+        } else if (role === 'Parent'){
             setViewParent(true)
         }
     };

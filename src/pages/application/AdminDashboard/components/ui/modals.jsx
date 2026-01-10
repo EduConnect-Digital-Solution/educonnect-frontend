@@ -12,6 +12,7 @@ import {
     toggleStudentStatus, unlinkStudentToParent,
 } from "../../../../auth/authAPIs.js";
 import {formatStatus, getInitials} from "../../utils/formatters.js";
+import {availableSubjects} from "../../../../../utils/imports.jsx";
 
 export const DeleteUserModal = ({ onClose, showToast, user, schoolId }) => {
     const [userToDelete, setUserToDelete] = useState(user);
@@ -257,34 +258,242 @@ export const InviteTeacherModal = ({ onClose, showToast }) => {
     const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', message: '' });
     const [subjects, setSubjects] = useState([]);
 
-    const handleInvite = async () => {
-        // Validation
-        if (!formData.firstName || !formData.lastName || !formData.email || subjects.length === 0) {
-            showToast("Please fill all required fields and add at least one subject.", 'error');
+    const handleInviteTeacher = async () => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        // Validation Checks
+        if (!teacherFormData?.firstName) {
+            showToast("Please input first name");
             return;
         }
+
+        if (!teacherFormData?.lastName) {
+            showToast("Please input last name");
+            return;
+        }
+
+        if (!teacherFormData?.subjects || teacherFormData.subjects.length === 0) {
+            showToast("Please add at least 1 subject");
+            return;
+        }
+        if (!teacherFormData?.message) {
+            showToast("Please input an invitation message");
+            return;
+        }
+
+        if (!teacherFormData?.email || !emailPattern.test(teacherFormData.email)) {
+            showToast("Please provide a valid email address.");
+            return;
+        }
+
+        const payload = {
+            email: teacherFormData.email.trim().toLowerCase(),
+            firstName: teacherFormData.firstName.trim(),
+            lastName: teacherFormData.lastName.trim(),
+            subjects: subjects.map(subj => subj.trim()),
+            message: teacherFormData.message.trim(),
+        };
+
         try {
-            await inviteTeacher({ ...formData, subjects });
-            showToast("Teacher invited successfully!", "success");
+            await inviteTeacher(payload);
+            showToast('Teacher invited successfully', 'success');
             onClose();
-        } catch (error) {
-            showToast(error.message || "Failed to invite teacher.", "error");
+
+        } catch (err) {
+            const message = err?.message || err?.error || 'Registration failed';
+            showToast(message, 'error');
+        }
+    };
+    const [inputValue, setInputValue] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [filteredSubjects, setFilteredSubjects] = useState([]);
+    const inputRef = useRef(null);
+    const [teacherFormData, setTeacherFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        subjects: [''],
+        message: '',
+    });
+    // Filter subjects based on input
+    useEffect(() => {
+        if (inputValue.trim()) {
+            const filtered = availableSubjects.filter(subject =>
+                subject.toLowerCase().includes(inputValue.toLowerCase()) &&
+                !subjects.includes(subject)
+            );
+            setFilteredSubjects(filtered);
+        } else {
+            setFilteredSubjects(availableSubjects.filter(s => !subjects.includes(s)));
+        }
+    }, [inputValue, subjects]);
+
+    const handleAddSubject = (subject) => {
+        if (subject.trim() && !subjects.includes(subject)) {
+            setSubjects([...subjects, subject]);
+            setInputValue('');
+            setShowDropdown(false);
+            inputRef.current?.focus();
+        }
+
+    };
+
+    const handleRemoveSubject = (subjectToRemove) => {
+        setSubjects(subjects.filter(subject => subject !== subjectToRemove));
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleAddSubject(inputValue);
         }
     };
 
+    const handleInputFocus = () => {
+        setShowDropdown(true);
+    };
+
+    const handleInputBlur = () => {
+        // Delay closing dropdown to allow dropdown click to register
+        setTimeout(() => setShowDropdown(false), 200);
+    };
+
+
+
+    const [studentFormData, setStudentFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+//   "teacherIds": ["694fe6e4f6a5eff53cd7f8eb"],
+        class: "",
+        section: "",
+        rollNumber: "",
+        grade: "",
+        dateOfBirth: "",
+        gender: "", // TODO: create dropdown for gender, male, female or other
+        address: "",
+        phone: ""
+    });
+
     // Subject input logic... (simplified)
     return (
-        <Modal title="Invite Teacher" onClose={onClose} onSubmit={handleInvite}>
-            <div className="grid grid-cols-2 gap-4">
-                <Input label="First Name" onChange={e => setFormData({...formData, firstName: e.target.value})} />
-                <Input label="Last Name" onChange={e => setFormData({...formData, lastName: e.target.value})} />
+        <Modal title="Invite Teacher" onClose={onClose} onSubmit={handleInviteTeacher}>
+            {/* Form */}
+            <div className="space-y-5">
+                {/* Names */}
+                <div className="grid grid-cols-2 gap-4">
+                    <Input
+                        label="First Name"
+                        value={teacherFormData.firstName}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, firstName: e.target.value})}
+                        placeholder="e.g. John"
+                        required
+                    />
+                    <Input
+                        label="Last Name"
+                        value={teacherFormData.lastName}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, lastName: e.target.value})}
+                        placeholder="e.g. Doe"
+                        required
+                    />
+                </div>
+
+                <Input
+                    label="Email Address"
+                    type="email"
+                    value={teacherFormData.email}
+                    onChange={(e) => setTeacherFormData({...teacherFormData, email: e.target.value})}
+                    placeholder="teacher@school.com"
+                />
+
+                {/* Subjects */}
+                <div>
+                    <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1">
+                            Subjects
+                        </label>
+
+                        {/* Selected Subjects */}
+                        <div className="flex flex-wrap gap-2 mb-3">
+                            {subjects.map((subject) => (
+                                <div
+                                    key={subject}
+                                    className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-sm px-3 py-1 rounded-lg"
+                                >
+                                    <span>{subject}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveSubject(subject)}
+                                        className="hover:text-blue-900 transition-colors"
+                                        aria-label={`Remove ${subject}`}
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Input and Dropdown Container */}
+                        <div className="relative">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                placeholder="Add subject and press Enter"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                onFocus={handleInputFocus}
+                                onBlur={handleInputBlur}
+                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            />
+
+                            {/* Dropdown List */}
+                            {showDropdown && filteredSubjects.length > 0 && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-sm z-10">
+                                    {filteredSubjects.map((subject) => (
+                                        <button
+                                            key={subject}
+                                            type="button"
+                                            onClick={() => {
+                                                handleAddSubject(subject);
+
+                                                if (inputRef.current) {
+                                                    inputRef.current.blur();
+                                                }
+                                            }}
+                                            className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-b-0 text-gray-700"
+                                        >
+                                            {subject}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* No results message */}
+                            {showDropdown && inputValue.trim() && filteredSubjects.length === 0 && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-sm z-10 p-3">
+                                    <p className="text-xs text-gray-500">
+                                        No matching subjects. Press Enter to add "{inputValue}"
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Invitation Message */}
+                <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">
+                        Invitation Message
+                    </label>
+                    <textarea
+                        value={teacherFormData.message}
+                        onChange={(e) => setTeacherFormData({...teacherFormData, message: e.target.value})}
+                        placeholder="Write a brief invitation message..."
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] resize-none"
+                    />
+                </div>
             </div>
-            <Input label="Email" type="email" onChange={e => setFormData({...formData, email: e.target.value})} />
-            {/* Simplified Subject Input */}
-            <Input label="Subjects (comma-separated)" onChange={e => setSubjects(e.target.value.split(','))} />
-
-            <textarea placeholder="Invitation message..." className="w-full mt-2 px-3 py-2 text-sm border border-gray-200 rounded-lg" onChange={e => setFormData({...formData, message: e.target.value})} />
-
         </Modal>
     );
 };
@@ -381,7 +590,7 @@ export const InviteParentModal = ({ onClose, showToast }) => {
 
     // Simplified student selection
     return (
-        <Modal title="Invite CompleteRegistration" onClose={onClose} onSubmit={handleInvite}>
+        <Modal title="Invite Teacher" onClose={onClose} onSubmit={handleInvite}>
 
             <div className="space-y-5">
                 {/* Names */}
@@ -729,11 +938,11 @@ export const ManageParentStudentLinkModal = ({ onClose, showToast, schoolId }) =
 
 
     return (
-        <Modal title="Manage CompleteRegistration-Student Links" onClose={onClose}>
+        <Modal title="Manage Parent-Student Links" onClose={onClose}>
             <div className="space-y-6">
                 {/* CompleteRegistration Selection */}
                 <div>
-                    <h4 className="text-md font-semibold text-gray-800 mb-2">Select CompleteRegistration</h4>
+                    <h4 className="text-md font-semibold text-gray-800 mb-2">Select Parent</h4>
                     <Input
                         placeholder="Search parent by name or email"
                         value={parentSearchQuery}
@@ -758,7 +967,7 @@ export const ManageParentStudentLinkModal = ({ onClose, showToast, schoolId }) =
                         )}
                     </div>
                     {selectedParent && (
-                        <p className="mt-2 text-sm text-gray-600">Selected CompleteRegistration: <span className="font-medium">{selectedParent.firstName} {selectedParent.lastName}</span></p>
+                        <p className="mt-2 text-sm text-gray-600">Selected Parents: <span className="font-medium">{selectedParent.firstName} {selectedParent.lastName}</span></p>
                     )}
                 </div>
 

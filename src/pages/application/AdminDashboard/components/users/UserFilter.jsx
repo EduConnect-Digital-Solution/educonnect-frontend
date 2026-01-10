@@ -36,7 +36,7 @@ const UserFilter = ({
 
                     {showAddUserDropdown && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden py-1">
-                            {['Teacher', 'CompleteRegistration'].map((role) => (
+                            {['Teacher', 'Parent'].map((role) => (
                                 <button
                                     key={role}
                                     className="w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"

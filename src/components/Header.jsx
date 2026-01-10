@@ -49,14 +49,16 @@ export const Header = () => {
     const getDashboardRoute = (u) => {
         if (!u) return '/';
         // adjust this to match your user payload (e.g., role, isAdmin, school)
-        if (u.isAdmin || u.role === 'admin') return '/dashboard/admin';
+        if (u.role === 'admin') return '/dashboard/admin';
+        if (u.role === 'teacher') return '/dashboard/teacher';
+        if (u.role === 'parent') return '/dashboard/parent';
         // if (u.schoolId || u.school) return '/school/dashboard';
         return '/dashboard';
     };
 
     const handleClick = async () => {
         // Try to rehydrate session from httpOnly cookie if needed
-        const hasSession = await checkAuthStatus(); // forces refresh in your context
+        const hasSession = await checkAuthStatus();
         if (hasSession) {
             navigate(getDashboardRoute(user));
         } else {
