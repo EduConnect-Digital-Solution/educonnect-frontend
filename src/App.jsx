@@ -52,7 +52,6 @@ const AuthContextBridge = ({ children }) => {
     return children;
 };
 
-// TODO: make it so that when a user opens our website they arent checked if they are authenticated, they are taken to the login page, then when they choose their role, instead of seeing the forms if they are logged in they will see proceed to dashboard, if they are not they will see the forms
 
 function AppRoutes() {
     const { isLoading } = useAuth();
@@ -63,7 +62,7 @@ function AppRoutes() {
 
     return (
         <div className={`font-[Outfit]`}>
-            <Suspense fallback={<LoadingFallback />}>
+            {/*<Suspense fallback={<LoadingFallback />}>*/}
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<AuthPage />} />
@@ -117,7 +116,7 @@ function AppRoutes() {
 
                     {/*<Route path="*" element={<Navigate to="/" />} />*/}
                 </Routes>
-            </Suspense>
+            {/*</Suspense>*/}
         </div>
     );
 }

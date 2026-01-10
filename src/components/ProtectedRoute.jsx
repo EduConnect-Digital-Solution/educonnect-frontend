@@ -5,16 +5,10 @@ import { useAuth } from '../contexts/AuthContext';
 
 
 const ProtectedRoute = ({ children, requiredRole = null }) => {
-    const { isAuthenticated, user, loading } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const location = useLocation();
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-            </div>
-        );
-    }
+    // No explicit loading state here, relying solely on isAuthenticated from AuthContext
 
     if (!isAuthenticated) {
         // Redirect to login with return URL

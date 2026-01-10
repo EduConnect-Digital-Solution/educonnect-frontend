@@ -14,7 +14,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [tokenExpiry, setTokenExpiry] = useState(null);
 
     const baseURL = import.meta.env.DEV
@@ -96,10 +96,14 @@ export const AuthProvider = ({ children }) => {
                 // The axios interceptor will handle getting a fresh token when needed
                 setAccessToken('session-valid'); // Placeholder to indicate valid session
 
-                return true;
+                return userData; // Return the user data
+            } else {
+                // If success is false or user is null, explicitly clear auth state
+                setAccessToken(null);
+                setUser(null);
+                setTokenExpiry(null);
+                return null;
             }
-
-            return false;
         } catch (error) {
             console.error('Auth check failed:', error);
             // Clear state on authentication errors
@@ -148,32 +152,6 @@ export const AuthProvider = ({ children }) => {
             setTokenExpiry(null);
         }
     };
-
-    // UPDATED: Check auth status only once on app load using /auth/me
-    useEffect(() => {
-        let mounted = true;
-
-        const initAuth = async () => {
-            try {
-                const isAuthenticated = await checkAuthStatus();
-
-                if (mounted) {
-                    setLoading(false);
-                }
-            } catch (error) {
-                if (mounted) {
-                    console.error('Initial auth check failed:', error);
-                    setLoading(false);
-                }
-            }
-        };
-
-        initAuth();
-
-        return () => {
-            mounted = false;
-        };
-    }, []); // Only run once on mount
 
     // Set up automatic token refresh before expiry
     useEffect(() => {

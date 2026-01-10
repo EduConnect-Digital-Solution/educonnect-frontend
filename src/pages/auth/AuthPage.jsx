@@ -30,20 +30,10 @@ export default function AuthPage() {
     });
     const [toast, setToast] = useState({ show: false, message: '', type: 'error', onClose: null });
     const navigate = useNavigate();
-    const { user, login } = useAuth();
+    const { user, login, logout, checkAuthStatus } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
-
-    // This effect will run when the `user` object in AuthContext changes.
-    useEffect(() => {
-        // If the user object is populated, it means login was successful and the context is updated.
-        if (user) {
-            // Now it's safe to navigate.
-            showToast('Login successful!', 'success', 1500, () => {
-                navigate(`/dashboard/${user.role}`, { replace: true });
-            });
-        }
-    }, [user, navigate]);
-
+    const [showLoggedInConfirmation, setShowLoggedInConfirmation] = useState(false);
+    const [checkedSessionForRole, setCheckedSessionForRole] = useState(false); // New state to track if session check is done
 
     const showToast = (message, type = 'error', duration = 2000, onClose = null) => {
         setToast({ show: true, message, type, onClose });
@@ -53,10 +43,27 @@ export default function AuthPage() {
         }, duration);
     };
 
-    const handleRoleSelection = (role) => {
+    const handleRoleSelection = async (role) => {
         setSelectedRole(role);
-    };
+        setIsLoading(true);
+        setCheckedSessionForRole(false); // Reset this flag for each new role selection
 
+        try {
+            const resultUser = await checkAuthStatus(); // Use the return value of checkAuthStatus
+
+            if (resultUser && resultUser.role === role) {
+                setShowLoggedInConfirmation(true);
+            } else {
+                setShowLoggedInConfirmation(false);
+            }
+        } catch (error) {
+            console.error("Session check failed:", error);
+            setShowLoggedInConfirmation(false);
+        } finally {
+            setIsLoading(false);
+            setCheckedSessionForRole(true); // Session check completed for this role
+        }
+    };
 
     const handleLogin = async () => {
         if (!formData?.schoolId) return showToast("Please input your School ID");
@@ -71,7 +78,6 @@ export default function AuthPage() {
 
         setIsLoading(true);
         try {
-
             let res;
             if (selectedRole === 'admin') {
                 res = await LoginSchool(payload);
@@ -80,20 +86,43 @@ export default function AuthPage() {
             }
 
             if (res.success) {
-                // Just update the context. The useEffect will handle the navigation.
-                await login(res);
+                await login(res); // Update context
+                setShowLoggedInConfirmation(true); // Show confirmation UI
+                showToast('Login successful!', 'success');
             } else {
                 showToast(res.message || 'Login Failed');
-                setIsLoading(false);
             }
         } catch (err) {
             const message = err?.response?.data?.message || err?.message || 'Login failed';
             showToast(message, 'error');
+        } finally {
+            setIsLoading(false);
+            setCheckedSessionForRole(true); // Login attempt completed
+        }
+    };
+
+    const handleProceedToDashboard = () => {
+        if (user && user.role) {
+            navigate(`/dashboard/${user.role}`, { replace: true });
+        }
+    };
+
+    const handleLogout = async () => {
+        setIsLoading(true);
+        try {
+            await logout();
+            showToast('Logged out successfully.', 'success', 1500, () => {
+                setSelectedRole(null);
+                setShowLoggedInConfirmation(false);
+                setCheckedSessionForRole(false); // Reset after logout
+            });
+        } catch (error) {
+            showToast(error.message || 'Logout failed.', 'error');
+        } finally {
             setIsLoading(false);
         }
-        // Don't set isLoading to false here if login is successful,
-        // because we want to show the loading state until navigation happens.
     };
+
 
     return (
         <>
@@ -156,6 +185,44 @@ export default function AuthPage() {
                                     Secure Access Portal
                                 </p>
                             </div>
+                        </div>
+                    ) : isLoading || !checkedSessionForRole ? ( // Show loading while checking session
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="relative w-20 h-20">
+                                <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                                <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                            </div>
+                            <p className="mt-4 text-gray-500 font-medium animate-pulse">Processing...</p>
+                        </div>
+                    ) : showLoggedInConfirmation && user && user.role === selectedRole ? (
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome Back!</h2>
+                            <p className="text-lg text-gray-700 mb-2">Logged in as: <span className="font-semibold">{user.name ?? user.fullName}</span></p>
+                            <p className="text-md text-gray-500 mb-6">Role: <span className="font-semibold capitalize">{user.role}</span></p>
+                            <div className="space-y-4">
+                                <button
+                                    onClick={handleProceedToDashboard}
+                                    className="w-full py-4 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all duration-200 shadow-md"
+                                >
+                                    Proceed to Dashboard
+                                </button>
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full py-3 text-red-600 border border-red-200 rounded-xl hover:bg-red-50 transition-all duration-200"
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setSelectedRole(null);
+                                    setShowLoggedInConfirmation(false);
+                                    setCheckedSessionForRole(false);
+                                }}
+                                className="mt-6 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                                Choose a different role
+                            </button>
                         </div>
                     ) : (
                         <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
