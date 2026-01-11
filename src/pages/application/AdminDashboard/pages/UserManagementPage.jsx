@@ -12,7 +12,8 @@ import {
     ManageParentStudentLinkModal,
     AssignStudentsToTeacherModal,
     UnassignStudentFromTeacherModal,
-    AssignClassesModal
+    AssignClassesModal,
+    UnassignClassesModal
 } from "../components/ui/modals.jsx";
 import { Toast } from "../components/ui/Toast.jsx";
 import { useAuth } from "../../../../contexts/AuthContext.jsx";
@@ -47,6 +48,7 @@ const UserManagementPage = () => {
     const [showAssignModal, setShowAssignModal] = useState(false);
     const [showUnassignModal, setShowUnassignModal] = useState(false);
     const [showAssignClassesModal, setShowAssignClassesModal] = useState(false);
+    const [showUnassignClassesModal, setShowUnassignClassesModal] = useState(false);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [selectedParent, setSelectedParent] = useState(null);
 
@@ -90,6 +92,11 @@ const UserManagementPage = () => {
         setShowAssignClassesModal(true);
     };
 
+    const handleOpenUnassignClassesModal = (teacher) => {
+        setSelectedTeacher(teacher);
+        setShowUnassignClassesModal(true);
+    };
+
     const handleOpenManageLinksModal = (parent) => {
         setSelectedParent(parent);
         setShowManageLinksModal(true);
@@ -126,6 +133,7 @@ const UserManagementPage = () => {
                 onAssignStudents={handleOpenAssignModal}
                 onUnassignStudents={handleOpenUnassignModal}
                 onAssignClasses={handleOpenAssignClassesModal}
+                onUnassignClasses={handleOpenUnassignClassesModal}
                 onManageParentLinks={handleOpenManageLinksModal}
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -167,6 +175,8 @@ const UserManagementPage = () => {
                 schoolId={user.schoolId}
             />}
 
+
+
             {showAssignModal && selectedTeacher && <AssignStudentsToTeacherModal
                 onClose={() => setShowAssignModal(false)}
                 showToast={showToast}
@@ -183,6 +193,13 @@ const UserManagementPage = () => {
             
             {showAssignClassesModal && selectedTeacher && <AssignClassesModal
                 onClose={() => setShowAssignClassesModal(false)}
+                showToast={showToast}
+                teacher={selectedTeacher}
+                schoolId={user.schoolId}
+            />}
+
+            {showUnassignClassesModal && selectedTeacher && <UnassignClassesModal
+                onClose={() => setShowUnassignClassesModal(false)}
                 showToast={showToast}
                 teacher={selectedTeacher}
                 schoolId={user.schoolId}

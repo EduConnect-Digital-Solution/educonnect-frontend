@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { getDashboardUsers } from '../services/adminService';
+import {getDashboardAnalytics, getDashboardUsers} from '../services/adminService';
 
 export const useUsers = () => {
     const [users, setUsers] = useState([]);
@@ -24,7 +24,8 @@ export const useUsers = () => {
                     role: userInfo.role,
                     status: userInfo.statusDisplay,
                     activityStatus: userInfo.isActive,
-                    inviteSentBy: userInfo.invitedBy?.name || 'n/a'
+                    inviteSentBy: userInfo.invitedBy?.name || 'n/a',
+                    ...(userInfo.role === 'teacher' && { classes: userInfo.classes })
                 }));
                 setUsers(userList);
             } catch (err)

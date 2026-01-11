@@ -3,7 +3,7 @@ import { getInitials } from '../../utils/formatters';
 import { getRoleBadgeStyle, getStatusBadgeStyle } from '../../utils/styleHelpers';
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 
-const UserTable = ({ users, startIndex, onDelete, onStatusChange, onAssignStudents, onUnassignStudents, onAssignClasses, onManageParentLinks }) => {
+const UserTable = ({ users, startIndex, onDelete, onStatusChange, onAssignStudents, onUnassignStudents, onAssignClasses, onUnassignClasses, onManageParentLinks }) => {
     const [openMenuId, setOpenMenuId] = useState(null);
 
     const handleMenuToggle = (userId) => {
@@ -59,6 +59,7 @@ const UserTable = ({ users, startIndex, onDelete, onStatusChange, onAssignStuden
                                                         <button onClick={() => { onAssignStudents(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Assign Students</button>
                                                         <button onClick={() => { onUnassignStudents(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Unassign Students</button>
                                                         <button onClick={() => { onAssignClasses(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Assign Classes</button>
+                                                        <button onClick={() => { onUnassignClasses(user); handleMenuToggle(null); }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Unassign Classes</button>
                                                     </>
                                                 )}
                                                 {user.role === 'parent' && (
@@ -149,6 +150,7 @@ const UserTableLayout = ({
     onAssignStudents,
     onUnassignStudents,
     onAssignClasses,
+    onUnassignClasses,
     onManageParentLinks,
     currentPage,
     totalPages,
@@ -167,6 +169,7 @@ const UserTableLayout = ({
                 onAssignStudents={onAssignStudents}
                 onUnassignStudents={onUnassignStudents}
                 onAssignClasses={onAssignClasses}
+                onUnassignClasses={onUnassignClasses}
                 onManageParentLinks={onManageParentLinks}
             />
             <Pagination currentPage={currentPage} totalPages={totalPages} goToPage={goToPage} />

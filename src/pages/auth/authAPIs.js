@@ -395,6 +395,21 @@ export async function deleteGrade(payload, studentId) {
     }
 }
 
+export async function deleteClasses(payload) {
+    // expected payload:
+    // {
+    //     "teacherId": "694fe6e4f6a5eff53cd7f8eb",
+    //     "classes": ["JSS2"],
+    //     "schoolId": "SPR5866"
+    // }
+    try {
+        const { data } = await apiClient.delete(`/api/admin/teachers/remove-classes`, {data: payload});
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
 
 
 

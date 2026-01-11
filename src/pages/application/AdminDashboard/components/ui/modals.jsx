@@ -7,6 +7,7 @@ import {
     assignStudenttoTeacher,
     bulkAssignStudentToTeacher,
     createStudent,
+    deleteClasses,
     deleteStudent,
     deleteUser,
     getAllStudents,
@@ -223,13 +224,13 @@ export const AssignClassesModal = ({ onClose, showToast, teacher, schoolId }) =>
 
     const classOptions = [
         "Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6",
-        "JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3"
+        "JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"
     ];
     const gradeOptions = Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`);
 
     const handleAddClass = () => {
         if (!placementValue) return;
-        const className = registryStyle === 'class' ? `${placementValue}-${section.toUpperCase()}` : placementValue;
+        const className = registryStyle === 'class' ? `${placementValue}` : placementValue;
         if (className && !selectedClasses.includes(className)) {
             setSelectedClasses([...selectedClasses, className]);
         }
@@ -263,7 +264,7 @@ export const AssignClassesModal = ({ onClose, showToast, teacher, schoolId }) =>
     return (
         <Modal title={`Assign Classes to ${teacher.name}`} onClose={onClose} onSubmit={handleSubmit}>
             <div className="space-y-4">
-                <div className="flex flex-wrap gap-2 mb-3 p-2 border rounded-lg min-h-[40px]">
+                <div className="flex flex-wrap gap-2 mb-3 p-2 border rounded-lg min-h-10">
                     {selectedClasses.length > 0 ? selectedClasses.map(c => (
                         <div key={c} className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-1 rounded-full">
                             {c}
@@ -299,21 +300,73 @@ export const AssignClassesModal = ({ onClose, showToast, teacher, schoolId }) =>
                                     {registryStyle === 'grade' && gradeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                 </select>
                             </div>
-                            {registryStyle === 'class' && (
-                                <div className="space-y-1.5">
-                                    <label className="block text-sm font-medium text-gray-700">Section</label>
-                                    <input
-                                        value={section}
-                                        onChange={(e) => setSection(e.target.value)}
-                                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm"
-                                        placeholder="e.g. A"
-                                    />
-                                </div>
-                            )}
                             <div>
                                 <button onClick={handleAddClass} className="w-full px-4 py-2.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Class</button>
                             </div>
                         </>
+                    )}
+                </div>
+            </div>
+        </Modal>
+    );
+};
+
+export const UnassignClassesModal = ({ onClose, showToast, teacher, schoolId }) => {
+    const [selectedClasses, setSelectedClasses] = useState([]);
+
+    // teacher.classes should be available now.
+    const assignedClasses = teacher.classes || [];
+    console.log(teacher)
+
+    const handleClassToggle = (classToToggle) => {
+        setSelectedClasses(prev =>
+            prev.includes(classToToggle)
+                ? prev.filter(c => c !== classToToggle)
+                : [...prev, classToToggle]
+        );
+    };
+
+    const handleSubmit = async () => {
+        if (selectedClasses.length === 0) {
+            showToast('Please select at least one class to unassign.', 'error');
+            return;
+        }
+        try {
+            const payload = {
+                teacherId: teacher.id,
+                classes: selectedClasses,
+                schoolId,
+            };
+            await deleteClasses(payload); // this function is not imported yet
+            showToast('Classes unassigned successfully!', 'success');
+            onClose();
+        } catch (error) {
+            showToast(error.message || 'Failed to unassign classes.', 'error');
+        }
+    };
+
+    return (
+        <Modal title={`Unassign Classes from ${teacher.name}`} onClose={onClose} onSubmit={handleSubmit}>
+            <div className="space-y-4">
+                <p className="text-sm text-gray-500">Select classes to unassign from this teacher.</p>
+                <div className="space-y-2 max-h-60 overflow-y-auto border rounded-md p-2">
+                    {assignedClasses.length > 0 ? (
+                        assignedClasses.map(c => (
+                            <div key={c} className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id={`class-${c}`}
+                                    checked={selectedClasses.includes(c)}
+                                    onChange={() => handleClassToggle(c)}
+                                    className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                />
+                                <label htmlFor={`class-${c}`} className="ml-3 block text-sm font-medium text-gray-700">
+                                    {c}
+                                </label>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-sm text-gray-500 text-center">No classes are currently assigned to this teacher.</p>
                     )}
                 </div>
             </div>

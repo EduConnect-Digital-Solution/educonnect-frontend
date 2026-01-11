@@ -21,7 +21,7 @@ const ClassStudents = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [stats, setStats] = useState(null);
-
+    const [toUpdate, setToUpdate] = useState(null);
     const [selectedStudentForDetails, setSelectedStudentForDetails] = useState(null);
     const [selectedStudentForGrade, setSelectedStudentForGrade] = useState(null);
     const [isGradeModalOpen, setIsGradeModalOpen] = useState(false);
@@ -94,7 +94,25 @@ const ClassStudents = () => {
 
             // 4. Submission
             if (isUpdating) {
-                await updateGrade({ ...gradeData });
+                const payload = {
+                    studentId: gradeData.studentId,
+                    subject: gradeData.subject,
+                    class: gradeData.class,
+                    section: gradeData.section,
+                    term: gradeData.term,
+                    academicYear: gradeData.academicYear,
+                    assessments: gradeData.assessments.map(({ type, title, score, maxScore, weight, date, remarks }) => ({
+                        type,
+                        title,
+                        score,
+                        maxScore,
+                        weight,
+                        date,
+                        remarks,
+                    })),
+                    remarks: gradeData.remarks,
+                };
+                await updateGrade(payload, gradeData.id);
             } else {
                 await assignGrade({ ...gradeData });
             }
@@ -191,6 +209,7 @@ const ClassStudents = () => {
             section: section ? section.toUpperCase() : '',
         });
         setSelectedStudentForGrade(selectedStudentForGradeList);
+        setToUpdate(true);
         setIsGradeModalOpen(true);
     };
 
@@ -752,8 +771,24 @@ const ClassStudents = () => {
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="text-center py-10">
-                                                <p className="text-gray-500">No grades found for this subject.</p>
+                                            <div className="flex flex-col items-center justify-center py-20 px-6 border-2 border-dashed border-slate-100 rounded-[2.5rem] bg-slate-50/50">
+
+                                                {/* Content Section */}
+                                                <div className="text-center max-w-sm">
+                                                    <p className="text-xs font-medium text-slate-500 leading-relaxed tracking-wide">
+                                                        No grade records were found for this subject.
+                                                    </p>
+                                                </div>
+
+                                                {/* Guidance Section */}
+                                                <div className="mt-8 pt-6 border-t border-slate-200/60 text-center">
+                                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full shadow-sm">
+                                                        <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+                                                        <span className="text-[11px] font-bold text-slate-700 tracking-tight">
+                                                            Publish assigned grades to synchronize view
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -813,7 +848,14 @@ const ClassStudents = () => {
                                     ) : studentGradeDetails ? (
                                         <div className="space-y-8">
                                             <div>
-                                                <p className="text-[11px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-2">Academic Performance Card</p>
+                                                {/*<p className="text-[11px] font-bold text-blue-600 uppercase tracking-[0.2em] mb-2">*/}
+                                                    <div className="inline-flex items-center gap-2 py-2">
+                                                        <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
+                                                        <span className="text-[11px] font-bold text-slate-700 tracking-tight">
+                                                            Publish assigned grades to synchronize view
+                                                        </span>
+                                                    </div>
+                                                {/*</p>*/}
                                                 <Dialog.Title as="h3" className="text-2xl font-black text-gray-900 tracking-tight">
                                                     {studentGradeDetails.student.fullName}
                                                 </Dialog.Title>

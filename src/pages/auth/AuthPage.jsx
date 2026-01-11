@@ -86,7 +86,7 @@ export default function AuthPage() {
             }
 
             if (res.success) {
-                await login(res); // Update context
+                await login(res);
                 setShowLoggedInConfirmation(true); // Show confirmation UI
                 showToast('Login successful!', 'success');
             } else {
@@ -285,6 +285,16 @@ export default function AuthPage() {
                                     {isLoading ? 'Verifying...' : 'Continue'}
                                 </button>
                             </div>
+                            <button
+                                onClick={() => {
+                                    setSelectedRole(null);
+                                    setShowLoggedInConfirmation(false);
+                                    setCheckedSessionForRole(false);
+                                }}
+                                className="mt-6 text-sm text-gray-500 hover:text-gray-700 text-center w-full mx-auto transition-colors"
+                            >
+                                Choose a different role
+                            </button>
 
                             <p className="text-center text-sm text-gray-600 mt-6">
                                 New to EduConnect?{' '}
