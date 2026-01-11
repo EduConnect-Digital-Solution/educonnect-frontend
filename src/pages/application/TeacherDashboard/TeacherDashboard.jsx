@@ -9,8 +9,8 @@ import TeacherLayout from "./components/layout/TeacherLayout.jsx";
 
 export default function TeacherDashboard() {
     const { loading, statistics, error, classes, recentActivity, students, subjects } = useData();
+    console.log(classes)
 
-    console.log(subjects)
 
     if (loading) {
         return (

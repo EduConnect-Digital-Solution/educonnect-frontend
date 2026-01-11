@@ -516,6 +516,8 @@ export async function unassignStudentToTeacher(payload) {
 
 
 
+
+
 export async function assignClasses(payload) {
     // expected Payload:
     // {
@@ -537,6 +539,23 @@ export async function assignClasses(payload) {
 export async function updateParentProfile(payload) {
     try {
         const { data } = await apiClient.put(`/api/parent/profile`,
+            payload);
+        return data;
+    } catch (error) {
+        throw error?.response?.data || error;
+    }
+}
+
+
+export async function updateAdminProfile(payload) {
+    // expected Payload:
+    // {
+    //     "firstName": "John",
+    //     "lastName": "Doe-Updated",
+    //     "phone": "01234567890"
+    // }
+    try {
+        const { data } = await apiClient.put(`/api/school/profile/admin`,
             payload);
         return data;
     } catch (error) {

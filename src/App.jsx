@@ -11,7 +11,6 @@ const Home = lazy(() => import("./pages/Home.jsx").then(m => ({ default: m.Home 
 const AuthPage = lazy(() => import("./pages/auth/AuthPage.jsx"));
 const CompleteRegistration = lazy(() => import("./pages/auth/UserRegistration/CompleteRegistration"));
 const RegisterSchool = lazy(() => import("./pages/auth/RegisterSchool.jsx").then(m => ({ default: m.RegisterSchool })));
-const VerifySchoolPage = lazy(() => import("./pages/auth/VerifySchoolPage.jsx").then(m => ({ default: m.VerifySchoolPage })))
 
 // Admin Pages
 const DashboardPage = lazy(() => import("./pages/application/AdminDashboard/pages/DashboardPage.jsx"));
@@ -72,8 +71,6 @@ function AppRoutes() {
                         <Route path="/register/school" element={<RegisterSchool />} />
                         <Route path="/register" element={<Navigate to="/register/school" />} />
                     </Route>
-
-                    <Route path="/verify" element={<VerifySchoolPage />} />
 
                     {/* Admin Protected Routes */}
                     <Route path="/dashboard/admin" element={<ProtectedRoute requiredRole="admin"><DashboardPage /></ProtectedRoute>} />

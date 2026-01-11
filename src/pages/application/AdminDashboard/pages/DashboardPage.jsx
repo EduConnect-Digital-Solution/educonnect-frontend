@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
-import { Mail, BookOpen, Users, UserCheck, GraduationCap, Clock, UserPlus, ChevronRight, RefreshCw, XCircle, X} from 'lucide-react';
+import {
+    Mail, BookOpen, Users, UserCheck, GraduationCap, Clock, UserPlus, ChevronRight, RefreshCw, XCircle, X,
+    MailPlus
+} from 'lucide-react';
 import { useAnalytics } from '../hooks/useAnalytics';
 import AdminLayout from '../components/layout/AdminLayout';
 import AnalyticsComponent from '../AnalyticsComponent';
@@ -25,11 +28,11 @@ const EducationMetricCard = ({ title, value, icon: Icon, colorClass }) => {
 
 const AdminOverviewDashboard = ({ overview }) => {
     const metrics = [
-        { title: 'Total Users', value: overview.totalUsers, icon: UserCheck, colorClass: 'bg-blue-100/50 text-gray-800' },
-        { title: 'Total Active Users', value: overview.totalActiveUsers, icon: Users, colorClass: 'bg-yellow-100/50 text-gray-800' },
-        { title: 'Total Students', value: overview.totalStudents, icon: BookOpen, colorClass: 'bg-green-100/50 text-gray-800' },
-        { title: 'Total Invitations', value: overview.totalInvitations, icon: GraduationCap, colorClass: 'bg-purple-100/50 text-gray-800' },
-        { title: 'Pending Invites', value: overview.pendingInvitations, icon: GraduationCap, colorClass: 'bg-purple-100/50 text-gray-800' },
+        { title: 'Total Users', value: overview.totalUsers, icon: Users, colorClass: 'bg-blue-100/50 text-gray-800' },
+        { title: 'Total Active Users', value: overview.totalActiveUsers, icon: UserCheck, colorClass: 'bg-yellow-100/50 text-gray-800' },
+        { title: 'Total Students', value: overview.totalStudents, icon: GraduationCap, colorClass: 'bg-green-100/50 text-gray-800' },
+        { title: 'Total Invitations', value: overview.totalInvitations, icon: MailPlus, colorClass: 'bg-purple-100/50 text-gray-800' },
+        { title: 'Pending Invites', value: overview.pendingInvitations, icon: Clock, colorClass: 'bg-purple-100/50 text-gray-800' },
     ];
 
     return (

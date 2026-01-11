@@ -9,6 +9,7 @@ export default function CompleteRegistration() {
     const [searchParams] = useSearchParams();
     const role = searchParams.get('role'); // "teacher" | "parent"
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState();
 
     const [formData, setFormData] = useState({
         email: "",
@@ -47,6 +48,8 @@ export default function CompleteRegistration() {
     };
 
     async function handleSubmit() {
+        setIsLoading(true);
+
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!formData.schoolId) return showToast("School ID is required");
@@ -94,6 +97,8 @@ export default function CompleteRegistration() {
             });
         } catch (err) {
             showToast(err?.message || "Registration failed");
+        }finally {
+            setIsLoading(false);
         }
     }
 
@@ -286,9 +291,9 @@ export default function CompleteRegistration() {
                     <div className="pt-6">
                         <button
                             onClick={handleSubmit}
-                            className="w-full py-4 bg-slate-900 text-white text-[11px] font-bold uppercase tracking-[0.3em] rounded-xl hover:bg-slate-800 transition-all duration-300 shadow-sm active:scale-[0.99]"
+                            className="w-full py-4 bg-[#0a61a4] text-white text-[11px] font-bold uppercase tracking-[0.3em] rounded-xl hover:bg-slate-800 transition-all duration-300 shadow-sm active:scale-[0.99]"
                         >
-                            Finalize Registration
+                            {!isLoading ? 'Finalize Registration' : 'Processing...'}
                         </button>
                     </div>
                 </div>

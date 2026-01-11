@@ -14,8 +14,16 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [tokenExpiry, setTokenExpiry] = useState(null);
+
+    useEffect(() => {
+        const verifyUser = async () => {
+            await checkAuthStatus();
+            setLoading(false);
+        };
+        verifyUser();
+    }, []);
 
     const baseURL = import.meta.env.DEV
         ? ''

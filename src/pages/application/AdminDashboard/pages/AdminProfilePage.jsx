@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { User, Save } from 'lucide-react';
 import AdminLayout from '../components/layout/AdminLayout';
 import Input from '../components/ui/Input';
+import {updateAdminProfile} from "../../../auth/authAPIs.js";
+import {Toast} from "../components/ui/Toast.jsx";
 
 const AdminProfilePage = () => {
     const [formData, setFormData] = useState({
@@ -10,18 +12,52 @@ const AdminProfilePage = () => {
         lastName: '',
         phone: '',
     });
-
+    const [toast, setToast] = useState({ show: false, message: '', type: 'error', onClose: null });
+    const showToast = (message, type = 'error', duration = 2000, onClose = null) => {
+        setToast({ show: true, message, type, onClose });
+        setTimeout(() => {
+            setToast((prev) => ({ ...prev, show: false }));
+            if (onClose) onClose();
+        }, duration);
+    };
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form submitted', formData);
+
+        if (!formData?.lastName || !formData?.firstName || !formData?.phone)
+            return showToast("Please fill in all input fields");
+
+        const payload = {
+            lastName: formData.lastName,
+            firstName: formData.firstName,
+            phone: formData.phone,
+        }
+
+        try{
+            updateAdminProfile(payload).then((response) => {
+                showToast('Profile updated successfully!', 'success');
+            }).catch((error) => {
+                showToast('Failed to update profile. Please try again.', 'error');
+            });
+        }catch{
+            showToast('Failed to update profile. Please try again.');
+        }
     };
 
     return (
         <AdminLayout>
+            {toast.show && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({ ...toast, show: false })}
+                />
+            )}
             <div className="max-w-3xl mx-auto space-y-6">
                 <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
@@ -35,14 +71,7 @@ const AdminProfilePage = () => {
 
                 <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Input
-                            label="School ID"
-                            name="schoolId"
-                            value={formData.schoolId}
-                            onChange={handleChange}
-                            placeholder="School Identifier"
-                            disabled={true}
-                        />
+
                         <Input
                             label="First Name"
                             name="firstName"

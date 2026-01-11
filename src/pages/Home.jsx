@@ -115,229 +115,124 @@ export const Home = () => {
             </section>
 
             {/*Who/What is EduConnect*/}
-            <section id={"about"} className="py-10 md:py-24 lg:py-16 rounded-4xl md:my-10 bg-[#FAFAFA] max-w-7xl mx-auto">
-                <div className="mx-auto px-6 lg:px-8">
-                    <div className="flex flex-col-reverse md:grid grid-cols-1 gap-12 md:gap-8 md:grid-cols-2 items-center">
+            <section id="about" className="py-20 md:py-32 bg-white max-w-7xl mx-auto overflow-hidden">
+                <div className="px-6 lg:px-8">
+                    <div className="flex flex-col-reverse md:grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
 
-                        <div className="lg:mb-0">
-                            <img
-                                src={`${Images.about_us}`}
-                                alt="Two students smiling while working on a laptop"
-                                className="w-full h-full object-cover rounded-xl shadow-2xl"
-                            />
+                        {/* Left Column: Visual Asset with Structured Frame */}
+                        <div className="relative group">
+                            {/* Technical "L-Frame" Accent */}
+                            <div className="absolute -top-4 -left-4 w-24 h-24 rounded-tl-3xl transition-all group-hover:-top-2 group-hover:-left-2" />
+
+                            <div className="relative rounded-[2.5rem] overflow-hidden border border-slate-200 bg-slate-50 p-3 shadow-xl shadow-slate-200/40">
+                                <img
+                                    src={`${Images.about_us}`}
+                                    alt="Academic Collaboration"
+                                    className="w-full aspect-4/5 object-cover rounded-4xl transition-transform duration-700 group-hover:scale-105"
+                                />
+                            </div>
                         </div>
 
-                        {/* Right Column: Text Content */}
-                        <div className="flex flex-col justify-center">
+                        {/* Right Column: Narrative Content */}
+                        <div className="flex flex-col">
+                            {/* Registry Label */}
+                            <div className="flex items-center gap-3 mb-6">
+                                <span className="h-px w-6 bg-[#104889]" />
+                                <h2 className="text-[11px] font-bold text-[#104889] uppercase tracking-[0.4em]">
+                                    Overview
+                                </h2>
+                            </div>
 
-                            {/* Minor Title Cleanup */}
-                            <h2 className="text-[15px] mb-4 font-bold text-[#104889]">
-                                What is EduConnect
-                            </h2>
-
-                            {/* Main Title */}
-                            <h3 className="text-3xl font-[590] text-gray-800 mb-6">
-                                School Management System Software- A Need For All Educational Institutes
+                            {/* Main Heading */}
+                            <h3 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-8 tracking-tight leading-[1.1]">
+                                The Essential Infrastructure for <span className="text-[#ffc21c]">Modern Education</span>
                             </h3>
 
-                            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                                EduConnect is a robust digital platform designed to empower schools in Northern Nigeria. Our primary goals are to simplify administrative duties, significantly improve learning outcomes, and solidify communication channels between teachers, parents, and students, through the digitization of manual tasks.
-                            </p>
+                            {/* Body Content */}
+                            <div className="space-y-6 mb-10">
+                                <p className="text-lg text-slate-600 font-medium leading-relaxed">
+                                    EduConnect is a specialized School Information System (SIS) architected to resolve the unique administrative complexities of schools in Northern Nigeria.
+                                </p>
 
-                            <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                                We are committed to building technology that understands the realities of our regional schools. This means developing tools that are simple, reliable, and easy to adopt even where resources are limited and internet access may not always be stable. We equip educators with the essentials they need to succeed.
-                            </p>
+                                <p className="text-lg text-slate-600 font-medium leading-relaxed">
+                                    Our focus remains on building high-reliability tools that perform in low-resource environments, ensuring that limited internet stability does not compromise institutional growth..
+                                </p>
 
-                            {/* CTA/Link */}
-                            <button
-                                onClick={() => handleNavClick('services')}
-                                className="text-[#104889] font-semibold tracking-wider hover:text-blue-800 transition duration-150 inline-flex items-center group"
-                            >
-                                Explore Our Services
-                                <ArrowRight className="w-5 h-5" />
-                            </button>
+                                <p className="text-lg text-slate-500 font-medium leading-relaxed">
+                                    By digitizing legacy manual tasks, we empower educators to shift their focus from paperwork to pupil performance, creating a transparent and data-driven learning environment.
+                                </p>
+                            </div>
+
+                            {/* Technical CTA */}
+                            <div>
+                                <button
+                                    onClick={() => handleNavClick('services')}
+                                    className="group flex items-center gap-4 text-slate-900 text-[11px] font-bold uppercase tracking-[0.3em] hover:text-[#104889] transition-all"
+                                >
+                                    <span>Explore Capabilities</span>
+                                    <div className="flex items-center justify-center w-10 h-10 border border-slate-200 rounded-full group-hover:border-[#104889] group-hover:bg-slate-50 transition-all">
+                                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
-
             {/*Info on EduConnect*/}
-            <section className="py-20 px-4 bg-gradient-to-b">
-                <div className="max-w-7xl mx-auto">
-                    {/* Header */}
-                    <div className="md:text-center mb-16">
-                        <h2 className="text-3xl md:text-5xl font-[590] text-gray-900 mb-4">
-                            Empower Everyone in Your School <span className={`text-[#104889] md:text-gray-900`}>Community</span>
-                            <span className="hidden md:block mt-2">
-                              with <span className="bg-clip-text text-[#104889]">EduConnect</span> Digital Learning Platform
-                            </span>
+            <section className="py-24 px-6 bg-white relative overflow-hidden">
+                {/* Subtle Background Grid - Optional for that technical look */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#f8fafc_1px,transparent_1px),linear-gradient(to_bottom,#f8fafc_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+
+                <div className="max-w-7xl mx-auto relative">
+                    {/* Header Section */}
+                    <div className="text-center mb-20">
+                        <div className="inline-block px-4 py-1.5 mb-6 border border-slate-200 rounded-full bg-slate-50">
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">
+                                Institutional Ecosystem
+                            </p>
+                        </div>
+
+                        <h2 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight">
+                            Empower Your <span className="text-[#104889]">Community</span>
+                            <span className="block md:mt-2 text-slate-900/40">Through Digital Integration</span>
                         </h2>
 
-                        <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                            Discover how EduConnect is transforming the way you manage your school, engage students, and connect everyone in your educational community
+                        <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed font-medium">
+                            EduConnect centralizes management, engagement, and academic tracking into a single, high-fidelity registry for modern institutions.
                         </p>
                     </div>
 
                     {/* Stakeholder Cards */}
-                    <div data-aos={`fade-up`} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div data-aos="fade-up" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {stakeholders.map((stakeholder, index) => {
                             return (
                                 <div
                                     key={index}
-                                    className={`group relative border border-[#cfcfcf] bg-white rounded-2xl overflow-hidden`}
+                                    className="group relative bg-white border border-slate-200 rounded-4xl p-8 transition-all duration-500 hover:shadow-md hover:shadow-slate-200 hover:-translate-y-1"
                                 >
-                                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r `}></div>
-
-                                    <div className="p-6">
-                                        <h3 className="text-2xl text-gray-900 mb-4">
-                                            {stakeholder.title}
-                                        </h3>
-                                        <p className="text-gray-600 leading-relaxed text-[15px]">
-                                            {stakeholder.description}
-                                        </p>
+                                    {/* Top Technical ID Accent */}
+                                    <div className="flex justify-between items-start mb-8">
+                                        <div className={`h-1.5 w-12 rounded-full bg-linear-to-r from-[#0a61a4] to-[#ffc21c] opacity-40`} />
                                     </div>
 
-                                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${stakeholder.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}></div>
+                                    <div className={`flex flex-row items-center justify-between mb-4`}>
+
+                                        <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                                            {stakeholder.title}
+                                        </h3>
+                                        <span className={`text-xs font-bold tracking-tight text-slate-500 ml-3`}>{stakeholder.label}</span>
+                                    </div>
+
+                                    <p className="text-[13px] font-medium text-slate-500 leading-relaxed tracking-wide">
+                                        {stakeholder.description}
+                                    </p>
+
                                 </div>
                             );
                         })}
                     </div>
-
-                    {/* Bottom CTA Section */}
-                    {/*<div className="mt-16 text-center">*/}
-                    {/*    <div className="inline-flex flex-col md:flex-row items-center gap-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 shadow-xl">*/}
-                    {/*        <div className="text-white text-left">*/}
-                    {/*            <h3 className="text-2xl font-bold mb-2">Ready to Transform Your School?</h3>*/}
-                    {/*            <p className="text-blue-100">Join hundreds of institutions already using EduConnect</p>*/}
-                    {/*        </div>*/}
-                    {/*        <button className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl hover:bg-gray-50 transition-colors duration-200 shadow-lg whitespace-nowrap">*/}
-                    {/*            Schedule a Demo*/}
-                    {/*        </button>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
                 </div>
-            </section>
-
-            {/*Our Services*/}
-            <section id={"services"} className="py-20 md:py-24 lg:py-32 bg-gray-50"> {/* Light gray background for separation */}
-                <div className="max-w-7xl mx-auto px-6 lg:px-8  md:text-center">
-
-                    {/* Main Title */}
-                    <p className="text-lg text-[#104889] font-semibold ">Our Services</p>
-                    <h2 className="text-4xl md:text-5xl font-[610] md:font-bold text-gray-900 mb-4">
-                        What Can EduConnect Offer You?
-                    </h2>
-                    {/* Underline/Separator */}
-                    <div className="w-24 h-1.5 bg-[#FFC21C] md:mx-auto mb-8 rounded-full"></div> {/* Professional divider */}
-
-                    {/* Subtitle */}
-                    <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-6 leading-relaxed">
-                        We aspire to become the #1 all-in-one web and mobile platform for easier and more effective learning experience in Nigeria.
-                    </p>
-
-                    {/* Supporting Text */}
-                    <p className="hidden md:block text-lg text-gray-600 max-w-4xl mx-auto mb-16 leading-relaxed">
-                        Driven by our desire to create value for educators and learners, we build trusted education solutions to help schools embrace technology and hence make learning more engaging.
-                    </p>
-
-                    {/* Features Grid */}
-                    <div className={`hidden md:block`}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {features.map((feature, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col items-center text-center"
-                                >
-                                    {/* Icon Placeholder */}
-                                    <div className="w-20 h-20 bg-[#FFC21C] rounded-full flex items-center justify-center mb-6">
-                                        <img
-                                            src={feature.icon}
-                                            alt={`${feature.title} icon`}
-                                            className="w-10 h-10" // Adjust size of the placeholder icon itself
-                                        />
-                                    </div>
-
-                                    <h3 className="text-2xl font-[590] text-gray-800 mb-3">
-                                        {feature.title}
-                                    </h3>
-                                    <p className="text-base text-gray-600 leading-relaxed">
-                                        {feature.description}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-
-                    {/*Projected Mobile View*/}
-                    <div className="md:hidden">
-                        {/* Active Card Display */}
-                        <div className="mb-8">
-                            <div className="bg-white rounded-2xl p-5 shadow-2xl border-2 border-gray-100 relative overflow-hidden">
-                                {/* Background gradient */}
-                                <div className={`absolute top-0 right-0 w-32 h-32 bg-[#FFC21C] opacity-10 rounded-full blur-3xl`}></div>
-
-                                <div className="relative z-10">
-                                    {/* Icon and Number */}
-                                    <div className="flex items-center justify-between">
-                                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center`}>
-                                            <img
-                                                src={features[activeReason].icon}
-                                                alt={`${features[activeReason].title} icon`}
-                                                className="w-10 h-10" // Adjust size of the placeholder icon itself
-                                            />
-                                        </div>
-
-                                    </div>
-
-                                    {/* Content */}
-                                    <h3 className="text-xl md:text-2xl text-gray-900 mb-4">
-                                        {features[activeReason].title}
-                                    </h3>
-                                    <p className="text-gray-600 leading-relaxed text-[15px] md:text-lg">
-                                        {features[activeReason].description}
-                                    </p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        {/*Navigation Dots*/}
-                        <div className="flex justify-center gap-3 mb-6">
-                            {features.map((_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => setActiveReason(index)}
-                                    className={`transition-all duration-300 rounded-full ${
-                                        activeReason === index
-                                            ? `w-12 h-3 bg-[#FFC21C]`
-                                            : 'w-3 h-3 bg-gray-300 hover:bg-gray-400'
-                                    }`}
-                                    aria-label={`View reason ${index + 1}`}
-                                ></button>
-                            ))}
-                        </div>
-
-                        {/*Navigation Buttons*/}
-                        <div className="flex justify-center gap-4 mt-8">
-                            <button
-                                onClick={() => setActiveReason(Math.max(0, activeReason - 1))}
-                                disabled={activeReason === 0}
-                                className="p-3 bg-white border-2 border-gray-300 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
-                            >
-                                ←
-                            </button>
-                            <button
-                                onClick={() => setActiveReason(Math.min(features.length - 1, activeReason + 1))}
-                                disabled={activeReason === features.length - 1}
-                                className={`px-3 bg-[#0A61A4] text-white rounded-xl font-extrabold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm`}
-                            >
-                                 →
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
             </section>
 
             {/*CTA Section*/}
@@ -361,7 +256,7 @@ export const Home = () => {
 
                             {/* Main Headline */}
                             <h2 className="text-4xl md:text-4xl font-[610] text-gray-900 leading-tight mb-6">
-                                One platform for parents, teachers, and students to stay in sync.
+                                One platform for parents, teachers, and Administrators to stay in sync.
                             </h2>
 
                             {/* Subtext */}
@@ -370,16 +265,94 @@ export const Home = () => {
                             </p>
 
                             {/* Action Button */}
-                            <NavLink to={`/register/school`}>
-                                <button
-                                    className="px-10 py-3 bg-[#0A61A4] text-white font-semibold rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150 shadow-md">
-                                    Get Started Today
-                                </button>
-                            </NavLink>
+                            <button
+                                onClick={() => handleNavClick('contact')}
+                                className="px-10 py-3 bg-[#0A61A4] text-white font-semibold rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150 shadow-md">
+                                Schedule a Demo
+                            </button>
 
                         </div>
                     </div>
                 </div>
+            </section>
+
+            {/*Our Services*/}
+            <section id="services" className="py-12 md:py-32 bg-white relative overflow-hidden">
+                {/* Background Detail: Institutional Grid Overlay */}
+                <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] bg-size-[32px_32px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)] opacity-40" />
+
+                <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+                    {/* Header Section */}
+                    <div className="md:text-center mb-20">
+                        <div className="inline-flex items-center gap-3 mb-6">
+                            <div className="h-px w-8 bg-slate-300" />
+                            <p className="text-[12px] font-bold text-slate-500 uppercase tracking-[0.4em]">
+                                Service Catalog
+                            </p>
+                            <div className="h-px w-8 bg-slate-300" />
+                        </div>
+
+                        <h2 className="text-4xl md:text-6xl  font-bold text-slate-900 mb-8 tracking-tight">
+                            Institutional <span className="text-[#ffc21c]">Capabilities</span>
+                        </h2>
+
+                        <div className="max-w-3xl mx-auto mb-6">
+                            <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed">
+                                We are building the benchmark for digital academic infrastructure in Nigeria, centralizing the learning experience into a single, high-fidelity ecosystem.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Desktop Features Grid (No Icons/Numbers) */}
+                    <div className="hidden md:block">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-slate-200 border border-slate-200 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200/50">
+                            {features.map((feature, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-white p-10 hover:bg-slate-50 transition-colors duration-500 flex flex-col group"
+                                >
+
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">
+                                        {feature.title}
+                                    </h3>
+
+                                    <p className="text-[16px] text-slate-500 leading-relaxed font-medium mb-8">
+                                        {feature.description}
+                                    </p>
+
+                                    {/* Bottom Technical Accent */}
+                                    <div className="mt-auto flex items-center gap-2">
+                                        <div className="h-1 w-1 rounded-full bg-slate-300 group-hover:bg-[#104889]" />
+                                        <div className="h-[1px] w-0 group-hover:w-12 bg-slate-200 transition-all duration-500" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Mobile View: Clean Registry Style */}
+                    <div className="md:hidden space-y-4">
+                        {features.map((feature, index) => (
+                            <div
+                                key={index}
+                                className="p-8 bg-slate-50 border border-slate-200 rounded-3xl"
+                            >
+                                <p className="text-[9px] font-bold text-[#104889] uppercase tracking-widest mb-3">
+                                    Feature Registry {index + 1}
+                                </p>
+                                <h3 className="text-lg font-bold text-slate-900 mb-2">
+                                    {feature.title}
+                                </h3>
+                                <p className="text-sm text-slate-500 leading-relaxed font-medium">
+                                    {feature.description}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+
+
+                </div>
+
             </section>
 
             {/*Why Choose Us Section*/}

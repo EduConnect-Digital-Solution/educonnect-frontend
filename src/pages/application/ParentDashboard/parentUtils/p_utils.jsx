@@ -328,14 +328,14 @@ export const ChildListandNotification = ({ children, notifications }) => {
                     <div className="p-6 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <h2 className="text-xl font-bold text-gray-800">List of Children</h2>
                         <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <input
-                                    type="text"
-                                    placeholder="Search child..."
-                                    className="pl-10 pr-4 py-2 bg-gray-50 border-none rounded-xl text-sm w-full focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
+                            {/*<div className="relative flex-1">*/}
+                            {/*    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />*/}
+                            {/*    <input*/}
+                            {/*        type="text"*/}
+                            {/*        placeholder="Search child..."*/}
+                            {/*        className="pl-10 pr-4 py-2 bg-gray-50 border-none rounded-xl text-sm w-full focus:ring-2 focus:ring-blue-500"*/}
+                            {/*    />*/}
+                            {/*</div>*/}
                         </div>
                     </div>
 

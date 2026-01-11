@@ -6,15 +6,22 @@ import {ArrowLeft, Building2, Eye, EyeOff, Globe,
 import {RegSchool} from "./authAPIs.js";
 import {Toast} from "../application/AdminDashboard/components/ui/Toast.jsx";
 import {Tooltip, TooltipContent, TooltipTrigger,} from "../../components/ui/tooltip.jsx"
+import {VerifySchoolModal} from "../../components/modals.jsx";
 
 export function RegisterSchool() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [toAdmin, settoAdmin] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
+    const [showVerifySchoolModal, setShowVerifySchoolModal] = useState(false); // New state
+    const [verificationEmail, setVerificationEmail] = useState(''); // New state
 
-    const showToast = (message, type = 'error') => {
-        setToast({ show: true, message, type });
+    const showToast = (message, type = 'error', duration = 2000, onClose = null) => {
+        setToast({ show: true, message, type, onClose });
+        setTimeout(() => {
+            setToast((prev) => ({ ...prev, show: false }));
+            if (onClose) onClose();
+        }, duration);
     };
 
     const [schoolFormData, setschoolFormData] = useState({
@@ -72,13 +79,29 @@ export function RegisterSchool() {
         try {
             await RegSchool(combinedPayload);
             showToast('School registered successfully', 'success');
-            navigate('/verify', { state: { email: combinedPayload.email } });
+            setVerificationEmail(combinedPayload.email);
+            setShowVerifySchoolModal(true);
+
         } catch (err) {
             const message = err?.message || err?.error || 'Registration failed';
             showToast(message, 'error');
         }
     };
 
+    const formatWebsiteUrl = (url) => {
+        if (!url) return null;
+        let cleanUrl = url.trim().toLowerCase();
+
+        // Check if the URL already starts with http:// or https://
+        // If not, prepend https://
+        if (!/^https?:\/\//i.test(cleanUrl)) {
+            cleanUrl = `https://${cleanUrl}`;
+        }
+
+        return cleanUrl;
+    };
+
+    // Application in your data object:
     const handleProceed = () => {
         // 1. Define specific regex patterns
         const urlPattern = /^(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&/=]*$/;
@@ -108,12 +131,16 @@ export function RegisterSchool() {
             showToast("Please provide a valid address for the school.");
             return;
         }
+        if (!schoolFormData?.description) {
+            showToast("Please provide a short description for the school.");
+            return;
+        }
 
         settoAdmin(true)
 
         return {
             schoolName: schoolFormData.schoolName.trim(),
-            website: schoolFormData.website?.trim().toLowerCase() || null,
+            website: formatWebsiteUrl(schoolFormData.website),
             phone: schoolFormData.phone.trim(),
             address: schoolFormData.address.trim(),
             description: schoolFormData.description.trim(),
@@ -389,6 +416,13 @@ export function RegisterSchool() {
                 </>
             )}
 
+            {showVerifySchoolModal && (
+                <VerifySchoolModal
+                    onClose={() => setShowVerifySchoolModal(false)}
+                    email={verificationEmail}
+                    showToast={showToast}
+                />
+            )}
         </>
     );
 }

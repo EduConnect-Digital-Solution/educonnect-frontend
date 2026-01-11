@@ -22,6 +22,7 @@ export const stakeholders = [
     {
         icon: GraduationCap,
         title: "Students",
+        label: 'Coming Soon',
         description: "Engage learners with interactive experiences that transform education into an exciting journey. Our platform makes studying effective and enjoyable, promoting active participation and accelerating academic growth through personalized learning pathways.",
         gradient: "from-purple-600 to-purple-700",
         accentColor: "bg-purple-50",
@@ -67,14 +68,6 @@ export const features = [
         description: 'Instant updates for parents on attendance,\n' +
             'performance, and school activities, improving\n' +
             'engagement and trust.',
-        color: "from-blue-500 to-blue-600"
-    },
-    {
-        icon: Icons.digital, // Placeholder for desktop icon
-        title: 'Digital Learning Tools',
-        description: 'Upload lessons, assignments, and learning\n' +
-            'materials so students can learn anytime even\n' +
-            'with low-data access.',
         color: "from-blue-500 to-blue-600"
     },
     {
@@ -175,31 +168,25 @@ export const reasons = [
 ];
 
 export const faqs = [
-    // TODO: Get more questions from GradeLink SIS
     {
-        question: "What is EduConnect and who can use it?",
+        question: "What is EduConnect and how does it integrate with our school?",
         answer:
-            "An accounting company ensures accurate bookkeeping, financial reporting, and compliance with tax regulations.",
+            "EduConnect is a high-performance School Information System (SIS) designed to centralize academic records, attendance, and grading. It integrates via a secure cloud infrastructure, allowing administrators to manage the entire institutional in a single unified dashboard.",
     },
     {
-        question: "Is EduConnect free to use?",
+        question: "How is student data privacy and security maintained?",
         answer:
-            "You can place the 1C Base customer within your secured accounting infrastructure.",
+            "We employ enterprise-grade AES-256 encryption for all data at rest and TLS 1.3 for data in transit. Access is governed by strict Role-Based Access Control (RBAC), ensuring that sensitive student information is only accessible to authorized institutional personnel and verified legal guardians.",
     },
     {
-        question: "How does EduConnect ensure data privacy and security?",
+        question: "Can we migrate our existing legacy student data?",
         answer:
-            "Payments can typically be made via bank transfer, card, or an online payment portal.",
+            "While v1 is focused on native registry initialization, comprehensive legacy data migration is a core feature of our v3 roadmap. This future update will introduce a dedicated Migration Engine for bulk synchronization of data via structured CSV/Excel imports ensuring zero data loss.",
     },
     {
-        question: "How long does it take to set up EduConnect?",
+        question: "Is there a limit to the number of students or staff we can register?",
         answer:
-            "We continually evaluate services quality through audits and customer feedback.",
-    },
-    {
-        question: "Can you Import our existing Student Data",
-        answer:
-            "We continually evaluate services quality through audits and customer feedback.",
+            "EduConnect is architected for scalability. Our infrastructure supports unlimited concurrent users, allowing your institution to grow without performance degradation or the need for manual server upgrades.",
     },
 ];
 

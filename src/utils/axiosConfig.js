@@ -30,11 +30,17 @@ apiClient.interceptors.request.use(
     async (config) => {
         const authContext = window.authContext;
 
-        // Skip token attachment for auth endpoints that use httpOnly cookies
-        const authEndpoints = ['/api/user/auth/me', '/api/school/auth/login', '/api/school/auth/logout'];
-        const isAuthEndpoint = authEndpoints.some(endpoint => config.url?.includes(endpoint));
+        // Skip token attachment for public endpoints
+        const publicEndpoints = [
+            '/api/user/auth/me',
+            '/api/school/auth/login',
+            '/api/school/auth/logout',
+            '/api/school/auth/register',
+            '/api/school/auth/verify-email'
+        ];
+        const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint));
 
-        if (isAuthEndpoint) {
+        if (isPublicEndpoint) {
             return config;
         }
 

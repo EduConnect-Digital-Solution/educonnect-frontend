@@ -1084,7 +1084,7 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
         lastName: '',
         email: '',
         phone: '',
-        placementValue: '', // Holds the specific Grade or Class selected
+        class: '', // Holds the specific Grade or Class selected
         section: '',
         // rollNumber: '',
         dateOfBirth: '',
@@ -1094,7 +1094,7 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
 
     const classOptions = [
         "Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6",
-        "JSS 1", "JSS 2", "JSS 3", "SS 1", "SS 2", "SS 3"
+        "JSS1", "JSS2", "JSS3", "SS1", "SS2", "SS3"
     ];
 
     const gradeOptions = Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`);
@@ -1103,7 +1103,7 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
         // Strict validation for all fields
         const requiredFields = [
             'firstName', 'lastName', 'email', 'phone',
-            'placementValue',
+            'class',
             // 'rollNumber',
             'dateOfBirth',
             'gender', 'address'
@@ -1194,7 +1194,7 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
                                 value={registryStyle}
                                 onChange={(e) => {
                                     setRegistryStyle(e.target.value);
-                                    setFormData({ ...formData, placementValue: '', section: '' });
+                                    setFormData({ ...formData, class: '', section: '' });
                                 }}
                                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all appearance-none"
                             >
@@ -1211,8 +1211,8 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
                             </label>
                             <select
                                 disabled={!registryStyle}
-                                value={formData.placementValue}
-                                onChange={(e) => setFormData({ ...formData, placementValue: e.target.value })}
+                                value={formData.class}
+                                onChange={(e) => setFormData({ ...formData, class: e.target.value })}
                                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all disabled:opacity-50"
                             >
                                 <option value="">Select Level</option>
@@ -1293,6 +1293,8 @@ export const Modal = ({ title, onClose, onSubmit, children }) => (
         </div>
     </div>
 );
+
+
 
 export const ManageParentStudentLinkModal = ({ onClose, showToast, schoolId, parent = null }) => {
     const [parentsList, setParentsList] = useState([]);

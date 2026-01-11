@@ -163,7 +163,7 @@ const ClassStudents = () => {
             class: stClass,
             section: section ? section.toUpperCase() : '',
             term: "First Term",
-            academicYear: "2024-2025",
+            academicYear: "2026-2027",
             assessments: [{ type: "Test", title: "", score: 0, maxScore: 100, weight: 1, date: new Date().toISOString().split('T')[0], remarks: "" }],
             remarks: ""
         });
@@ -591,8 +591,11 @@ const ClassStudents = () => {
                                                                         >
                                                                             <option>Test</option>
                                                                             <option>Assignment</option>
+                                                                            <option>Homework</option>
                                                                             <option>Exam</option>
-                                                                            <option>Other</option>
+                                                                            <option>Quiz</option>
+                                                                            <option>Project</option>
+                                                                            <option>Practical</option>
                                                                         </select>
                                                                     </div>
                                                                     <div className="space-y-2.5 lg:col-span-2">
