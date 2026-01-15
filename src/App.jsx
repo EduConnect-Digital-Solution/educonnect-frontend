@@ -1,6 +1,7 @@
 import React, {Suspense, lazy, useEffect} from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 // Components
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -65,14 +66,14 @@ function AppRoutes() {
             {/*<Suspense fallback={<LoadingFallback />}>*/}
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<AuthPage />} />
                     <Route path="/pricing" element={<PricingPage />} />
 
-                    <Route path="/complete-registration" element={<CompleteRegistration />} />
-                    <Route element={<AuthLayout />}>
-                        <Route path="/register/school" element={<RegisterSchool />} />
-                        <Route path="/register" element={<Navigate to="/register/school" />} />
-                    </Route>
+                    {/*<Route path="/login" element={<AuthPage />} />*/}
+                    {/*<Route path="/complete-registration" element={<CompleteRegistration />} />*/}
+                    {/*<Route element={<AuthLayout />}>*/}
+                    {/*    <Route path="/register/school" element={<RegisterSchool />} />*/}
+                    {/*    <Route path="/register" element={<Navigate to="/register/school" />} />*/}
+                    {/*</Route>*/}
 
                     {/* Admin Protected Routes */}
                     <Route path="/dashboard/admin" element={<ProtectedRoute requiredRole="admin"><DashboardPage /></ProtectedRoute>} />
@@ -114,6 +115,7 @@ function AppRoutes() {
                     } />
 
                     {/*<Route path="*" element={<Navigate to="/" />} />*/}
+                    <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             {/*</Suspense>*/}
         </div>

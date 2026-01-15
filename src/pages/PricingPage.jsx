@@ -34,15 +34,7 @@ const PricingCard = ({ plan, price, features, description, isPremium = false }) 
             ))}
         </ul>
 
-        <button
-            className={`w-full py-3 px-6 rounded-lg text-sm font-bold transition-colors
-        ${isPremium
-                ? 'bg-[#4f46e5] text-white hover:bg-[#4338ca]'
-                : 'bg-[#1a2332] text-white hover:bg-[#2d3748]'
-            }`}
-        >
-            Choose {plan}
-        </button>
+
     </div>
 );
 
@@ -100,6 +92,226 @@ const ComparisonSection = ({ title, items }) => (
     </div>
 );
 
+const MobileComparisonRow = ({ name, basic, premium }) => (
+    <div className="border-b border-gray-200 py-4 px-6">
+        <div className="font-medium text-gray-900 mb-3 text-sm">{name}</div>
+        <div className="space-y-2">
+            <div className="flex items-center gap-3">
+                <span className="text-gray-600 text-xs font-semibold uppercase w-16">Basic</span>
+                <div className="flex-1 flex justify-start">
+                    {basic === true ? (
+                        <Check className="h-5 w-5 text-[#4ade80]" />
+                    ) : basic === false ? (
+                        <X className="h-5 w-5 text-gray-300" />
+                    ) : (
+                        <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">{basic}</span>
+                    )}
+                </div>
+            </div>
+            <div className="flex items-center gap-3">
+                <span className="text-gray-600 text-xs font-semibold uppercase w-16">Premium</span>
+                <div className="flex-1 flex justify-start">
+                    {premium === true ? (
+                        <Check className="h-5 w-5 text-[#4ade80]" />
+                    ) : premium === false ? (
+                        <X className="h-5 w-5 text-gray-300" />
+                    ) : (
+                        <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded">{premium}</span>
+                    )}
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+const MobileComparisonSection = ({ title, items }) => (
+    <div className="mb-0">
+        <div className="bg-gray-50 py-3 px-6 border-b border-gray-200">
+            <h3 className="font-semibold text-gray-900 text-sm">{title}</h3>
+        </div>
+        <div>
+            {items.map((item, index) => (
+                <MobileComparisonRow
+                    key={index}
+                    name={item.name}
+                    basic={item.basic}
+                    premium={item.premium}
+                />
+            ))}
+        </div>
+    </div>
+);
+
+const TabComparisonView = () => {
+    const [activeTab, setActiveTab] = useState('basic');
+
+    const comparisonData = [
+        {
+            title: "User Management & Access Control",
+            items: [
+                { name: "Admin Dashboard & User Accounts", basic: true, premium: true },
+                { name: "Secure Registration & Authentication", basic: true, premium: true },
+                { name: "Role-Based Access Control", basic: true, premium: true }
+            ]
+        },
+        {
+            title: "Student & Parent Portals",
+            items: [
+                { name: "Student Profile Management", basic: true, premium: true },
+                { name: "Parent Dashboard", basic: true, premium: true },
+                { name: "Multi-Child Access", basic: true, premium: true }
+            ]
+        },
+        {
+            title: "Academic Management",
+            items: [
+                { name: "Class & Subject Management", basic: true, premium: true },
+                { name: "Basic Gradebook", basic: true, premium: "Advanced with Weighted Grading" },
+                { name: "Attendance Tracking", basic: "Manual", premium: "Manual" },
+                { name: "Automated Report Card Generation", basic: false, premium: true },
+                { name: "Online Assignments & Submissions", basic: false, premium: true },
+                { name: "Exam & Timetable Management", basic: false, premium: true },
+                { name: "Transcript Generation", basic: false, premium: true }
+            ]
+        },
+        {
+            title: "Teacher Dashboard",
+            items: [
+                { name: "Class & Student Lists", basic: true, premium: true },
+                { name: "Profile Management", basic: true, premium: true }
+            ]
+        },
+        {
+            title: "Communication & Collaboration",
+            items: [
+                { name: "Internal Messaging System", basic: false, premium: true },
+                { name: "School-wide Announcements (Portal, Email, SMS)", basic: false, premium: true },
+                { name: "Parent-Teacher Meeting Scheduler", basic: false, premium: true },
+                { name: "Digital Notice Board", basic: false, premium: true }
+            ]
+        },
+        {
+            title: "Analytics & Insights",
+            items: [
+                { name: "Basic Analytics (Accounts, Activity, Enrollment)", basic: true, premium: true },
+                { name: "Student Performance Analytics", basic: false, premium: true },
+                { name: "Teacher Performance Review", basic: false, premium: true },
+                { name: "Enrollment & Admissions Analytics", basic: false, premium: true },
+                { name: "Predictive Analytics (AI-Driven)", basic: false, premium: true }
+            ]
+        },
+        {
+            title: "Customization & Data",
+            items: [
+                { name: "Custom Branding (Logo, Colors, Domain)", basic: false, premium: true },
+                { name: "Data Import/Export", basic: false, premium: true }
+            ]
+        },
+        {
+            title: "Support & Onboarding",
+            items: [
+                { name: "Onboarding & Training", basic: true, premium: true },
+                { name: "Dedicated Account Manager", basic: false, premium: true },
+                { name: "Priority Support", basic: false, premium: true }
+            ]
+        }
+    ];
+
+    return (
+        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+            <div className="p-8 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">Detailed Feature Comparison</h2>
+                <p className="text-gray-600">Everything you need to choose the right plan for your school</p>
+            </div>
+
+            {/* Desktop View */}
+            <div className="hidden md:block">
+                <div className="grid grid-cols-3 gap-4 py-4 px-6 bg-[#1a2332] text-white font-semibold border-b border-gray-200 sticky top-0">
+                    <div>Feature</div>
+                    <div className="text-center">Basic</div>
+                    <div className="text-center">Premium</div>
+                </div>
+                <div>
+                    {comparisonData.map((section, idx) => (
+                        <ComparisonSection
+                            key={idx}
+                            title={section.title}
+                            items={section.items}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* Mobile View with Tabs */}
+            <div className="md:hidden">
+                <div className="flex border-b border-gray-200 bg-gray-50">
+                    <button
+                        onClick={() => setActiveTab('basic')}
+                        className={`flex-1 py-4 px-6 text-center font-semibold text-sm transition-colors ${
+                            activeTab === 'basic'
+                                ? 'text-[#1a2332] border-b-2 border-[#1a2332] bg-white'
+                                : 'text-gray-600 border-b-2 border-transparent'
+                        }`}
+                    >
+                        Basic Plan
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('premium')}
+                        className={`flex-1 py-4 px-6 text-center font-semibold text-sm transition-colors ${
+                            activeTab === 'premium'
+                                ? 'text-[#4f46e5] border-b-2 border-[#4f46e5] bg-white'
+                                : 'text-gray-600 border-b-2 border-transparent'
+                        }`}
+                    >
+                        Premium Plan
+                    </button>
+                </div>
+
+                <div className="divide-y divide-gray-200">
+                    {comparisonData.map((section, idx) => (
+                        <div key={idx} className="mb-0">
+                            <div className="bg-gray-50 py-3 px-6 border-b border-gray-200">
+                                <h3 className="font-semibold text-gray-900 text-sm">{section.title}</h3>
+                            </div>
+                            <div>
+                                {section.items.map((item, itemIdx) => (
+                                    <div key={itemIdx} className="border-b border-gray-200 py-4 px-6">
+                                        <div className="font-medium text-gray-900 mb-3 text-sm">{item.name}</div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-gray-600 text-xs font-semibold uppercase w-20">
+                                                {activeTab === 'basic' ? 'Included' : 'Included'}
+                                            </span>
+                                            <div className="flex-1 flex justify-start">
+                                                {activeTab === 'basic' ? (
+                                                    item.basic === true ? (
+                                                        <Check className="h-5 w-5 text-[#4ade80]" />
+                                                    ) : item.basic === false ? (
+                                                        <X className="h-5 w-5 text-gray-300" />
+                                                    ) : (
+                                                        <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded max-w-xs">{item.basic}</span>
+                                                    )
+                                                ) : (
+                                                    item.premium === true ? (
+                                                        <Check className="h-5 w-5 text-[#4ade80]" />
+                                                    ) : item.premium === false ? (
+                                                        <X className="h-5 w-5 text-gray-300" />
+                                                    ) : (
+                                                        <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded max-w-xs">{item.premium}</span>
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export const PricingPage = () => {
     return (
         <>
@@ -149,92 +361,9 @@ export const PricingPage = () => {
                         />
                     </div>
 
-                    {/* Detailed Comparison */}
-                    <div className="mb-20 bg-white rounded-xl border border-gray-100 overflow-hidden">
-                        <div className="p-8 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-                            <h2 className="text-3xl font-bold text-gray-900 mb-2">Detailed Feature Comparison</h2>
-                            <p className="text-gray-600">Everything you need to choose the right plan for your school</p>
-                        </div>
-
-                        {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-3 gap-4 py-4 px-6 bg-[#1a2332] text-white font-semibold border-b border-gray-200 sticky top-0">
-                            <div>Feature</div>
-                            <div className="text-center">Basic</div>
-                            <div className="text-center">Premium</div>
-                        </div>
-
-                        {/* Comparison Sections */}
-                        <div>
-                            <ComparisonSection
-                                title="User Management & Access Control"
-                                items={[
-                                    { name: "Admin Dashboard & User Accounts", basic: true, premium: true },
-                                    { name: "Secure Registration & Authentication", basic: true, premium: true },
-                                    { name: "Role-Based Access Control", basic: true, premium: true }
-                                ]}
-                            />
-                            <ComparisonSection
-                                title="Student & Parent Portals"
-                                items={[
-                                    { name: "Student Profile Management", basic: true, premium: true },
-                                    { name: "Parent Dashboard", basic: true, premium: true },
-                                    { name: "Multi-Child Access", basic: true, premium: true }
-                                ]}
-                            />
-                            <ComparisonSection
-                                title="Academic Management"
-                                items={[
-                                    { name: "Class & Subject Management", basic: true, premium: true },
-                                    { name: "Basic Gradebook", basic: true, premium: "Advanced with Weighted Grading" },
-                                    { name: "Attendance Tracking", basic: "Manual", premium: "Manual" },
-                                    { name: "Automated Report Card Generation", basic: false, premium: true },
-                                    { name: "Online Assignments & Submissions", basic: false, premium: true },
-                                    { name: "Exam & Timetable Management", basic: false, premium: true },
-                                    { name: "Transcript Generation", basic: false, premium: true }
-                                ]}
-                            />
-                            <ComparisonSection
-                                title="Teacher Dashboard"
-                                items={[
-                                    { name: "Class & Student Lists", basic: true, premium: true },
-                                    { name: "Profile Management", basic: true, premium: true }
-                                ]}
-                            />
-                            <ComparisonSection
-                                title="Communication & Collaboration"
-                                items={[
-                                    { name: "Internal Messaging System", basic: false, premium: true },
-                                    { name: "School-wide Announcements (Portal, Email, SMS)", basic: false, premium: true },
-                                    { name: "Parent-Teacher Meeting Scheduler", basic: false, premium: true },
-                                    { name: "Digital Notice Board", basic: false, premium: true }
-                                ]}
-                            />
-                            <ComparisonSection
-                                title="Analytics & Insights"
-                                items={[
-                                    { name: "Basic Analytics (Accounts, Activity, Enrollment)", basic: true, premium: false },
-                                    { name: "Student Performance Analytics", basic: false, premium: true },
-                                    { name: "Teacher Performance Review", basic: false, premium: true },
-                                    { name: "Enrollment & Admissions Analytics", basic: false, premium: true },
-                                    { name: "Predictive Analytics (AI-Driven)", basic: false, premium: true }
-                                ]}
-                            />
-                            <ComparisonSection
-                                title="Customization & Data"
-                                items={[
-                                    { name: "Custom Branding (Logo, Colors, Domain)", basic: false, premium: true },
-                                    { name: "Data Import/Export", basic: false, premium: true }
-                                ]}
-                            />
-                            <ComparisonSection
-                                title="Support & Onboarding"
-                                items={[
-                                    { name: "Onboarding & Training", basic: true, premium: true },
-                                    { name: "Dedicated Account Manager", basic: false, premium: true },
-                                    { name: "Priority Support", basic: false, premium: true }
-                                ]}
-                            />
-                        </div>
+                    {/* Detailed Comparison with Responsive Design */}
+                    <div className="mb-20">
+                        <TabComparisonView />
                     </div>
 
                     {/* Plan Selection Guide */}
@@ -292,18 +421,9 @@ export const PricingPage = () => {
                         </div>
                     </div>
 
-                    {/* CTA Section */}
-                    <div className="bg-white border border-gray-100 rounded-xl p-12 mb-20 text-center">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to Transform Your School?</h2>
-                        <p className="text-gray-600 mb-8 max-w-2xl mx-auto">Get in touch with our team to schedule a personalized demo and discover how EduConnect can streamline your operations.</p>
-                        <button className="inline-flex items-center gap-2 bg-[#4f46e5] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#4338ca] transition-colors">
-                            Contact Our Sales Team <ArrowRight className="h-4 w-4" />
-                        </button>
-                    </div>
-
                     {/* FAQ Section */}
                     <div className="mb-20">
-                        <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">Forum</h2>
+                        <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">Frequently Asked Questions</h2>
                         <div className="max-w-4xl mx-auto space-y-0">
                             <FaqItem
                                 question="Can I change my plan later?"

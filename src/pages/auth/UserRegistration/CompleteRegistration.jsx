@@ -9,7 +9,7 @@ export default function CompleteRegistration() {
     const [searchParams] = useSearchParams();
     const role = searchParams.get('role'); // "teacher" | "parent"
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -52,10 +52,41 @@ export default function CompleteRegistration() {
 
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!formData.schoolId) return showToast("School ID is required");
-        if (!emailPattern.test(formData.email)) return showToast("Invalid email address");
-        if (!formData.currentPassword) return showToast("Temporary password is required");
-        if (!formData.newPassword) return showToast("New password is required");
+        if (!formData.schoolId) {
+            setIsLoading(false);
+            return showToast("School ID is required");
+        }
+        if (!emailPattern.test(formData.email)) {
+            setIsLoading(false);
+            return showToast("Invalid email address");
+        }
+        if (!formData.currentPassword) {
+            setIsLoading(false);
+            return showToast("Temporary password is required");
+        }
+        if (!formData.newPassword) {
+            setIsLoading(false);
+            return showToast("New password is required");
+        }
+        // 5. Password Validation (Descriptive)
+        const password = formData?.newPassword || "";
+        if (password.length < 8) {
+            showToast("Password is too short (minimum 8 characters).");
+            setIsLoading(false);
+            return;
+        } else if (!/[A-Z]/.test(password)) {
+            showToast("Password needs at least one uppercase letter.");
+            setIsLoading(false);
+            return;
+        } else if (!/[0-9]/.test(password)) {
+            showToast("Password needs at least one number.");
+            setIsLoading(false);
+            return;
+        } else if (!/[!@#$%^&*]/.test(password)) {
+            showToast("Password needs at least one special character (!@#$%^&*).");
+            setIsLoading(false);
+            return;
+        }
 
         /** 1. Build the initial raw payload */
         let rawPayload = {
@@ -69,6 +100,11 @@ export default function CompleteRegistration() {
         };
 
         if (role === "teacher") {
+            if (!/^\d+$/.test(formData.experience)) {
+                showToast("Experience must be a number.");
+                setIsLoading(false);
+                return;
+            }
             rawPayload.subjects = formData.subjects
                 ? formData.subjects.split(',').map(s => s.trim()).filter(Boolean)
                 : [];

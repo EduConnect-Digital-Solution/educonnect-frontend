@@ -97,7 +97,7 @@ export function RegisterSchool() {
 
         try {
             await RegSchool(combinedPayload);
-            showToast('School registered successfully', 'success');
+            // showToast('School registered successfully', 'success');
             setVerificationEmail(combinedPayload.email);
             setShowVerifySchoolModal(true);
 

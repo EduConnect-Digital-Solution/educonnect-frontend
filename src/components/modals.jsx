@@ -39,17 +39,19 @@ export const VerifySchoolModal = ({ onClose, email, showToast }) => {
     };
 
     const handleSubmit = async () => {
-        // console.log({email: email, otp: verificationCode})
         try {
             await verifyOTP({email: email, otp: verificationCode});
-            showToast('School verified successfully!', 'success');
+            showToast('School verified successfully! Please proceed to login', 'success');
             onClose(); // Close modal on success
-            navigate('/dashboard/admin'); // Navigate to admin dashboard after verification
+            setTimeout(() => {
+                navigate('/login');
+            }, 3000); // Wait 1 second before navigating
         } catch (err) {
             const message = err?.message || err?.error || 'Verification failed';
             showToast(message, 'error');
         }
     };
+
 
     return (
         <Modal  onClose={onClose} onSubmit={handleSubmit}>
