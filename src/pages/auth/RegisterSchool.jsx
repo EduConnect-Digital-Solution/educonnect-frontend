@@ -8,6 +8,8 @@ import {Toast} from "../application/AdminDashboard/components/ui/Toast.jsx";
 import {Tooltip, TooltipContent, TooltipTrigger,} from "../../components/ui/tooltip.jsx"
 import {VerifySchoolModal} from "../../components/modals.jsx";
 
+// TODO: tell user account creation was successfull upoon submit and they should check their mail for information
+
 export function RegisterSchool() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);

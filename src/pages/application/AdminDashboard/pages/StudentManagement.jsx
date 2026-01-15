@@ -18,6 +18,7 @@ const StudentsList = () => {
     const [userToDelete, setUserToDelete] = useState(null);
     const [showAddUserDropdown, setShowAddUserDropdown] = useState(false);
     const [viewStudent, setViewStudent] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
     const [createStudent, setCreateStudent] = useState(false);
     const [formData, setFormData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -53,11 +54,21 @@ const StudentsList = () => {
 
     const handleUpdateStudent = async (e) => {
         e.preventDefault();
+
+        const payload = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            class: formData.class,
+            section: formData.section,
+            phone: formData.phone
+        }
+
         try {
-            const response = await updateStudent(viewStudent.id, formData);
-            console.log(response);
+            const response = await updateStudent(viewStudent.id, payload);
+
             showToast('Student updated successfully!', 'success');
             setViewStudent(null);
+            setIsEditing(false);
             // Here you might want to refresh the students list
             const fetchUsers = async () => {
                 try {
@@ -77,7 +88,6 @@ const StudentsList = () => {
 
                     setMockUsers(mockUsersList)
                     console.log(response);
-
                 } catch (error) {
                     console.error(error)
 
@@ -98,9 +108,7 @@ const StudentsList = () => {
     useEffect(() => {
 
         const fetchUsers = async () => {
-
             try {
-
                 setLoading(true);
                 const response = await getAllStudents();
                 const mockUsersList = response.data.students.map(userInfo => ({
@@ -110,13 +118,15 @@ const StudentsList = () => {
                     name: `${userInfo.firstName} ${userInfo.lastName}`,
                     email: userInfo?.email || '-',
                     role: 'Student',
+                    class: userInfo?.class || '-',
+                    section: userInfo?.section || '-',
                     phone: userInfo?.phone || '-',
+                    address: userInfo?.address || '-',
                     status: userInfo.isActive,
                     parents: userInfo.parents,
                     updatedAt: userInfo.updatedAt
                 }));
                 setMockUsers(mockUsersList)
-                console.log(response);
             } catch (error) {
                 console.error(error)
             } finally {
@@ -199,9 +209,14 @@ const StudentsList = () => {
     };
 
     if (loading) {
-        return (<AdminLayout>
-                <div className="flex items-center justify-center h-full">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        return (
+            <AdminLayout>
+                <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+                    <div className="relative w-20 h-20">
+                        <div className="absolute inset-0 border-4 border-blue-100 rounded-full"></div>
+                        <div className="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                    </div>
+                    <p className="mt-4 text-gray-500 font-medium animate-pulse">Loading Students...</p>
                 </div>
             </AdminLayout>);
     }
@@ -221,7 +236,8 @@ const StudentsList = () => {
                     />)}
 
                 {/* Main Content */}
-                {!loading && (<main className="flex-1 p-6 flex flex-col">
+                {!loading && (
+                    <main className="flex-1 p-6 flex flex-col">
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                             {/* Header Section */}
                             <div
@@ -371,18 +387,24 @@ const StudentsList = () => {
 
             {/*TODO: for view details add tab for user Info, Subjects taken with Performance and Attendance visible for each class*/}
 
-            {/*View Students Modal*/}
-            {viewStudent && (<div className="fixed inset-0 z-50 overflow-y-auto">
+            {viewStudent && (
+                <div className="fixed inset-0 z-50 overflow-y-auto">
                     <div className="flex min-h-full items-center justify-center p-4">
                         <div
                             className="fixed inset-0 bg-black/30"
-                            onClick={() => setViewStudent(null)}
+                            onClick={() => {
+                                setViewStudent(null);
+                                setIsEditing(false);
+                            }}
                         />
 
                         <div className="relative w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
                             {/* Close */}
                             <button
-                                onClick={() => setViewStudent(null)}
+                                onClick={() => {
+                                    setViewStudent(null)
+                                    setIsEditing(false)
+                                }}
                                 className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full"
                             >
                                 <X size={20}/>
@@ -402,21 +424,34 @@ const StudentsList = () => {
                             </div>
 
                             {/* Form */}
-                            <form className="space-y-5" onSubmit={handleUpdateStudent}>
-                                {/* Names */}
+                            <div className="space-y-5" >
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Input label="First Name" name="firstName" value={formData.firstName}
-                                           onChange={handleInputChange}/>
-                                    <Input label="Last Name" name="lastName" value={formData.lastName}
-                                           onChange={handleInputChange}/>
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-700">First Name</label>
+                                        {isEditing ?
+                                            <Input name="firstName" value={formData.firstName}
+                                                   onChange={handleInputChange}/> :
+                                            <p className="text-sm text-gray-900">{formData.firstName}</p>}
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-700">Last Name</label>
+                                        {isEditing ? <Input name="lastName" value={formData.lastName}
+                                                           onChange={handleInputChange}/> :
+                                            <p className="text-sm text-gray-900">{formData.lastName}</p>}
+                                    </div>
                                 </div>
 
-                                <Input label="Email" name="email" value={formData.email} onChange={handleInputChange}/>
-                                <Input label="School ID" name="schoolId" value={formData.schoolId}
-                                       onChange={handleInputChange}/>
+                                <div>
+                                    <label className="text-sm font-medium text-gray-700">Email</label>
+                                    <p className="text-sm text-gray-900">{formData.email}</p>
+                                </div>
+                                <div>
+                                    <label className="text-sm font-medium text-gray-700">School ID</label>
+                                    <p className="text-sm text-gray-900">{formData.schoolId}</p>
+                                </div>
+
 
                                 <div className="space-y-4">
-                                    {/* Selection System Toggle */}
                                     <div className="flex flex-col gap-2">
                                         <label className="text-sm font-medium text-gray-700">Assignment System</label>
                                         <div className="flex gap-4">
@@ -427,6 +462,7 @@ const StudentsList = () => {
                                                     value="class"
                                                     checked={assignmentSystem === 'class'}
                                                     onChange={(e) => setAssignmentSystem(e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                                 <span className="text-sm">Class & Section</span>
                                             </label>
@@ -437,58 +473,64 @@ const StudentsList = () => {
                                                     value="grade"
                                                     checked={assignmentSystem === 'grade'}
                                                     onChange={(e) => setAssignmentSystem(e.target.value)}
+                                                    disabled={!isEditing}
                                                 />
                                                 <span className="text-sm">Grade Level</span>
                                             </label>
                                         </div>
                                     </div>
 
-                                    {/* Conditional Fields */}
                                     {assignmentSystem === 'class' ? (
                                         <div className="grid grid-cols-3 gap-4 animate-in fade-in duration-300">
-                                            <Input
-                                                label="Class"
-                                                name="class"
-                                                placeholder="e.g. JSS1"
-                                                value={formData.class}
-                                                onChange={handleInputChange}
-                                            />
-                                            <Input
-                                                label="Section"
-                                                name="section"
-                                                placeholder="e.g. Gold"
-                                                value={formData.section}
-                                                onChange={handleInputChange}
-                                            />
-                                            <Input
-                                                label="Roll Number"
-                                                name="rollNumber"
-                                                value={formData.rollNumber}
-                                                onChange={handleInputChange}
-                                            />
+                                            <div>
+                                                <label className="text-sm font-medium text-gray-700">Class</label>
+                                                {isEditing ? <Input
+                                                    name="class"
+                                                    placeholder="e.g. JSS1"
+                                                    value={formData.class}
+                                                    onChange={handleInputChange}
+                                                /> : <p className="text-sm text-gray-900">{formData.class}</p>}
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium text-gray-700">Section</label>
+                                                {isEditing ? <Input
+                                                    name="section"
+                                                    placeholder="e.g. Gold"
+                                                    value={formData.section}
+                                                    onChange={handleInputChange}
+                                                /> : <p className="text-sm text-gray-900">{formData.section}</p>}
+                                            </div>
+
                                         </div>) : (
                                         <div className="grid grid-cols-1 gap-4 animate-in fade-in duration-300">
-                                            <Input
-                                                label="Grade"
-                                                type="number"
-                                                name="grade"
-                                                placeholder="e.g. 7"
-                                                value={formData.grade}
-                                                onChange={handleInputChange}
-                                            />
+                                            <div>
+                                                <label className="text-sm font-medium text-gray-700">Grade</label>
+                                                <p className="text-sm text-gray-900">{formData.grade}</p>
+                                            </div>
                                         </div>)}
                                 </div>
-                                {/* Personal */}
+
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Input label="Date of Birth" type="date" name="dateOfBirth"
-                                           value={formData.dateOfBirth} onChange={handleInputChange}/>
-                                    <Input label="Gender" name="gender" value={formData.gender}
-                                           onChange={handleInputChange}/>
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-700">Date of Birth</label>
+                                        <p className="text-sm text-gray-900">{formData.dateOfBirth}</p>
+                                    </div>
+                                    <div>
+                                        <label className="text-sm font-medium text-gray-700">Gender</label>
+                                        <p className="text-sm text-gray-900">{formData.gender}</p>
+                                    </div>
                                 </div>
 
-                                <Input label="Phone" name="phone" value={formData.phone} onChange={handleInputChange}/>
-                                <Input label="Address" name="address" value={formData.address}
-                                       onChange={handleInputChange}/>
+                                <div>
+                                    <label className="text-sm font-medium text-gray-700">Phone</label>
+                                    {isEditing ? <Input name="phone" value={formData.phone}
+                                                       onChange={handleInputChange}/> :
+                                        <p className="text-sm text-gray-900">{formData.phone}</p>}
+                                </div>
+                                <div>
+                                    <label className="text-sm font-medium text-gray-700">Address</label>
+                                    <p className="text-sm text-gray-900">{formData.address}</p>
+                                </div>
 
                                 {/* Parent Linking */}
                                 <div className="border-t border-gray-100 pt-4">
@@ -496,23 +538,22 @@ const StudentsList = () => {
                                         Linked Parents
                                     </h4>
 
-                                    {/* Existing Parent IDs */}
                                     <div className="flex flex-wrap gap-2 mb-3">
                                         {viewStudent.parents?.length > 0 ? (viewStudent.parents.map((id, index) => (
-                                                <span
-                                                    key={index}
-                                                    className="flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700"
+                                            <span
+                                                key={index}
+                                                className="flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700"
+                                            >
+                                                        {id.name}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                    }}
+                                                    className="text-blue-500 hover:text-red-500"
                                                 >
-                                                    {id.name}
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                        }}
-                                                        className="text-blue-500 hover:text-red-500"
-                                                    >
-                                                      <X size={12}/>
-                                                    </button>
-                                                </span>))) : (
+                                                  <X size={12}/>
+                                                </button>
+                                            </span>))) : (
                                             <p className="text-xs text-gray-400">No parents linked</p>)}
                                     </div>
 
@@ -520,25 +561,51 @@ const StudentsList = () => {
 
                                 {/* Actions */}
                                 <div className="flex justify-end gap-3 pt-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setViewStudent(null)}
-                                        className="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                    >
-                                        Save Changes
-                                    </button>
+
+                                    {isEditing ? (<>
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsEditing(false)}
+                                                className="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={handleUpdateStudent}
+                                                className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                            >
+                                                Save Changes
+                                            </button>
+                                        </>) :
+
+                                        (<>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setViewStudent(null)
+                                                    setIsEditing(false)
+                                                }}
+                                                className="px-4 py-2 text-sm rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
+                                            >
+                                                Close
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsEditing(true)}
+                                                className="px-4 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                            >
+                                                Edit
+                                            </button>
+
+                                        </>)}
+
+
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                </div>)}
-
+                </div>
+            )}
 
             {createStudent && <CreateStudentModal onClose={() => setCreateStudent(false)} showToast={showToast} />}
 
