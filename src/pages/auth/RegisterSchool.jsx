@@ -10,6 +10,7 @@ import {VerifySchoolModal} from "../../components/modals.jsx";
 
 export function RegisterSchool() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [toAdmin, settoAdmin] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'error' });
@@ -41,6 +42,7 @@ export function RegisterSchool() {
     });
 
     const handleCreateAccount = async () => {
+        setLoading(true);
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -61,8 +63,23 @@ export function RegisterSchool() {
         }
 
 
-        if (!formData?.password || !passwordPattern.test(formData.password)) {
+        if (!formData?.password) {
             showToast("Please provide a valid strong password.");
+            return;
+        }
+        // 5. Password Validation (Descriptive)
+        const password = formData?.password || "";
+        if (password.length < 8) {
+            showToast("Password is too short (minimum 8 characters).");
+            return;
+        } else if (!/[A-Z]/.test(password)) {
+            showToast("Password needs at least one uppercase letter.");
+            return;
+        } else if (!/[0-9]/.test(password)) {
+            showToast("Password needs at least one number.");
+            return;
+        } else if (!/[!@#$%^&*]/.test(password)) {
+            showToast("Password needs at least one special character (!@#$%^&*).");
             return;
         }
 
@@ -85,6 +102,8 @@ export function RegisterSchool() {
         } catch (err) {
             const message = err?.message || err?.error || 'Registration failed';
             showToast(message, 'error');
+        }finally {
+            setLoading(false);
         }
     };
 
@@ -103,48 +122,54 @@ export function RegisterSchool() {
 
     // Application in your data object:
     const handleProceed = () => {
-        // 1. Define specific regex patterns
         const urlPattern = /^(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&/=]*$/;
-
-        // Basic international phone pattern (allows +, spaces, and 10-15 digits)
         const phonePattern = /^(\+234|0)[789][01]\d{8}$/;
 
-        // Validation Checks
+        // 1. Mandatory Field: School Name
         if (!schoolFormData?.schoolName || schoolFormData.schoolName.trim().length < 5) {
-            showToast("A valid school name is required to proceed.");
+            showToast("School name must be at least 5 characters long.");
             return;
         }
 
-        if (!schoolFormData?.website || !urlPattern.test(schoolFormData.website)) {
-            showToast("Please provide a valid website.");
+        // 2. Optional Field: Website (Validate only if not empty)
+        if (schoolFormData?.website?.trim() && !urlPattern.test(schoolFormData.website)) {
+            showToast("Please provide a valid website URL.");
             return;
         }
 
-
+        // 3. Mandatory Field: Phone
         if (!schoolFormData?.phone || !phonePattern.test(schoolFormData.phone)) {
-            showToast("Please provide a contact phone number.");
+            showToast("Please provide a valid contact phone number.");
             return;
         }
 
-
-        if (!schoolFormData?.address) {
+        // 4. Mandatory Field: Address
+        if (!schoolFormData?.address?.trim()) {
             showToast("Please provide a valid address for the school.");
             return;
         }
-        if (!schoolFormData?.description) {
-            showToast("Please provide a short description for the school.");
-            return;
-        }
 
-        settoAdmin(true)
 
-        return {
+
+        settoAdmin(true);
+
+        // 6. Construct Payload Dynamically
+        const payload = {
             schoolName: schoolFormData.schoolName.trim(),
-            website: formatWebsiteUrl(schoolFormData.website),
             phone: schoolFormData.phone.trim(),
             address: schoolFormData.address.trim(),
-            description: schoolFormData.description.trim(),
         };
+
+        // Only add optional fields if they have content
+        if (schoolFormData.website?.trim()) {
+            payload.website = formatWebsiteUrl(schoolFormData.website);
+        }
+
+        if (schoolFormData.description?.trim()) {
+            payload.description = schoolFormData.description.trim();
+        }
+
+        return payload;
     };
 
     return (
@@ -389,7 +414,7 @@ export function RegisterSchool() {
                                 onClick={handleCreateAccount}
                                 className="w-full py-4 bg-[#0A61A4] text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 mt-6"
                             >
-                                Create Account
+                                {!loading ? 'Create Account' : 'Processing...'}
                             </button>
                         </div>
 

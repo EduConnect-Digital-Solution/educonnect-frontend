@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate, useLocation} from "react-router-dom";
 import {Images} from "./images.jsx";
 import {Icons} from "./icons.jsx";
 import {navItems} from "../utils/imports.jsx";
@@ -8,6 +8,9 @@ import {useAuth} from "../contexts/AuthContext.jsx";
 export const Header = () => {
     const [openDropdown, setOpenDropdown] = useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const mapNavKeytoID = useCallback((key) => {
         switch (key) {
             case 'home': return 'home';
@@ -29,10 +32,13 @@ export const Header = () => {
 
     const handleNavClick = useCallback((itemKey) => {
         const id = mapNavKeytoID(itemKey);
-        smoothScrollTo(id);
-        // Close mobile if open
+        if (location.pathname === '/') {
+            smoothScrollTo(id);
+        } else {
+            navigate(`/#${id}`);
+        }
         setMobileOpen(false);
-    }, [mapNavKeytoID, smoothScrollTo]);
+    }, [mapNavKeytoID, smoothScrollTo, location.pathname, navigate]);
 
     useEffect(() => {
         if (mobileOpen) {
@@ -43,7 +49,6 @@ export const Header = () => {
         return () => { document.body.style.overflow = ''; };
     }, [mobileOpen]);
 
-    const navigate = useNavigate();
     const { checkAuthStatus, user } = useAuth();
 
     const getDashboardRoute = (u) => {
@@ -98,6 +103,9 @@ export const Header = () => {
                         </button>
                     </div>
                     ))}
+                    <NavLink to="/pricing" className="flex hover:cursor-pointer items-center gap-1 text-gray-700 hover:text-teal-700 transition-colors">
+                        Pricing
+                    </NavLink>
 
                 </div>
 
@@ -155,6 +163,9 @@ export const Header = () => {
                                     {item.label}
                                 </button>
                             ))}
+                            <NavLink to="/pricing" className="text-lg text-gray-800 text-left py-3 border-b border-gray-100">
+                                Pricing
+                            </NavLink>
                         </nav>
                     </div>
                     <div className={`absolute border-t border-gray-300 bottom-0 w-full mx-auto justify-center content-center left-0 h-auto px-4 pb-4`}>

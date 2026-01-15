@@ -1,4 +1,5 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useLocation} from "react-router-dom";
 import {Images} from "../components/images.jsx";
 import {features, reasons, stakeholders, why_choose_us_reasons, faqs, tutorials} from "../utils/imports.jsx";
 import {ArrowRight, ChevronLeft, ChevronRight, Play, Send} from 'lucide-react';
@@ -18,6 +19,17 @@ export const Home = () => {
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
     const [openIndex, setOpenIndex] = useState(0);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.hash) {
+            const id = location.hash.replace('#', '');
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [location]);
 
 
     const toggleFAQ = (index) => {
@@ -75,6 +87,7 @@ export const Home = () => {
         smoothScrollTo(id);
         // Close mobile if open
     }, [mapNavKeytoID, smoothScrollTo]);
+
     AOS.init();
     return (
         <>

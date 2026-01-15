@@ -110,6 +110,7 @@ const StudentsList = () => {
                     name: `${userInfo.firstName} ${userInfo.lastName}`,
                     email: userInfo?.email || '-',
                     role: 'Student',
+                    phone: userInfo?.phone || '-',
                     status: userInfo.isActive,
                     parents: userInfo.parents,
                     updatedAt: userInfo.updatedAt
@@ -288,7 +289,7 @@ const StudentsList = () => {
                                                 <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.email}</td>
                                                 <td className="p-4">
                                                     <span
-                                                        className="text-sm font-medium text-gray-600 whitespace-nowrap">08123456789</span>
+                                                        className="text-sm font-medium text-gray-600 whitespace-nowrap">{user.phone}</span>
                                                 </td>
                                                 <td className="p-4">
                                                         <span

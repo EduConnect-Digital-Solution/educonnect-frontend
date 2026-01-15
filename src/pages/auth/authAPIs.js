@@ -328,6 +328,14 @@ export async function verifySession() {
 }
 
 export async function updateStudent(studentId, payload) {
+    // expected payload:
+    // {
+    //     "firstName": "Alice",
+    //     "lastName": "Johnson-Updated",
+    //     "class": "JSS2",
+    //     "section": "B",
+    //     "phone": "09033820144"
+    // }
     try {
         const { data } = await apiClient.put(`/api/students/${studentId}`, payload);
         return data;
