@@ -49,7 +49,9 @@ const UserTable = ({ users, startIndex, onDelete, onStatusChange, onAssignStuden
                                 <td className="p-4 text-sm text-gray-600 whitespace-nowrap">{user.inviteSentBy}</td>
                                 <td className="p-4 relative">
                                     <div className="relative">
-                                        <button onClick={() => handleMenuToggle(user.id)}>
+                                        <button
+                                            className={`p-2 rounded-full hover:bg-gray-200 transition-colors `}
+                                            onClick={() => handleMenuToggle(user.id)}>
                                             <MoreHorizontal size={20} />
                                         </button>
                                         {openMenuId === user.id && (

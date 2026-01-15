@@ -3,6 +3,12 @@ import { Bell, User, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-re
 import {NavLink} from "react-router-dom";
 import {useAuth} from "../../contexts/AuthContext.jsx";
 import {getInitials} from "./AdminDashboard/utils/formatters.js";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader, AlertDialogTitle,
+    AlertDialogTrigger
+} from "../../components/ui/alert-dialog.jsx";
 
 export const Header = ({handleLogout}) => {
     const {user} = useAuth();
@@ -62,12 +68,33 @@ export const Header = ({handleLogout}) => {
 
                             <div className="h-px bg-gray-50 my-1"></div>
 
-                            <button
-                                onClick={() => {handleLogout()}}
-                                className="flex items-center cursor-pointer w-full px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
-                                <LogOut className="w-4 h-4 mr-3" />
-                                Logout
-                            </button>
+
+                            {/*<div className="p-4 border-t border-gray-200 shrink-0 relative z-60">*/}
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <button
+                                            className="flex items-center cursor-pointer w-full px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors">
+                                            <LogOut className="w-4 h-4 mr-3" />
+                                            Logout
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Are you sure you want to logout?
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className={` bg-red-600`}
+                                                onClick={() => {handleLogout()}}
+                                            >Logout</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            {/*</div>*/}
                         </div>
                     )}
                 </div>

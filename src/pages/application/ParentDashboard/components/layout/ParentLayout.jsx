@@ -10,6 +10,12 @@ import {
 import { Header } from '../../../dashboardUtilities.jsx';
 import { useAuth } from '../../../../../contexts/AuthContext.jsx';
 import {Images} from "../../../../../components/images.jsx";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader, AlertDialogTitle,
+    AlertDialogTrigger
+} from "../../../../../components/ui/alert-dialog.jsx";
 
 export const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -58,9 +64,9 @@ export const Sidebar = () => {
                 `}>
 
                 <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 shrink-0">
-                    <NavLink to="/" className="flex items-center">
+                    {/*<NavLink to="/" className="flex items-center">*/}
                         <img src={`${Images.main_logo}`} alt="Logo" className="w-32" />
-                    </NavLink>
+                    {/*</NavLink>*/}
                     <button
                         onClick={() => setIsOpen(false)}
                         className="lg:hidden text-gray-500 hover:text-gray-600 p-2"
@@ -95,13 +101,31 @@ export const Sidebar = () => {
                 </div>
 
                 <div className="p-4 border-t border-gray-200 shrink-0 relative z-60">
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center cursor-pointer w-full p-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition duration-150"
-                    >
-                        <LogOut className="w-5 h-5 mr-3" />
-                        Logout
-                    </button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <button
+                                className="flex items-center cursor-pointer w-full p-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition duration-150"
+                            >
+                                <LogOut className="w-5 h-5 mr-3" />
+                                Logout
+                            </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Are you sure you want to logout?
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                    className={` bg-red-600`}
+                                    onClick={handleLogout}
+                                >Logout</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </div>
         </>
