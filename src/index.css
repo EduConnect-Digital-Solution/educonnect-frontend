@@ -16,6 +16,12 @@
     background-image: url('./assets/images/circle-scatter-haikei.svg');
 }
 
+.cta_bg{
+    background: #0A61A4;
+    background: linear-gradient(262deg, rgba(10, 97, 164, 1) 0%, rgba(235, 190, 94, 1) 97%);
+}
+
+
 @media (max-width: 640px) {
     .why_choose_us_bg {
         background-image: none;

@@ -8,6 +8,7 @@ import why_choose_us from '../assets/images/why_choose_us.jpg';
 import reg from '../assets/images/reg.png';
 import circle from '../assets/images/circle-scatter-haikei.svg';
 import CTA_image from '../assets/images/CTA_image.jpg';
+import CTA_image_nobg from '../assets/images/cta-image-nobg.png';
 import auth_page_bg from '../assets/images/auth_page_bg.svg';
 import auth from '../assets/images/auth.png';
 import verify_bg from '../assets/images/2147864690.jpg';
@@ -28,6 +29,7 @@ export const Images = {
     reg,
     main_logo,
     verify_bg,
+    CTA_image_nobg,
     CTA_image,
     childPortrait,
     profile_picture,

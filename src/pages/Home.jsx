@@ -192,6 +192,7 @@ export const Home = () => {
                     </div>
                 </div>
             </section>
+
             {/*Info on EduConnect*/}
             <section className="py-24 px-6 bg-white relative overflow-hidden">
                 {/* Subtle Background Grid - Optional for that technical look */}
@@ -249,46 +250,34 @@ export const Home = () => {
             </section>
 
             {/*CTA Section*/}
-            <section className="py-20 md:py-24 lg:py-32 bg-gradient-to-r from-gray-50 to-gray-100">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="flex items-center justify-center p-4">
+                <div className="w-full max-w-7xl bg-gradient-to-br from-gray-900 via-slate-900 to-blue-900 rounded-3xl overflow-hidden">
+                    <div className="flex flex-col md:flex-row items-center p-8 md:p-12 lg:p-16">
+                        {/* Abstract Shape Section */}
 
-                    {/* Content Wrapper */}
-                    <div className="flex flex-col lg:flex-row items-center justify-between lg:space-x-12">
 
-                        {/* Left Column: Image Placeholder */}
-                        <div className="lg:w-3/5 mb-8 lg:mb-0">
-                            <img
-                                src={`${Images.CTA_image}`}
-                                alt="Teacher meeting with parents and students"
-                                className="w-full h-full object-cover rounded-xl shadow-xl"
-                            />
-                        </div>
+                        {/* Text Content Section */}
+                        <div className="w-full mx-auto text-center md:w-1/2 text-white space-y-6 md:pl-8">
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+                                Connect every action to impact
+                            </h1>
 
-                        {/* Right Column: Text Content and Button */}
-                        <div className="lg:w-3/5 text-center lg:text-right">
-
-                            {/* Main Headline */}
-                            <h2 className="text-4xl md:text-4xl font-[610] text-gray-900 leading-tight mb-6">
-                                One platform for parents, teachers, and Administrators to stay in sync.
-                            </h2>
-
-                            {/* Subtext */}
-                            <p  className="text-xl text-gray-700 mb-10 max-w-2xl lg:max-w-full mx-auto">
+                            <p className="text-gray-300 text-lg md:text-xl">
                                 From classroom updates to progress tracking, EduConnect keeps everyone connected and informed with zero effort.
                             </p>
 
-                            {/* Action Button */}
-                            <button
-                                onClick={() => handleNavClick('contact')}
-                                className="px-10 py-3 bg-[#0A61A4] text-white font-semibold rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150 shadow-md">
-                                Schedule a Demo
-                            </button>
+                            <div className="flex flex-col mx-auto justify-center sm:flex-row gap-4 pt-4">
 
+                                <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-white hover:text-gray-900 transition-colors">
+                                    Get a demo
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
+            {/*TODO: add the relevant icons to the services*/}
             {/*Our Services*/}
             <section id="services" className="py-12 md:py-32 bg-white relative overflow-hidden">
                 {/* Background Detail: Institutional Grid Overlay */}
@@ -549,7 +538,7 @@ export const Home = () => {
                                         <MapPin className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold mb-1">EduConnect</h4>
+                                        <h4 className="font-semibold mb-1">EduConnect Digital Solutions</h4>
                                         <p className="text-gray-300 text-sm">Abuja, Nigeria</p>
                                     </div>
                                 </div>
@@ -582,6 +571,8 @@ export const Home = () => {
                     </div>
                 </div>
             </section>
+
+
             <Footer />
 
          </>

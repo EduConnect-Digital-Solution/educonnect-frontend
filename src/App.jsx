@@ -60,20 +60,20 @@ function AppRoutes() {
     if (isLoading) {
         return <LoadingFallback />;
     }
-
+    // TODO: add a bottom bar for cookie policy with accept button
     return (
-        <div className={`font-[Outfit]`}>
+        <div className={`font-[Inter]`}>
             {/*<Suspense fallback={<LoadingFallback />}>*/}
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/pricing" element={<PricingPage />} />
 
-                    {/*<Route path="/login" element={<AuthPage />} />*/}
-                    {/*<Route path="/complete-registration" element={<CompleteRegistration />} />*/}
-                    {/*<Route element={<AuthLayout />}>*/}
-                    {/*    <Route path="/register/school" element={<RegisterSchool />} />*/}
-                    {/*    <Route path="/register" element={<Navigate to="/register/school" />} />*/}
-                    {/*</Route>*/}
+                    <Route path="/login" element={<AuthPage />} />
+                    <Route path="/complete-registration" element={<CompleteRegistration />} />
+                    <Route element={<AuthLayout />}>
+                        <Route path="/register/school" element={<RegisterSchool />} />
+                        <Route path="/register" element={<Navigate to="/register/school" />} />
+                    </Route>
 
                     {/* Admin Protected Routes */}
                     <Route path="/dashboard/admin" element={<ProtectedRoute requiredRole="admin"><DashboardPage /></ProtectedRoute>} />
