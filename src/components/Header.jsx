@@ -130,13 +130,13 @@ export const Header = () => {
                     {/*</button>*/}
                     {/*</NavLink>*/}
 
-                    <NavLink to={`/register`}>
+                    {/*<NavLink to={`/register`}>*/}
 
-                        <button className="px-3 py-2 md:hidden bg-[#104889] text-white rounded-2xl hover:bg-[#FEC11B] hover:text-black transition duration-150">
-                            Get Started
-                        </button>
-                    </NavLink>
-                    <button id="open-popup-button" className="px-3 py-2 bg-[#104889] text-white rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150">Book Consultation</button>
+                    {/*    <button className="px-3 py-2 md:hidden bg-[#104889] text-white rounded-2xl hover:bg-[#FEC11B] hover:text-black transition duration-150">*/}
+                    {/*        Get Started*/}
+                    {/*    </button>*/}
+                    {/*</NavLink>*/}
+                    <button id="open-popup-button" className="px-3 py-2 bg-[#104889] text-white rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150 text-xs md:text-[16px]">Book Consultation</button>
 
                     <div className="md:hidden items-center justify-center my-auto">
                         <button
