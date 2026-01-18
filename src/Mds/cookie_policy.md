@@ -1,7 +1,3 @@
-# Cookie Policy for EduConnect
-
-**Last Updated: January 14, 2026**
-
 This Cookie Policy explains how EduConnect ("we," "us," or "our") uses cookies and similar technologies when you visit our website or use our Service. It explains what these technologies are and why we use them, as well as your rights to control our use of them.
 
 ## 1. What are Cookies?
@@ -63,4 +59,4 @@ We may update this Cookie Policy from time to time in order to reflect, for exam
 
 ## 5. Contact Us
 
-If you have any questions about our use of cookies or other technologies, please email us at: **support@educonnect.com**
+If you have any questions about our use of cookies or other technologies, please email us at: **support@educonnect.com.ng**

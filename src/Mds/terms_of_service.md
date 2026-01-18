@@ -1,7 +1,3 @@
-# Terms of Service for EduConnect
-
-**Last Updated: January 14, 2026**
-
 Welcome to EduConnect ("we," "us," or "our"). These Terms of Service ("Terms") govern your use of our school information system, website, and related services (collectively, the "Service").
 
 By accessing or using our Service, you agree to be bound by these Terms and our Privacy Policy. If you are using the Service on behalf of an organization (like a school), you are agreeing to these Terms for that organization and promising that you have the authority to bind that organization to these terms.

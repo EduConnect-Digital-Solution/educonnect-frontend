@@ -8,6 +8,7 @@ import { MapPin, Mail, Phone} from 'lucide-react';
 import ContactPage from "./ContactForm.jsx";
 import {Header} from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import {Button} from "../components/ui/button.jsx";
 import {NavLink} from "react-router-dom";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -158,7 +159,8 @@ export const Home = () => {
 
                             {/* Main Heading */}
                             <h3 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                                The Essential Infrastructure for <span className="text-[#ffc21c]">Modern Education</span>
+                                The Essential Infrastructure for
+                                <span className="bg-gradient-to-r from-[#ffc21c] to-[#0A61A4] text-transparent bg-clip-text"> Modern Education</span>
                             </h3>
 
                             {/* Body Content */}
@@ -250,32 +252,37 @@ export const Home = () => {
             </section>
 
             {/*CTA Section*/}
-            <div className="flex items-center justify-center p-4">
-                <div className="w-full max-w-7xl bg-gradient-to-br from-gray-900 via-slate-900 to-blue-900 rounded-3xl overflow-hidden">
-                    <div className="flex flex-col md:flex-row items-center p-8 md:p-12 lg:p-16">
+            <section className="flex items-center  justify-center p-4">
+
+                <div data-aos="zoom-in" className="w-full  max-w-7xl bg-gradient-to-br from-gray-900 via-slate-900 to-blue-900 rounded-3xl overflow-hidden">
+
+                    <div className="flex flex-col cta-section-bg md:flex-row items-center p-8 md:p-12 lg:p-16">
                         {/* Abstract Shape Section */}
 
 
                         {/* Text Content Section */}
                         <div className="w-full mx-auto text-center md:w-1/2 text-white space-y-6 md:pl-8">
-                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-                                Connect every action to impact
+                            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight">
+                                Smarter school management, zero friction
                             </h1>
 
-                            <p className="text-gray-300 text-lg md:text-xl">
+                            <p className="text-gray-300 text-lg">
                                 From classroom updates to progress tracking, EduConnect keeps everyone connected and informed with zero effort.
                             </p>
 
                             <div className="flex flex-col mx-auto justify-center sm:flex-row gap-4 pt-4">
 
-                                <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-white hover:text-gray-900 transition-colors">
-                                    Get a demo
-                                </button>
+                                <NavLink to={`/contact`}>
+                                    <Button className="text-white px-8 py-3 rounded-full font-semibold bg-slate-800 hover:bg-white hover:text-gray-900 transition-colors hover:cursor-pointer">
+                                        Book a demo
+                                    </Button>
+                                </NavLink>
+
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/*TODO: add the relevant icons to the services*/}
             {/*Our Services*/}
@@ -295,7 +302,7 @@ export const Home = () => {
                         </div>
 
                         <h2 className="text-4xl md:text-6xl  font-bold text-slate-900 mb-8 tracking-tight">
-                            Institutional <span className="text-[#ffc21c]">Capabilities</span>
+                            Institutional <span className="bg-gradient-to-l from-[#ffc21c] to-[#0A61A4] text-transparent bg-clip-text">Capabilities</span>
                         </h2>
 
                         <div className="max-w-3xl mx-auto mb-6">
@@ -396,6 +403,7 @@ export const Home = () => {
                                 <div className="relative right-7">
                                     {why_choose_us_reasons.map((feature) => (
                                         <div key={feature.number}
+                                             data-aos="fade-left"
                                              className="text-left pl-10 md:pl-0  relative"
                                              style={{ right: feature.spacing }}>
                                                 <span className="text-3xl font-[590] text-gray-100 opacity-75 hidden md:block" >
@@ -456,7 +464,6 @@ export const Home = () => {
                     </div>
                 </div>
             </section>
-
 
             {/*FAQs Section*/}
             <section id={"faqs"} className="max-w-7xl mx-auto px-6 py-16 md:px-16 lg:px-28 grid grid-cols-1 lg:grid-cols-2 gap-12">

@@ -174,6 +174,12 @@ export const faqs = [
             "EduConnect is a high-performance School Information System (SIS) designed to centralize academic records, attendance, and grading. It integrates via a secure cloud infrastructure, allowing administrators to manage the entire institutional in a single unified dashboard.",
     },
     {
+        question: "How can I get Started with EduConnect?",
+        answer:
+            "To get started with using EduConnect as your school's SIS, simply schedule a demo with our team. Once a session is scheduled, our onboarding specialists will personally take you through the capabilities of the platform and assist with initial setup and configuration tailored to your institution's needs.",
+    },
+
+    {
         question: "How is student data privacy and security maintained?",
         answer:
             "We employ enterprise-grade AES-256 encryption for all data at rest and TLS 1.3 for data in transit. Access is governed by strict Role-Based Access Control (RBAC), ensuring that sensitive student information is only accessible to authorized institutional personnel and verified legal guardians.",

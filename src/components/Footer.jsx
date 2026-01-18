@@ -127,30 +127,19 @@ export default function Footer() {
                         <div>
                             <h4 className="text-lg font-bold mb-4">Legal</h4>
                             <ul className="space-y-3">
-                                <li><a href="/" className="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</a></li>
-                                <li><a href="/" className="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a></li>
-                                <li><a href="/" className="text-gray-400 hover:text-white transition-colors duration-200">Information Security Policy</a></li>
-                                <li><a href="/" className="text-gray-400 hover:text-white transition-colors duration-200">Cookie Policy</a></li>
-
+                                <li><a href="/legal-documents/terms-of-service" className="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</a></li>
+                                <li><a href="/legal-documents/privacy-policy" className="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a></li>
+                                <li><a href="/legal-documents/information-security" className="text-gray-400 hover:text-white transition-colors duration-200">Information Security Policy</a></li>
                             </ul>
                         </div>
 
-                        {/*/!* Support *!/*/}
-                        {/*<div>*/}
-                        {/*    <h4 className="text-lg font-bold mb-4">Support</h4>*/}
-                        {/*    <ul className="space-y-3">*/}
-                        {/*        <li><a href="/faq" className="text-gray-400 hover:text-white transition-colors duration-200">FAQ</a></li>*/}
-                        {/*        <li><a href="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a></li>*/}
-                        {/*        <li><a href="/terms" className="text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</a></li>*/}
-                        {/*    </ul>*/}
-                        {/*</div>*/}
                     </div>
 
                     {/* Bottom Bar */}
                     <div className="pt-8 border-t border-gray-700">
                         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                             <p className="text-gray-400 text-sm text-center md:text-left">
-                                © 2025 EduConnect Digital Solutions. All rights reserved.
+                                © 2026 EduConnect Digital Solutions. All rights reserved.
                             </p>
                         </div>
                     </div>

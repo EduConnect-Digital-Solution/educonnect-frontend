@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {Images} from '../components/images.jsx';
+import {NavLink} from "react-router-dom";
+import Footer from "../components/Footer.jsx";
 
 export default function ContactPage() {
         const [formData, setFormData] = useState({
@@ -202,9 +204,13 @@ export default function ContactPage() {
                     <div className="space-y-4">
                         <p className="text-sm text-gray-600">
                             By submitting this form I agree to the{' '}
-                            <a href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</a>
+                            <NavLink to="/legal-documents/privacy-policy" className="text-blue-600 hover:underline">
+                                Privacy Policy
+                            </NavLink>
                             {' '}and{' '}
-                            <a href="/terms" className="text-blue-600 hover:underline">Terms of Service</a>
+                            <NavLink to="/legal-documents/terms-of-service" className="text-blue-600 hover:underline">
+                                Terms of Service
+                            </NavLink>
                         </p>
                         <button
                             type="submit"

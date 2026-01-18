@@ -950,7 +950,7 @@ export const InviteParentModal = ({ onClose, showToast }) => {
 
     // Simplified student selection
     return (
-        <Modal title="Invite Teacher" onClose={onClose} onSubmit={handleInvite}>
+        <Modal title="Invite Parent" onClose={onClose} onSubmit={handleInvite}>
 
             <div className="space-y-5">
                 {/* Names */}

@@ -6,6 +6,8 @@ import {LoginSchool, LoginUser} from './authAPIs';
 import { Toast } from '../application/AdminDashboard/components/ui/Toast';
 import {useAuth} from "../../contexts/AuthContext.jsx";
 
+// TODO: add a tour to the user dashboard when they login for the first time
+
 const RoleCard = ({ title, description, onClick }) => (
     <button
         onClick={onClick}

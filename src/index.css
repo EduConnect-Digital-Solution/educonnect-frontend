@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 /*---break---*/
 @custom-variant dark (&:is(.dark *));
 
@@ -10,6 +11,25 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+.cta-section-bg {
+    background-image:
+            url('./assets/images/asfalt-light.png'),
+            url('./assets/images/blob-scene-haikei.svg');
+    background-size: auto, cover;
+    background-repeat: repeat, no-repeat;
+    background-blend-mode: overlay;
+}
+
+@theme {
+    --color-brand: #0A61A4;
+}
+
+@utility prose-brand {
+    @apply prose;
+    --tw-prose-links: var(--color-brand);
+    --tw-prose-headings: var(--color-brand);
 }
 
 .why_choose_us_bg {

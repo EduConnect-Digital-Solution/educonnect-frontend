@@ -10,7 +10,9 @@ import {AuthLayout} from "./components/auth/AuthLayout.jsx";
 // LAZY LOADED PAGES
 const Home = lazy(() => import("./pages/Home.jsx").then(m => ({ default: m.Home })));
 const AuthPage = lazy(() => import("./pages/auth/AuthPage.jsx"));
+const Contact = lazy(() => import("./pages/Contact.jsx"));
 const PricingPage = lazy(() => import("./pages/PricingPage.jsx").then(m => ({ default: m.PricingPage })));
+const LegalDocuments = lazy(() => import("./pages/LegalDocuments.jsx"));
 const CompleteRegistration = lazy(() => import("./pages/auth/UserRegistration/CompleteRegistration"));
 const RegisterSchool = lazy(() => import("./pages/auth/RegisterSchool.jsx").then(m => ({ default: m.RegisterSchool })));
 
@@ -67,6 +69,8 @@ function AppRoutes() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/pricing" element={<PricingPage />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/legal-documents/:docId?" element={<LegalDocuments />} />
 
                     <Route path="/login" element={<AuthPage />} />
                     <Route path="/complete-registration" element={<CompleteRegistration />} />

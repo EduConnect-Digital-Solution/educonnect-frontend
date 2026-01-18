@@ -1,7 +1,3 @@
-# EduConnect Information Security Policy
-
-**Last Updated: January 14, 2026**
-
 ## 1. Purpose
 
 This Information Security Policy outlines the framework of controls and procedures established by EduConnect ("we," "us") to protect the confidentiality, integrity, and availability of all information processed, stored, and transmitted by our Service. Our commitment is to secure our systems and the sensitive data entrusted to us by our clients, particularly student Personally Identifiable Information (PII).
@@ -56,7 +52,7 @@ All third-party service providers (e.g., cloud hosting, payment gateways) with a
 
 ### 4.7. Physical Security
 
-Our service is hosted by a major cloud provider (e.g., AWS, Azure, Google Cloud) that maintains certified, high-security data centers. We rely on our provider's physical security controls. Access to our physical offices is restricted and monitored.
+Our service is hosted by a major cloud provider Render, that maintains certified, high-security data centers. We rely on our provider's physical security controls. Access to our physical offices is restricted and monitored.
 
 ### 4.8. Security Awareness Training
 

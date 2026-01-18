@@ -6,6 +6,8 @@ import {navItems} from "../utils/imports.jsx";
 import {useAuth} from "../contexts/AuthContext.jsx";
 import ScheduleButton from "./ScheduleButton.jsx";
 
+// TODO: make header floating with dynamic stickyness when scroll
+
 export const Header = () => {
     const [openDropdown, setOpenDropdown] = useState(null);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -107,23 +109,26 @@ export const Header = () => {
                     <NavLink to="/pricing" className="flex hover:cursor-pointer items-center gap-1 text-gray-700 hover:text-teal-700 transition-colors">
                         Pricing
                     </NavLink>
+                    <NavLink to="/contact" className="flex hover:cursor-pointer items-center gap-1 text-gray-700 hover:text-teal-700 transition-colors">
+                        Contact
+                    </NavLink>
                 </div>
 
                 {/* Action Buttons */}
                 <div className=" flex space-x-4">
-                    <NavLink to={`/login`}>
-                        <button
-                            // onClick={handleClick}
-                            className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">
-                            Log in
-                        </button>
-                    </NavLink>
+                    {/*<NavLink to={`/login`}>*/}
+                    {/*    <button*/}
+                    {/*        // onClick={handleClick}*/}
+                    {/*        className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">*/}
+                    {/*        Log in*/}
+                    {/*    </button>*/}
+                    {/*</NavLink>*/}
 
-                    <NavLink to={`/register`}>
-                    <button className="px-2 py-2 hidden md:flex border border-gray-300 text-gray-800 rounded-md hover:bg-gray-100 transition duration-150">
-                        <span className={``}>Get Started</span>
-                    </button>
-                    </NavLink>
+                    {/*<NavLink to={`/register`}>*/}
+                    {/*<button className="px-2 py-2 hidden md:flex border border-gray-300 text-gray-800 rounded-md hover:bg-gray-100 transition duration-150">*/}
+                    {/*    <span className={``}>Get Started</span>*/}
+                    {/*</button>*/}
+                    {/*</NavLink>*/}
 
                     <NavLink to={`/register`}>
 

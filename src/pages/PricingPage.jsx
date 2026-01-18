@@ -1,8 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Check, Plus, Minus, ArrowRight, X } from 'lucide-react';
 import { useState } from 'react';
 import {Header} from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import {useLocation} from "react-router-dom";
+
+export const ScrollToTop = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0); // Scrolls to the top-left corner
+        // For smooth scrolling, you can use:
+        // window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }, [pathname]); // Re-run effect whenever the pathname changes
+
+    return null; // This component doesn't render anything visible
+};
 
 const PricingCard = ({ plan, price, features, description, isPremium = false }) => (
     <div
@@ -316,6 +329,8 @@ export const PricingPage = () => {
     return (
         <>
             <Header />
+            <ScrollToTop />
+
             <div className="bg-[#f8fafc] min-h-screen py-20 px-6">
                 <div className="max-w-7xl mx-auto">
                     {/* Hero Section */}
