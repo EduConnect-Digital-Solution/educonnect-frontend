@@ -7,7 +7,7 @@ import termsOfService from '../Mds/terms_of_service.md?raw';
 import infoSecurity from '../Mds/information_security_policy.md?raw';
 import privacyPolicy from '../Mds/privacy_policy.md?raw';
 import {Header} from "../components/Header.jsx";
-import {Images} from "../components/Images";
+import {Images} from "../components/images.jsx";
 import Footer from "../components/Footer.jsx";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 import {ScrollToTop} from "./PricingPage.jsx";
