@@ -254,7 +254,7 @@ export const Home = () => {
             {/*CTA Section*/}
             <section className="flex items-center  justify-center p-4">
 
-                <div data-aos="zoom-in" className="w-full  max-w-7xl bg-gradient-to-br from-gray-900 via-slate-900 to-blue-900 rounded-3xl overflow-hidden">
+                <div data-aos="zoom-in" className="w-full  max-w-7xl bg-linear-to-br from-gray-900 via-slate-900 to-blue-900 rounded-3xl overflow-hidden">
 
                     <div className="flex flex-col cta-section-bg md:flex-row items-center p-8 md:p-12 lg:p-16">
                         {/* Abstract Shape Section */}
@@ -346,9 +346,6 @@ export const Home = () => {
                                 key={index}
                                 className="p-8 bg-slate-50 border border-slate-200 rounded-3xl"
                             >
-                                <p className="text-[9px] font-bold text-[#104889] uppercase tracking-widest mb-3">
-                                    Feature Registry {index + 1}
-                                </p>
                                 <h3 className="text-lg font-bold text-slate-900 mb-2">
                                     {feature.title}
                                 </h3>

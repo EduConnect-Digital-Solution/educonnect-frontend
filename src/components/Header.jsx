@@ -4,6 +4,7 @@ import {Images} from "./images.jsx";
 import {Icons} from "./icons.jsx";
 import {navItems} from "../utils/imports.jsx";
 import {useAuth} from "../contexts/AuthContext.jsx";
+import {ChevronDown} from 'lucide-react';
 import ScheduleButton from "./ScheduleButton.jsx";
 
 // TODO: make header floating with dynamic stickyness when scroll

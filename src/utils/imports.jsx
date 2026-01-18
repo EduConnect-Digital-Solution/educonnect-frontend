@@ -225,8 +225,8 @@ export const navItems = [
     { key: 'home',  label: 'Home', hasDropdown: false },
     { key: 'about',  label: 'About Us', hasDropdown: false },
     { key: 'services', label: 'Services', hasDropdown: false },
-    // { key: 'resources',  label: 'Resources', hasDropdown: false },
-    { key: 'faqs',  label: 'FAQs', hasDropdown: false },
+    { key: 'product',  label: 'Product', hasDropdown: false },
+    // { key: 'faqs',  label: 'FAQs', hasDropdown: false },
 ];
 
 // Helper to get initials for avatar fallback

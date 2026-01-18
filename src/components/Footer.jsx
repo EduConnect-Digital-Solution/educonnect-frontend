@@ -89,7 +89,7 @@ export default function Footer() {
                                     <h4 className="text-xl font-bold">Stay Updated</h4>
                                 </div>
                                 <p className="text-gray-300 text-sm mb-4">
-                                    Subscribe to our newsletter for weekly updates, helpful tips, and exclusive offers.
+                                    Subscribe to our newsletter for weekly news and updates.
                                 </p>
                                 <div className="flex flex-wrap gap-2">
                                     <input
