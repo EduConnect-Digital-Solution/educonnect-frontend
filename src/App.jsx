@@ -1,4 +1,4 @@
-import React, {Suspense, lazy, useEffect} from 'react';
+import React, { lazy, useEffect} from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { NotFoundPage } from './pages/NotFoundPage';
