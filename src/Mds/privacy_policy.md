@@ -59,18 +59,25 @@ We implement a range of technical, administrative, and physical security measure
 
 We retain personal data for as long as the School's account is active and as instructed by the School. Upon termination of an account, we will work with the School to either return or securely delete all personal data, typically within a 30-day period, unless required by law to retain it for longer.
 
-## 8. Your Data Rights
+## 8. School Verification Documents
+
+*   **Purpose of Collection:** In accordance with our Terms of Service, we require educational institutions to submit official documents for verification purposes prior to being onboarded. This process is essential to confirm the legal status and legitimacy of the school and its representatives, thereby ensuring the safety and integrity of the EduConnect platform for all users.
+*   **Document Handling and Security:** We are committed to handling this sensitive information with the highest standard of care. All submitted documents are transmitted securely and are used solely for the verification process.
+*   **Data Minimization and Retention:** We follow a strict data minimization policy. We do not store these verification documents after the verification process is complete. Once the review is finalized and a decision is made, the documents are permanently and securely deleted from our systems.
+*   **Compliance with Data Protection Laws:** Our handling of your data, including these verification documents, complies with the Nigerian Data Protection Act (NDPA) and other applicable data protection and privacy laws. We act as a Data Processor and adhere to the principles of lawfulness, fairness, and transparency.
+
+## 9. Your Data Rights
 
 Since the School is the Data Controller, individuals (Parents, Students, Teachers) should direct any requests to exercise their data rights to their School's Administrator. These rights may include the right to access, correct, update, or delete personal information. We will provide reasonable assistance to the School to respond to these requests.
 
-## 9. Children's Privacy
+## 10. Children's Privacy
 
 We process the data of children (students) on behalf of Schools. We rely on the School to obtain any necessary parental consent as required by laws such as the Children's Online Privacy Protection Act (COPPA) in the US or other regional equivalents. We do not knowingly collect personal information from children without the School's authorization.
 
-## 10. Changes to This Privacy Policy
+## 11. Changes to This Privacy Policy
 
 We may update this Privacy Policy from time to time. We will notify the School's administrator of any material changes via email or through the Service.
 
-## 11. Contact Us
+## 12. Contact Us
 
 If you have any questions about this Privacy Policy or our data practices, please contact us at: **privacy@educonnect.com**
