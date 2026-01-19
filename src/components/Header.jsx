@@ -117,26 +117,26 @@ export const Header = () => {
 
                 {/* Action Buttons */}
                 <div className=" flex space-x-4">
-                    {/*<NavLink to={`/login`}>*/}
-                    {/*    <button*/}
-                    {/*        // onClick={handleClick}*/}
-                    {/*        className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">*/}
-                    {/*        Log in*/}
-                    {/*    </button>*/}
-                    {/*</NavLink>*/}
+                    <NavLink to={`/login`}>
+                        <button
+                            // onClick={handleClick}
+                            className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">
+                            Log in
+                        </button>
+                    </NavLink>
 
-                    {/*<NavLink to={`/register`}>*/}
-                    {/*<button className="px-2 py-2 hidden md:flex border border-gray-300 text-gray-800 rounded-md hover:bg-gray-100 transition duration-150">*/}
-                    {/*    <span className={``}>Get Started</span>*/}
-                    {/*</button>*/}
-                    {/*</NavLink>*/}
+                    <NavLink to={`/register`}>
+                    <button className="px-2 py-2 hidden md:flex border border-gray-300 text-gray-800 rounded-md hover:bg-gray-100 transition duration-150">
+                        <span className={``}>Get Started</span>
+                    </button>
+                    </NavLink>
 
-                    {/*<NavLink to={`/register`}>*/}
+                    <NavLink to={`/register`}>
 
-                    {/*    <button className="px-3 py-2 md:hidden bg-[#104889] text-white rounded-2xl hover:bg-[#FEC11B] hover:text-black transition duration-150">*/}
-                    {/*        Get Started*/}
-                    {/*    </button>*/}
-                    {/*</NavLink>*/}
+                        <button className="px-3 py-2 md:hidden bg-[#104889] text-white rounded-2xl hover:bg-[#FEC11B] hover:text-black transition duration-150">
+                            Get Started
+                        </button>
+                    </NavLink>
                     <button id="open-popup-button" className="px-3 py-2 bg-[#104889] text-white rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150 text-xs md:text-[16px]">Book Consultation</button>
 
                     <div className="md:hidden items-center justify-center my-auto">
@@ -176,15 +176,15 @@ export const Header = () => {
                         </nav>
                     </div>
                     <div className={`absolute border-t border-gray-300 bottom-0 w-full mx-auto justify-center content-center left-0 h-auto px-4 pb-4`}>
-                        {/*<div className={`flex flex-col mx-auto items-center`}>*/}
-                        {/*    <NavLink to={`/register`} className="mt-4 bg-[#104889] text-white text-center w-full px-4 py-2 rounded-full">*/}
-                        {/*        Get Started →*/}
-                        {/*    </NavLink>*/}
+                        <div className={`flex flex-col mx-auto items-center`}>
+                            <NavLink to={`/register`} className="mt-4 bg-[#104889] text-white text-center w-full px-4 py-2 rounded-full">
+                                Get Started →
+                            </NavLink>
 
-                        {/*    <NavLink to={`/login`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">*/}
-                        {/*        Log in*/}
-                        {/*    </NavLink>*/}
-                        {/*</div>*/}
+                            <NavLink to={`/login`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">
+                                Log in
+                            </NavLink>
+                        </div>
                     </div>
                 </div>
             )}

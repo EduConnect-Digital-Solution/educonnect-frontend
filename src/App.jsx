@@ -72,12 +72,12 @@ function AppRoutes() {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/legal-documents/:docId?" element={<LegalDocuments />} />
 
-                    {/*<Route path="/login" element={<AuthPage />} />*/}
-                    {/*<Route path="/complete-registration" element={<CompleteRegistration />} />*/}
-                    {/*<Route element={<AuthLayout />}>*/}
-                    {/*    <Route path="/register/school" element={<RegisterSchool />} />*/}
-                    {/*    <Route path="/register" element={<Navigate to="/register/school" />} />*/}
-                    {/*</Route>*/}
+                    <Route path="/login" element={<AuthPage />} />
+                    <Route path="/complete-registration" element={<CompleteRegistration />} />
+                    <Route element={<AuthLayout />}>
+                        <Route path="/register/school" element={<RegisterSchool />} />
+                        <Route path="/register" element={<Navigate to="/register/school" />} />
+                    </Route>
 
                     {/* Admin Protected Routes */}
                     <Route path="/dashboard/admin" element={<ProtectedRoute requiredRole="admin"><DashboardPage /></ProtectedRoute>} />
