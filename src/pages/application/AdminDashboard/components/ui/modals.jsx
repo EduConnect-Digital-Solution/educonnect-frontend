@@ -488,13 +488,11 @@ export const StatusChangeModal = ({ onClose, showToast, user, schoolId }) => {
                     throw new Error('Invalid user role');
             }
 
-            console.log(response);
             showToast('User status updated successfully!', 'success');
             onClose();
 
         } catch (error) {
-            console.error(error);
-            showToast(error.message || 'Failed to update user status.', 'error');
+            showToast('Failed to update user status.', 'error');
         }
     };
 

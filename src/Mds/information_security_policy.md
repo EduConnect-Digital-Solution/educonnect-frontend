@@ -28,7 +28,7 @@ This policy applies to all EduConnect employees, contractors, and third-party ve
 ### 4.2. Data Encryption
 
 *   **Data in Transit:** All data transmitted between the client (browser) and our servers, and between our internal systems, must be encrypted using strong TLS (Transport Layer Security) protocols (TLS 1.2 or higher).
-*   **Data at Rest:** All databases, database backups, and file storage containing sensitive information (such as student or financial data) must be encrypted using industry-standard algorithms (e.g., AES-256).
+*   **Data at Rest:** All databases, database backups, and file storage containing sensitive information (such as student or financial data) must be encrypted using industry-standard algorithms.
 
 ### 4.3. Network and System Security
 

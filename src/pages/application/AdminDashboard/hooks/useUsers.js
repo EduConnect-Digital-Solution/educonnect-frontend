@@ -28,6 +28,7 @@ export const useUsers = () => {
                     ...(userInfo.role === 'teacher' && { classes: userInfo.classes })
                 }));
                 setUsers(userList);
+                console.log(userList)
             } catch (err)
  {
                 console.error('Failed to fetch users:', err);

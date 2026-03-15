@@ -27,8 +27,8 @@ export const StudentInfoModal = ({ child, onClose }) => {
             {/* Modal Body */}
             <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
 
-                {/* Header Profile Section - Minimalist */}
-                <div className="p-10 bg-slate-50 border-b border-slate-100 flex justify-between items-start">
+                {/* Header Profile Section*/}
+                <div className="p-8 bg-slate-50 border-b border-slate-100 flex justify-between items-start">
                     <div className="space-y-1">
                         <div className="flex items-center gap-3">
                             <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">
@@ -39,7 +39,7 @@ export const StudentInfoModal = ({ child, onClose }) => {
                             </span>
                         </div>
                         <p className="text-sm text-slate-500 font-medium">
-                            {child.classDisplay} • Roll #{child.rollNumber}
+                            {child.classDisplay}
                         </p>
                     </div>
 
@@ -52,7 +52,7 @@ export const StudentInfoModal = ({ child, onClose }) => {
                 </div>
 
                 {/* Content Area - Clean Data Grid */}
-                <div className="p-10 overflow-y-auto bg-white flex-1">
+                <div className="p-8 overflow-y-auto bg-white flex-1">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
 
                         {/* Academic Data */}
@@ -60,7 +60,7 @@ export const StudentInfoModal = ({ child, onClose }) => {
                             <SectionHeader title="Academic Information" />
                             <div className="grid grid-cols-2 gap-y-6">
                                 <InfoBlock label="Student ID" value={child.studentId} />
-                                <InfoBlock label="Current Grade" value={`Grade ${child.grade}`} />
+                                <InfoBlock label="Current Grade" value={`Grade ${child.grade ?? 'UNMARKED'}`} />
                                 <InfoBlock label="Section" value={child.section} />
                                 <InfoBlock label="Enrollment Status" value={child.isEnrolled ? 'Enrolled' : 'Pending'} />
                             </div>

@@ -126,9 +126,6 @@ export const QuickActions = () => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
         <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
-            <button className="text-gray-400 hover:text-gray-600">
-                <MoreHorizontal size={20} />
-            </button>
         </div>
         <div className="space-y-4 flex-1">
             <QuickActionCard
@@ -740,7 +737,7 @@ export const AccountInfo = ({role}) => {
                             <div key={perm.label} className="flex items-center justify-between">
                                 <span className="text-sm font-medium text-gray-600">{perm.label}</span>
                                 {/* Custom Toggle Switch */}
-                                <div className={`w-10 h-5 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${perm.enabled ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                                <div className={`w-10 h-5 flex items-center rounded-full p-1 cursor-not-allowed transition-colors duration-300 ${perm.enabled ? 'bg-blue-600' : 'bg-gray-300'}`}>
                                     <div className={`bg-white w-3 h-3 rounded-full shadow-md transform transition-transform duration-300 ${perm.enabled ? 'translate-x-5' : 'translate-x-0'}`} />
                                 </div>
                             </div>

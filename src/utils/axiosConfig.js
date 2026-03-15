@@ -67,6 +67,18 @@ apiClient.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // If this was a public auth endpoint (e.g. login/register), don't attempt
+        // to refresh tokens or redirect the user — just reject so callers can handle it.
+        const publicResponseEndpoints = [
+            '/api/school/auth/login',
+            '/api/user/auth/login',
+            '/api/school/auth/register',
+            '/api/school/auth/verify-email'
+        ];
+        if (publicResponseEndpoints.some(ep => originalRequest?.url?.includes(ep))) {
+            return Promise.reject(error);
+        }
+
         // Handle 401 errors (token expired or invalid)
         if (error.response?.status === 401 && !originalRequest._retry) {
             // Prevent infinite loops

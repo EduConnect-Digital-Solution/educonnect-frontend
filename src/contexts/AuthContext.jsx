@@ -48,6 +48,15 @@ export const AuthProvider = ({ children }) => {
         return expiry <= (now + bufferTime);
     };
 
+    // Normalize user object to ensure name/fullName are available for UI
+    const normalizeUser = (u) => {
+        if (!u) return u;
+        const fullNameFromParts = (u.firstName || u.lastName) ? `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() : null;
+        const fullName = u.fullName || fullNameFromParts || u.name || null;
+        const name = u.name || fullName;
+        return { ...u, fullName, name };
+    };
+
     // Function to refresh access token using httpOnly cookie
     const refreshAccessToken = async (force = false) => {
         try {
@@ -68,7 +77,7 @@ export const AuthProvider = ({ children }) => {
                 const expiry = getTokenExpiry(newToken);
 
                 setAccessToken(newToken);
-                setUser(userData);
+                setUser(normalizeUser(userData));
                 setTokenExpiry(expiry);
 
                 return newToken;
@@ -98,7 +107,7 @@ export const AuthProvider = ({ children }) => {
                 const userData = response.data.user;
 
                 // Set user data from /auth/me response
-                setUser(userData);
+                setUser(normalizeUser(userData));
 
                 // Note: /auth/me doesn't return accessToken, so we'll get it on first API call
                 // The axios interceptor will handle getting a fresh token when needed
@@ -141,7 +150,7 @@ export const AuthProvider = ({ children }) => {
         const expiry = getTokenExpiry(token);
 
         setAccessToken(token);
-        setUser(loginData.data.user);
+        setUser(normalizeUser(loginData.data.user));
         setTokenExpiry(expiry);
 
     };

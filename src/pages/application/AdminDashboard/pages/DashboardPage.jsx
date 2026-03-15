@@ -10,6 +10,7 @@ import {formatDate} from "../utils/formatters";
 import {useAuth} from "../../../../contexts/AuthContext.jsx";
 import QuickActions from '../components/dashboard/QuickActions';
 import {resendInvitation, terminateInvitation} from "../../../auth/authAPIs.js";
+import {Toast} from "../components/ui/Toast.jsx";
 
 
 // TODO: Remove all white space before and after any form submit across all dashboards.
@@ -36,9 +37,9 @@ const AdminOverviewDashboard = ({ overview }) => {
     ];
 
     return (
-        <div className="p-6">
+        <div className="p-2">
             <h1 className="text-xl font-semibold text-gray-900 mb-6">Overview</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
                 {metrics.map((metric) => (
                     <EducationMetricCard
                         key={metric.title}

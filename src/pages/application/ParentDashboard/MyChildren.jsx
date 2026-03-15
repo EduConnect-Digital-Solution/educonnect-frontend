@@ -29,12 +29,11 @@ const ChildSelectionPage = () => {
 
     return (
         <ParentLayout>
-            <div className="p-10 bg-slate-50 min-h-screen">
+            <div className="bg-slate-50">
                 {/* Header Section */}
                 <div className="mb-12 flex justify-between items-end">
                     <div>
                         <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Children Profiles</h2>
-                        <p className="text-slate-500 text-sm mt-1">Select a record to review academic performance and enrollment details.</p>
                     </div>
                     <div className="bg-white px-4 py-2 rounded-xl border border-slate-200 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         Records: {children?.length || 0}
@@ -82,16 +81,16 @@ const ChildSelectionPage = () => {
                                 </div>
 
                                 {/* Subject Tags - Monochromatic */}
-                                <div className="">
-                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">Core Subjects</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {['Math', 'English', 'Science'].map(tag => (
-                                            <span key={tag} className="px-2 py-0.5 bg-slate-50 border border-slate-200 text-slate-500 rounded text-[10px] font-medium">
-                                    {tag}
-                                </span>
-                                        ))}
-                                    </div>
-                                </div>
+                                {/*<div className="">*/}
+                                {/*    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">Core Subjects</p>*/}
+                                {/*    <div className="flex flex-wrap gap-2">*/}
+                                {/*        {['Math', 'English', 'Science'].map(tag => (*/}
+                                {/*            <span key={tag} className="px-2 py-0.5 bg-slate-50 border border-slate-200 text-slate-500 rounded text-[10px] font-medium">*/}
+                                {/*                {tag}*/}
+                                {/*            </span>*/}
+                                {/*        ))}*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
 
                             </div>
 

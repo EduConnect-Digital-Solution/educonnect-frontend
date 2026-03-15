@@ -43,6 +43,7 @@ const SchoolProfilePage = () => {
         schoolName: '',
         phone: '',
         address: '',
+        schoolType: '',
         website: '',
         description: ''
     });
@@ -56,6 +57,7 @@ const SchoolProfilePage = () => {
         try {
             setLoading(true);
             const response = await getSchoolProfile();
+            console.log(response)
             const schoolInformation = response.data.school;
             const mockUsersList = {
                 id: schoolInformation.id,
@@ -75,6 +77,7 @@ const SchoolProfilePage = () => {
             setFormData({
                 schoolName: schoolInformation.schoolName || '',
                 phone: schoolInformation.phone || '',
+                schoolType: schoolInformation.schoolType || '',
                 address: schoolInformation.address || '',
                 website: schoolInformation.website || '',
                 description: schoolInformation.description || '',
@@ -172,7 +175,7 @@ const SchoolProfilePage = () => {
                         <Field label="School ID" value={school.schoolId} icon={Info} editable={false} />
                         <Field label="Phone" name="phone" value={formData.phone} icon={Phone} editable={isEditing} onChange={handleInputChange} />
                         <Field label="Email" value={school.email} icon={Mail} editable={false} />
-                        <Field label="School Type" value={formData.schoolType} icon={MapPin} editable={isEditing} onChange={handleInputChange} />
+                        <Field label="School Type" name="schoolType" value={formData.schoolType} icon={MapPin} editable={isEditing} onChange={handleInputChange} />
                         <Field label="Website" name="website" value={formData.website} icon={Globe} editable={isEditing} onChange={handleInputChange} />
                         <Field label="Address" name="address" value={formData.address} icon={MapPin} editable={isEditing} onChange={handleInputChange} />
                     </div>

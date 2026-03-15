@@ -23,6 +23,24 @@ export const Header = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const dropdownRef = useRef(null);
 
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            // If the ref exists and the clicked element is NOT inside the ref
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsProfileOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownRef]);
+
+
+
     const handleLogout = async () => {
         await logout();
     };

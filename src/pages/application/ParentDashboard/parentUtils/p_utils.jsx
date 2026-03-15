@@ -148,49 +148,57 @@ export const AnalyticsAndActions = ({quickActions}) => {
 
             {/* 1. Student Performance & Attendance Analytics Box */}
             <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="flex flex-col space-y-4 mb-8">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h2 className="text-xl font-bold text-gray-800">Child Progress Analytics</h2>
-                            <p className="text-xs text-gray-400 font-medium">Tracking performance vs. attendance trends</p>
-                        </div>
-                        {/* Legend */}
-                        <div className="hidden sm:flex items-center gap-4">
-                            <div className="flex items-center gap-1.5">
-                                <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
-                                <span className="text-[10px] font-bold text-gray-500 uppercase">Performance</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <span className="w-3 h-3 bg-green-400 rounded-full"></span>
-                                <span className="text-[10px] font-bold text-gray-500 uppercase">Attendance</span>
-                            </div>
-                        </div>
+                <div className="flex flex-col space-y-4 mb-8 relative group">
+                    {/* Optional: Lock Overlay or "Coming Soon" Badge */}
+                    <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                        <span className="bg-gray-800 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                            Available in v2.0
+                        </span>
                     </div>
 
-                    {/* Filter Controls */}
-                    <div className="flex flex-wrap gap-3 p-2 bg-gray-50 rounded-2xl border border-gray-100">
-                        {/* Child Selector */}
-                        <div className="relative flex-1 min-w-[140px]">
-                            <select
-                                value={selectedChild}
-                                onChange={(e) => setSelectedChild(e.target.value)}
-                                className="w-full appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                            >
-                                {children.map(child => <option key={child}>{child}</option>)}
-                            </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                    {/* The Content: Added opacity-50, grayscale, and pointer-events-none */}
+                    <div className="flex flex-col space-y-4 opacity-50 grayscale pointer-events-none select-none">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-800">Child Progress Analytics</h2>
+                                <p className="text-xs text-gray-400 font-medium">Tracking performance vs. attendance trends</p>
+                            </div>
+                            {/* Legend */}
+                            <div className="hidden sm:flex items-center gap-4">
+                                <div className="flex items-center gap-1.5">
+                                    <span className="w-3 h-3 bg-blue-500 rounded-full"></span>
+                                    <span className="text-[10px] font-bold text-gray-500 uppercase">Performance</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="w-3 h-3 bg-green-400 rounded-full"></span>
+                                    <span className="text-[10px] font-bold text-gray-500 uppercase">Attendance</span>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Subject Selector */}
-                        <div className="relative flex-1 min-w-[140px]">
-                            <select
-                                value={selectedSubject}
-                                onChange={(e) => setSelectedSubject(e.target.value)}
-                                className="w-full appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                            >
-                                {subjects.map(sub => <option key={sub}>{sub}</option>)}
-                            </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                        {/* Filter Controls */}
+                        <div className="flex flex-wrap gap-3 p-2 bg-gray-50 rounded-2xl border border-gray-100">
+                            {/* Child Selector */}
+                            <div className="relative flex-1 min-w-[140px]">
+                                <select
+                                    disabled
+                                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-xl text-sm font-bold focus:outline-none"
+                                >
+                                    <option>Child Name</option>
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            </div>
+
+                            {/* Subject Selector */}
+                            <div className="relative flex-1 min-w-[140px]">
+                                <select
+                                    disabled
+                                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-xl text-sm font-bold focus:outline-none"
+                                >
+                                    <option>{selectedSubject}</option>
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,9 +241,9 @@ export const AnalyticsAndActions = ({quickActions}) => {
                                 </p>
                             </div>
                             <div className="pt-2">
-                <span className="text-[10px] font-medium text-slate-400 border-b border-slate-200 pb-0.5">
-                    Scheduled for Release v2.0
-                </span>
+                                <span className="text-[10px] font-medium text-slate-400 border-b border-slate-200 pb-0.5">
+                                    Scheduled for Release v2.0
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -246,9 +254,6 @@ export const AnalyticsAndActions = ({quickActions}) => {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
-                    <button className="text-gray-400 hover:text-gray-600">
-                        <MoreHorizontal size={20} />
-                    </button>
                 </div>
 
                 <div className="space-y-4 flex-1">
