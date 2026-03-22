@@ -1130,7 +1130,7 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
     };
 
     return (
-        <Modal title="Initialize Student Registry" onClose={onClose} onSubmit={handleCreate}>
+        <Modal title="Initialize Student Record" onClose={onClose} onSubmit={handleCreate}>
             <div className="space-y-8 py-4">
 
                 {/* Section 1: Personal Identification */}
@@ -1140,19 +1140,19 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
                     </h3>
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-1.5">
-                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">First Name</label>
-                            <input
+                            <Input
+                                label="First Name"
+                                type="name"
                                 value={formData.firstName}
                                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-slate-900 focus:bg-white outline-none transition-all"
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Last Name</label>
-                            <input
+                            <Input
+                                label="Last Name"
+                                type="name"
                                 value={formData.lastName}
                                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-slate-900 focus:bg-white outline-none transition-all"
                             />
                         </div>
                     </div>
@@ -1161,21 +1161,44 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
                 {/* Section 2: Contact & Bio-Data */}
                 <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-1.5">
-                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Communication Email</label>
-                        <input
+                        <Input
+                            label="Communication Email"
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all"
                         />
                     </div>
                     <div className="space-y-1.5">
-                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Contact Number</label>
-                        <input
+                        <Input
+                            label="Contact Number"
+                            type="email"
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all"
                         />
+                    </div>
+                </div>
+
+                {/* Section 4: Bio Data */}
+                <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-1.5">
+                        <Input
+                            label="Date of Birth"
+                            type="date"
+                            value={formData.dateOfBirth}
+                            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                        />
+                    </div>
+                    <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Gender</label>
+                        <select
+                            value={formData.gender}
+                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
                     </div>
                 </div>
 
@@ -1187,14 +1210,14 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* 1. Choose Style */}
                         <div className="space-y-1.5">
-                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Registry Style</label>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">Registry Style</label>
                             <select
                                 value={registryStyle}
                                 onChange={(e) => {
                                     setRegistryStyle(e.target.value);
                                     setFormData({ ...formData, class: '', section: '' });
                                 }}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all appearance-none"
+                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="">Select Style</option>
                                 <option value="class">Class (Primary 1 - SS3)</option>
@@ -1204,14 +1227,14 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
 
                         {/* 2. Choose Level (Depends on Style) */}
                         <div className={`space-y-1.5 ${registryStyle === 'grade' ? 'col-span-1' : ''}`}>
-                            <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                            <label className="block text-xs font-medium text-gray-500 mb-1">
                                 {registryStyle === 'grade' ? 'Level' : 'Class'}
                             </label>
                             <select
                                 disabled={!registryStyle}
                                 value={formData.class}
                                 onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all disabled:opacity-50"
+                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="">Select Level</option>
                                 {registryStyle === 'class' && classOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -1222,50 +1245,27 @@ export const CreateStudentModal = ({ onClose, showToast }) => {
                         {/* 3. Section (Only for Class Style) */}
                         {registryStyle === 'class' && (
                             <div className="space-y-1.5">
-                                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Section</label>
+                                <label className="block text-xs font-medium text-gray-500 mb-1">Section</label>
                                 <input
                                     value={formData.section}
                                     onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-slate-900 outline-none"
+                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="e.g. A"
                                 />
+
                             </div>
                         )}
                     </div>
                 </div>
 
-                {/* Section 4: Bio Data */}
-                <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-1.5">
-                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Date of Birth</label>
-                        <input
-                            type="date"
-                            value={formData.dateOfBirth}
-                            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all"
-                        />
-                    </div>
-                    <div className="space-y-1.5">
-                        <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Gender</label>
-                        <select
-                            value={formData.gender}
-                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all appearance-none"
-                        >
-                            <option value="">Select Gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                    </div>
-                </div>
 
                 <div className="space-y-1.5">
-                    <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Full Residential Address</label>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Full Residential Address</label>
                     <textarea
                         rows={2}
                         value={formData.address}
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-slate-900 transition-all"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
             </div>

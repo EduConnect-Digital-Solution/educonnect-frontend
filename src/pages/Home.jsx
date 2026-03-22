@@ -284,7 +284,6 @@ export const Home = () => {
                 </div>
             </section>
 
-            {/*TODO: add the relevant icons to the services*/}
             {/*Our Services*/}
             <section id="services" className="py-12 md:py-32 bg-white relative overflow-hidden">
                 {/* Background Detail: Institutional Grid Overlay */}
@@ -320,6 +319,7 @@ export const Home = () => {
                                     key={index}
                                     className="bg-white p-10 hover:bg-slate-50 transition-colors duration-500 flex flex-col group"
                                 >
+                                    <img src={`${feature.icon}`} alt="Feature Icon" className="w-8 h-8 mb-4" />
 
                                     <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight">
                                         {feature.title}
@@ -346,6 +346,7 @@ export const Home = () => {
                                 key={index}
                                 className="p-8 bg-slate-50 border border-slate-200 rounded-3xl"
                             >
+                                <img src={`${feature.icon}`} alt="Feature Icon" className="w-8 h-8 mb-4" />
                                 <h3 className="text-lg font-bold text-slate-900 mb-2">
                                     {feature.title}
                                 </h3>

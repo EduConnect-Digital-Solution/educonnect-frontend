@@ -14,6 +14,12 @@ import auth from '../assets/images/auth.png';
 import verify_bg from '../assets/images/2147864690.jpg';
 import profile_picture from '../assets/images/profile_picture.png';
 import childPortrait from '../assets/images/childPortrait.png';
+import reg_image_1 from '../assets/images/reg_image_1.jpeg';
+import reg_image_2 from '../assets/images/reg_image_2.jpeg';
+import reg_image_3 from '../assets/images/reg_image_3.jpeg';
+import main_logo_light from '../assets/images/main_logo_light.png';
+
+
 
 
 
@@ -21,6 +27,10 @@ export const Images = {
     logo_1,
     hero_section_image,
     page_bg,
+    reg_image_1,
+    reg_image_2,
+    reg_image_3,
+    main_logo_light,
     six,
     about_us,
     auth_page_bg,

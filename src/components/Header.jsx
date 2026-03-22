@@ -5,6 +5,7 @@ import {Icons} from "./icons.jsx";
 import {navItems} from "../utils/imports.jsx";
 import {useAuth} from "../contexts/AuthContext.jsx";
 import {ChevronDown} from 'lucide-react';
+import {Phone} from "lucide-react";
 import ScheduleButton from "./ScheduleButton.jsx";
 
 // TODO: make header floating with dynamic stickyness when scroll
@@ -137,7 +138,6 @@ export const Header = () => {
                             Get Started
                         </button>
                     </NavLink>
-                    <button id="open-popup-button" className="px-3 py-2 bg-[#104889] text-white rounded-lg hover:bg-[#FEC11B] hover:text-black transition duration-150 text-xs md:text-[16px]">Book Consultation</button>
 
                     <div className="md:hidden items-center justify-center my-auto">
                         <button
@@ -173,13 +173,16 @@ export const Header = () => {
                             <NavLink to="/pricing" className="text-lg text-gray-800 text-left py-3 border-b border-gray-100">
                                 Pricing
                             </NavLink>
+                            <NavLink to="/contact" className="text-lg text-gray-800 text-left py-3 border-b border-gray-100">
+                                Contact
+                            </NavLink>
                         </nav>
                     </div>
                     <div className={`absolute border-t border-gray-300 bottom-0 w-full mx-auto justify-center content-center left-0 h-auto px-4 pb-4`}>
                         <div className={`flex flex-col mx-auto items-center`}>
-                            <NavLink to={`/register`} className="mt-4 bg-[#104889] text-white text-center w-full px-4 py-2 rounded-full">
-                                Get Started →
-                            </NavLink>
+                            <button id="open-popup-button" className="mt-4 bg-[#104889] text-white text-center w-full px-4 py-2 rounded-full flex gap-3 items-center justify-center">
+                                Book Consultation <Phone className={`w-5 h-5`} />
+                            </button>
 
                             <NavLink to={`/login`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">
                                 Log in

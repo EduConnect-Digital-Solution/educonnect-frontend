@@ -34,7 +34,7 @@ export const Toast = ({ message, type = 'error', onClose, duration = 5000 }) => 
     const currentStyle = styles[type] || styles.error;
 
     return (
-        <div className={`fixed top-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-xl ${currentStyle.bg} ${currentStyle.border} animate-in slide-in-from-right-10 fade-in duration-300 min-w-[300px]`}>
+        <div className={`fixed top-6 right-6 z-100 flex items-center gap-3 px-4 py-3 rounded-2xl border-2   ${currentStyle.bg} ${currentStyle.border} animate-in slide-in-from-right-10 fade-in duration-300 min-w-[300px]`}>
             <div className="shrink-0">
                 {currentStyle.icon}
             </div>

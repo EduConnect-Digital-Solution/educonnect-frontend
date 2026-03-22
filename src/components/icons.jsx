@@ -12,6 +12,18 @@ import asterisk_1 from '../assets/icons/asterisk_1.png';
 import close from '../assets/icons/icons8-close-100.png';
 import main_close from '../assets/icons/close.png';
 
+import service_dashboard from '../assets/icons/icons8-dashboard-48.png';
+import service_parent from '../assets/icons/icons8-parent-48.png';
+import service_performance from '../assets/icons/icons8-performance-48.png';
+import service_results from '../assets/icons/icons8-results-48.png';
+import service_school from '../assets/icons/icons8-school-48.png';
+import service_support from '../assets/icons/icons8-support-48.png';
+
+
+
+
+
+
 
 
 
@@ -20,6 +32,12 @@ export const Icons = {
     result,
     dashboard,
     communication,
+    service_dashboard,
+    service_parent,
+    service_performance,
+    service_results,
+    service_school,
+    service_support,
     support,
     bullet,
     hamburger,

@@ -38,16 +38,22 @@ export const stakeholders = [
     }
 ];
 
+
+
+
+
+
+
 export const features = [
     {
-        icon: Icons.sch_management, // Placeholder for phone icon
+        icon: Icons.service_school,
         title: 'School Management System',
         description: 'Digital tools for managing attendance, student\n' +
             'records, classes, and reporting, all in one place.',
         color: "from-blue-500 to-blue-600"
     },
     {
-        icon: Icons.result, // Placeholder for hand tap icon
+        icon: Icons.service_results,
         title: 'Results & Assessment Automation',
         description: 'Easily process assessments, calculate results,\n' +
             'and generate digital report cards without\n' +
@@ -55,7 +61,7 @@ export const features = [
         color: "from-blue-500 to-blue-600"
     },
     {
-        icon: Icons.dashboard, // Placeholder for desktop icon
+        icon: Icons.service_dashboard,
         title: 'Teacher & Student Portals',
         description: 'Simple dashboards for teachers to manage\n' +
             'classes and students to access learning\n' +
@@ -63,7 +69,7 @@ export const features = [
         color: "from-blue-500 to-blue-600"
     },
     {
-        icon: Icons.communication, // Placeholder for desktop icon
+        icon: Icons.service_parent,
         title: 'Parent Communication System',
         description: 'Instant updates for parents on attendance,\n' +
             'performance, and school activities, improving\n' +
@@ -71,7 +77,7 @@ export const features = [
         color: "from-blue-500 to-blue-600"
     },
     {
-        icon: Icons.performance, // Placeholder for desktop icon
+        icon: Icons.service_performance,
         title: 'Student Performance Analytics',
         description: 'Track academic growth and identify students\n' +
             'who need support early, preventing learning\n' +
@@ -79,7 +85,7 @@ export const features = [
         color: "from-blue-500 to-blue-600"
     },
     {
-        icon: Icons.support, // Placeholder for desktop icon
+        icon: Icons.service_support,
         title: 'Onboarding & Support',
         description: 'We provide training, guidance, and continuous\n' +
             'support to ensure schools adopt technology\n' +
