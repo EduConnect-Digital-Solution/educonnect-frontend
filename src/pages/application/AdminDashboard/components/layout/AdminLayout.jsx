@@ -5,7 +5,6 @@ import {
     LogOut,
     Menu,
     School,
-    Settings,
     Users,
     X,
     GraduationCap
@@ -45,13 +44,28 @@ export const Sidebar = () => {
         { name: 'School Profile', icon: School, link: '/dashboard/admin/school-profile' },
     ];
 
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const updateTheme = () => {
+            setIsDark(document.documentElement.dataset.theme === 'dark');
+        };
+        updateTheme();
+        window.addEventListener('themeChange', updateTheme);
+
+        return () => {
+            window.removeEventListener('themeChange', updateTheme);
+        };
+    }, []);
+
+
     return (
         <>
             {/* Mobile Toggle Button */}
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-md"
+                    className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg shadow-md"
                 >
                     <Menu className="w-6 h-6 text-gray-600" />
                 </button>
@@ -73,9 +87,12 @@ export const Sidebar = () => {
                 `}>
 
                 <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 shrink-0">
-                    {/*<NavLink to="/" className="flex items-center">*/}
+                    {isDark ? (
+                        <img src={`${Images.main_logo_light}`} alt="Logo" className="w-32" />
+                    ) : (
                         <img src={`${Images.main_logo}`} alt="Logo" className="w-32" />
-                    {/*</NavLink>*/}
+                    )}
+
                     <button
                         onClick={() => setIsOpen(false)}
                         className="lg:hidden text-gray-500 hover:text-gray-600 p-2"

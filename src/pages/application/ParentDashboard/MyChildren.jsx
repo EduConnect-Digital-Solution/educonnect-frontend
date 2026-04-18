@@ -1,15 +1,48 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Phone, BookOpen, GraduationCap, X, User, Hash, Info, Mail, Users } from 'lucide-react';
 import { StatRing } from "./parentUtils/p_utils.jsx";
 import ParentLayout from "./components/layout/ParentLayout.jsx";
-import {useAnalytics} from "./hooks/useAnalytics.jsx";
 import {formatDate, getInitials} from "../AdminDashboard/utils/formatters.js";
 import {StudentInfoModal} from "./components/modals.jsx";
-import {getStudentInfo} from "../../auth/authAPIs.js";
+import {getParentDashboard, getStudentInfo} from "../../auth/authAPIs.js";
+// import { getParentDashboard } from './services/parentService';
 
 
 const ChildSelectionPage = () => {
-    const { loading, children } = useAnalytics();
+    const [loading, setLoading] = useState(true);
+    const [children, setChildren] = useState();
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchAnalytics = async () => {
+            try {
+                setLoading(true);
+                const analyticsData = await getParentDashboard();
+
+                const totalStudents = analyticsData.data.children;
+
+                setChildren(totalStudents.map(child => ({
+                    id: child.id,
+                    studentId: child.studentId,
+                    fullName: child.fullName,
+                    classDisplay: child.classDisplay,
+                    age: child.age,
+                    gender: child.gender,
+                    dateOfBirth: child.dateOfBirth,
+                    isEnrolled: child.isEnrolled,
+                    teachers: child.teachers
+                })));
+            } catch (err) {
+                console.error('Failed to fetch analytics:', err);
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, []);
+
     const [selectedChild, setSelectedChild] = useState(null);
 
 

@@ -138,7 +138,6 @@ export async function getStudentsByClassandSubject(className, subjectName) {
 export async function assignGrade(payload) {
     try {
         const { data } = await apiClient.post(`/api/teacher/grades`, payload);
-        console.log(data);
         return data;
     } catch (error) {
         throw error?.response?.data || error;
@@ -148,7 +147,6 @@ export async function assignGrade(payload) {
 export async function publishGrade(payload) {
     try {
         const { data } = await apiClient.post(`/api/teacher/grades/publish`, payload);
-        console.log(data);
         return data;
     } catch (error) {
         throw error?.response?.data || error;
@@ -158,7 +156,6 @@ export async function publishGrade(payload) {
 export async function updateGrade(payload, gradeId) {
     try {
         const { data } = await apiClient.put(`/api/teacher/grades/${gradeId}`, payload);
-        console.log(data);
         return data;
     } catch (error) {
         throw error?.response?.data || error;
@@ -169,7 +166,6 @@ export async function updateGrade(payload, gradeId) {
 export async function viewGrade(studentId) {
     try {
         const { data } = await apiClient.get(`/api/teacher/students/${studentId}/grades`);
-        console.log(data);
         return data;
     } catch (error) {
         throw error?.response?.data || error;
@@ -292,7 +288,6 @@ export async function deactivateSchool(payload) {
     */
     try {
         const { data } = await apiClient.post('/api/school/profile/status', payload);
-        console.log(data);
         return data;
     } catch (error) {
         throw error?.response?.data || error;

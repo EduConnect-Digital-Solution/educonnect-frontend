@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import {
     User,
     Mail,
@@ -12,16 +12,44 @@ import {
 import {AccountInfo} from "./teacherUtils/teacherComponents.jsx";
 import {Images} from "../../../components/images.jsx";
 import TeacherLayout from "./components/layout/TeacherLayout.jsx";
-import {useData} from "./hooks/useData.jsx";
 import { Dialog, Transition } from '@headlessui/react';
-import {getSubjectsByClass} from "../../auth/authAPIs.js";
+import {getSubjectsByClass, getTeacherClasses, getTeacherDashboard} from "../../auth/authAPIs.js";
 import {Link} from "react-router-dom";
 import {getInitials} from "../AdminDashboard/utils/formatters.js";
 import {useAuth} from "../../../contexts/AuthContext.jsx";
+// import {getTeacherDashboard, getTeacherClasses} from '../services/teacherService.jsx';
 
 const TeacherProfile = () => {
     const {user} = useAuth();
-    const { loading, teacher, classes, subjects: teacherSubjects } = useData();
+    const [loading, setLoading] = useState(true);
+    const [classes, setClasses] = useState([]);
+    const [teacher, setTeacher] = useState(null);
+    const [teacherSubjects, setTeacherSubjects] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const [dashboardRes, classRes] = await Promise.all([
+                    getTeacherDashboard(),
+                    getTeacherClasses(),
+                ]);
+
+                setTeacher(dashboardRes.data.teacher);
+                setTeacherSubjects(dashboardRes.data.teacher.subjects);
+                setClasses(classRes.data.classes);
+            } catch (err) {
+                console.error('Failed to fetch data:', err);
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedClass, setSelectedClass] = useState(null);
     const [subjects, setSubjects] = useState([]);

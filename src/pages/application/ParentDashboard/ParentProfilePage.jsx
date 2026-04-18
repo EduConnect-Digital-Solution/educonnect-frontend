@@ -3,16 +3,35 @@ import {
     User, MapPin, ShieldCheck, Key,
     Edit3, Smartphone, Briefcase, Save, X, Info
 } from 'lucide-react';
-import { useAnalytics } from "./hooks/useAnalytics.jsx";
 import ParentLayout from "./components/layout/ParentLayout.jsx";
-import {updateParentProfile} from "../../auth/authAPIs.js";
+import {getParentProfile, updateParentProfile} from "../../auth/authAPIs.js";
 import {Toast} from "../AdminDashboard/components/ui/Toast.jsx";
+// import { getParentProfile } from './services/parentService';
 
 const ParentProfilePage = () => {
-    const { loading, parentInfo } = useAnalytics();
+    const [loading, setLoading] = useState(true);
+    const [parentInfo, setParentInfo] = useState();
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                setLoading(true);
+                const profileData = await getParentProfile();
+                setParentInfo(profileData.data.parent);
+            } catch (err) {
+                console.error('Failed to fetch profile:', err);
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, []);
+
     const [isEditing, setIsEditing] = useState(false);
 
-    console.log(parentInfo)
     // Form State
     const [formData, setFormData] = useState({
         firstName: "",
@@ -52,7 +71,6 @@ const ParentProfilePage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Submitting Update:", formData);
         try{
             const updateProfile = await updateParentProfile(formData)
             showToast(`${updateProfile.message}`, 'success');

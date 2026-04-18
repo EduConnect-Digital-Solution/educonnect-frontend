@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Mail, BookOpen, Users, UserCheck, GraduationCap, Clock, UserPlus, ChevronRight, RefreshCw, XCircle, X,
     MailPlus
 } from 'lucide-react';
-import { useAnalytics } from '../hooks/useAnalytics';
 import AdminLayout from '../components/layout/AdminLayout';
 import AnalyticsComponent from '../AnalyticsComponent';
 import {formatDate} from "../utils/formatters";
@@ -11,6 +10,7 @@ import {useAuth} from "../../../../contexts/AuthContext.jsx";
 import QuickActions from '../components/dashboard/QuickActions';
 import {resendInvitation, terminateInvitation} from "../../../auth/authAPIs.js";
 import {Toast} from "../components/ui/Toast.jsx";
+import { getDashboardAnalytics, getInvitations } from '../services/adminService';
 
 
 // TODO: Remove all white space before and after any form submit across all dashboards.
@@ -54,13 +54,14 @@ const AdminOverviewDashboard = ({ overview }) => {
     );
 };
 
-const RecentActivity = ({ activities }) => {
-    const data = activities;
+const RecentActivity = ({ activities = { users: [], students: [], invitations: [] } }) => {
+    const { users = [], students = [], invitations = [] } = activities || {};
+
     // Combine and sort by date
     const activity = [
-        ...data.users.map(u => ({ ...u, type: 'USER_REG' })),
-        ...data.students.map(u => ({ ...u, type: 'STUD' })),
-        ...data.invitations.map(i => ({ ...i, type: 'INVITE' }))
+        ...users.map(u => ({ ...u, type: 'USER_REG' })),
+        ...students.map(u => ({ ...u, type: 'STUD' })),
+        ...invitations.map(i => ({ ...i, type: 'INVITE' }))
     ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     const getActionText = (item) => {
@@ -114,7 +115,7 @@ export const PendingInvitations = (invitations) => {
         <>
 
             {/* Invitation Management Section */}
-            <div className="bg-white p-6 rounded-[32px] shadow-sm border border-gray-100 flex flex-col h-full">
+            <div className="bg-white p-6 rounded-4xl shadow-sm border border-gray-100 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h2 className="text-xl font-bold text-gray-800">Pending Invitations</h2>
@@ -144,7 +145,7 @@ export const PendingInvitations = (invitations) => {
 
 
             {showAllInvites && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
                     {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-gray-900/40"
@@ -289,7 +290,7 @@ const InvitationItem = ({inv}) => {
                     <span className="text-gray-200 text-xs">•</span>
                     <div className="flex items-center gap-1">
                         <span className="text-[10px] text-gray-400 font-medium">By</span>
-                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50/50 px-1.5 rounded">
+                        <span className="text-[10px] font-bold text-blue-600 px-1.5 rounded">
                             {inv.invitedBy.name}
                         </span>
                     </div>
@@ -398,7 +399,71 @@ const InvitationItem = ({inv}) => {
 };
 
 const DashboardPage = () => {
-    const { loading, userStats, overview, invitationList, userActivities, error } = useAnalytics();
+    const [loading, setLoading] = useState(true);
+    const [userStats, setUserStats] = useState(null);
+    const [overview, setOverview] = useState({
+        totalUsers: 0,
+        totalActiveUsers: 0,
+        totalStudents: 0,
+        totalActiveStudents: 0,
+        totalInvitations: 0,
+        pendingInvitations: 0
+    });
+    const [invitationList, setInvitations] = useState([]);
+    const [userActivities, setUserActivities] = useState([]);
+    const [error, setError] = useState(null);
+    const [isOffline, setIsOffline] = useState(false);
+
+    useEffect(() => {
+        const fetchAnalytics = async () => {
+            try {
+                setLoading(true);
+
+                // Check if online before attempting to fetch
+                if (!navigator.onLine) {
+                    // Offline: Don't fetch data, but don't set error either
+                    setIsOffline(true);
+                    setLoading(false);
+                    return;
+                }
+
+                setIsOffline(false);
+
+                const [analyticsData, invitesData] = await Promise.all([
+                    getDashboardAnalytics(),
+                    getInvitations()
+                ]);
+
+                const { recentActivity, overview: fetchedOverview, userStatistics } = analyticsData.data;
+
+                const pendingInvites = invitesData.data.invitations;
+
+                setUserStats(userStatistics);
+                setOverview(fetchedOverview);
+                setUserActivities(recentActivity);
+
+                const formattedInvites = pendingInvites.map(invite => ({
+                    id: invite.id,
+                    email: invite.email,
+                    role: invite.role,
+                    status: invite.status,
+                    invitedBy: { name: invite.invitedBy.name },
+                    invitedAt: invite.invitedAt,
+                    resendCount: invite.resendCount,
+                }));
+
+                setInvitations(formattedInvites);
+            } catch (err) {
+                console.error('Failed to fetch analytics:', err);
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, []);
+
     const { logout } = useAuth();
 
     if (loading) {
@@ -421,6 +486,22 @@ const DashboardPage = () => {
 
     return (
         <AdminLayout>
+            {isOffline && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 mx-2">
+                    <div className="flex items-center">
+                        <div className="flex-shrink-0">
+                            <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm text-yellow-800">
+                                You are currently offline. Dashboard data may be outdated.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
             <AdminOverviewDashboard overview={overview} />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8 p-2">
                 <AnalyticsComponent userStatsAnalytics={userStats} />

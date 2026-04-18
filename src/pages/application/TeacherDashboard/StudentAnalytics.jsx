@@ -8,7 +8,6 @@ import {CircularProgress} from "./teacherUtils/teacherComponents.jsx"; // Assumi
 
 
 const StudentAnalytics = ({ student, onBack }) => {
-    console.log(student)
     // Mock Data for New Sections
     const recentActivities = [
         { id: 1, type: 'Quiz', title: 'Mathematics: Algebra II', score: '18/20', date: '2 hours ago', status: 'Excellent' },

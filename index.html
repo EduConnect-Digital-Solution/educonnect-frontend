@@ -1,23 +1,54 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="./src/index.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <title>EduConnect</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- ── Viewport & Mobile ──────────────────────────────────────────────── -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="EduConnect" />
+
+  <!-- ── SEO & Description ──────────────────────────────────────────────── -->
+  <title>EduConnect – Smart School Management</title>
+  <meta name="description" content="Digital school management platform built for Nigerian schools. Connect teachers, parents, and students." />
+  <meta name="theme-color" content="#104889" />
+  <meta name="msapplication-TileColor" content="#104889" />
+
+  <!-- ── Favicon & Icons ────────────────────────────────────────────────── -->
+  <link rel="icon" type="image/svg+xml" href="/logo.png" />
+
+
+  <!-- Apple Touch Icons (iOS install icon) -->
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+  <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192x192.png" />
+
+  <!-- Apple Splash Screens (optional but improves iOS install UX) -->
+  <link rel="apple-touch-startup-image"
+        href="/icons/splash-1170x2532.png"
+        media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <!-- ── PWA Manifest ────────────────────────────────────────────────────── -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- ── Open Graph (social sharing) ───────────────────────────────────── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="EduConnect – Smart School Management" />
+  <meta property="og:description" content="Digital school management platform built for Nigerian schools." />
+  <meta property="og:image" content="/icons/icon-512x512.png" />
+</head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
     <script>window.neetoCal = window.neetoCal || { embed: function(){(neetoCal.q=neetoCal.q||[]).push(arguments)} };</script>
-    <script async
-            src="https://cdn.neetocal.com/javascript/embed.js">
-    </script>
+    <script async src="https://cdn.neetocal.com/javascript/embed.js"></script>
     <script>
       neetoCal.embed({
         type: "elementClick",
@@ -28,5 +59,6 @@
         shouldForwardQueryParams: "false"
       });
     </script>
+
   </body>
 </html>

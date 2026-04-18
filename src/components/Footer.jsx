@@ -18,7 +18,6 @@ export default function Footer() {
     const [newsletterEmail, setNewsletterEmail] = useState('');
 
     const handleNewsletterSubmit = () => {
-        console.log('Newsletter subscription:', newsletterEmail);
         // Add your newsletter subscription logic here
         alert('Successfully subscribed to our newsletter!');
         setNewsletterEmail('');

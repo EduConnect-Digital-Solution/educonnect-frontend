@@ -5,17 +5,80 @@ import { Dialog, Transition } from '@headlessui/react';
 import StudentAnalytics from './StudentAnalytics.jsx';
 import {Pagination} from "./teacherUtils/teacherComponents.jsx";
 import TeacherLayout from "./components/layout/TeacherLayout.jsx";
-import {useData} from "./hooks/useData.jsx";
-import {assignGrade, getStudentsByClassandSubject, publishGrade, updateGrade, viewGrade} from "../../auth/authAPIs.js";
+import {
+    assignGrade,
+    getStudentsByClassandSubject,
+    getTeacherDashboard,
+    publishGrade,
+    updateGrade,
+    viewGrade
+} from "../../auth/authAPIs.js";
 import {Toast} from "../AdminDashboard/components/ui/Toast.jsx";
-import {useGradedState} from "./hooks/useGradedState.js";
 import {useAuth} from "../../../contexts/AuthContext.jsx";
+// import {getTeacherDashboard} from '../services/teacherService.jsx';
 
 const ClassStudents = () => {
-    const { subjects: teacherSubjects } = useData();
     const { class: studentClass, subject } = useParams();
     const { user } = useAuth();
-    const { gradedStudents, updateGradedStatus, clearGradedStatus, isStudentGraded } = useGradedState(user?.id, studentClass, subject);
+
+    const [teacherSubjects, setTeacherSubjects] = useState([]);
+    const [loadingSubjects, setLoadingSubjects] = useState(true);
+
+    useEffect(() => {
+        const fetchSubjects = async () => {
+            try {
+                setLoadingSubjects(true);
+                const dashboardRes = await getTeacherDashboard();
+                setTeacherSubjects(dashboardRes.data.teacher.subjects);
+            } catch (err) {
+                console.error('Failed to fetch subjects:', err);
+            } finally {
+                setLoadingSubjects(false);
+            }
+        };
+
+        fetchSubjects();
+    }, []);
+
+    // useGradedState logic
+    const [gradedStudents, setGradedStudents] = useState({});
+
+    const getStorageKey = (userId, studentClass, subject) => {
+        if (!userId || !studentClass || !subject) return null;
+        return `graded_status_${userId}_${studentClass}_${subject}`;
+    };
+
+    const storageKey = getStorageKey(user?.id, studentClass, subject);
+
+    useEffect(() => {
+        if (storageKey) {
+            const storedGradedStatus = localStorage.getItem(storageKey);
+            if (storedGradedStatus) {
+                setGradedStudents(JSON.parse(storedGradedStatus));
+            } else {
+                setGradedStudents({});
+            }
+        }
+    }, [storageKey]);
+
+    const updateGradedStatus = useCallback((studentId, status = true) => {
+        const newGradedStudents = { ...gradedStudents, [studentId]: status };
+        setGradedStudents(newGradedStudents);
+        if (storageKey) {
+            localStorage.setItem(storageKey, JSON.stringify(newGradedStudents));
+        }
+    }, [gradedStudents, storageKey]);
+
+    const clearGradedStatus = useCallback(() => {
+        setGradedStudents({});
+        if (storageKey) {
+            localStorage.removeItem(storageKey);
+        }
+    }, [storageKey]);
+
+    const isStudentGraded = (studentId) => {
+        return gradedStudents[studentId] === true;
+    };
 
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);

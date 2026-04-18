@@ -1,6 +1,6 @@
 // javascript
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, User, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
+import { Bell, User, ChevronDown, LogOut, Settings, UserCircle, Moon, Sun } from 'lucide-react';
 import {NavLink} from "react-router-dom";
 import {useAuth} from "../../contexts/AuthContext.jsx";
 import {getInitials} from "./AdminDashboard/utils/formatters.js";
@@ -10,10 +10,14 @@ import {
     AlertDialogHeader, AlertDialogTitle,
     AlertDialogTrigger
 } from "../../components/ui/alert-dialog.jsx";
+import './dark-mode.css'
+
+import { getTheme, toggleTheme } from "../../utils/theme.js";
 
 export const Header = () => {
     const {user, logout} = useAuth();
     const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+    const [isDark, setIsDark] = useState(() => getTheme() === 'dark');
     const role = user?.role;
     const email = user?.email;
     const displayName = user?.firstName
@@ -45,11 +49,29 @@ export const Header = () => {
         await logout();
     };
 
+    const handleThemeToggle = () => {
+        toggleTheme();
+        setIsDark(getTheme() === 'dark');
+    };
+
     return (
         <>
             <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
                 <div className="flex h-16 px-4 sm:px-6 lg:px-8 items-center justify-end">
                     <div className="flex items-center space-x-3 relative" ref={dropdownRef}>
+                        {/* Dark Mode Toggle */}
+                        <button
+                            onClick={handleThemeToggle}
+                            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                            aria-label="Toggle dark mode"
+                        >
+                            {isDark ? (
+                                <Sun className="w-5 h-5 text-gray-600" />
+                            ) : (
+                                <Moon className="w-5 h-5 text-gray-600" />
+                            )}
+                        </button>
+
                         <div className="h-6 w-px bg-gray-200 mx-1"></div>
 
                         {/* Profile Trigger */}
@@ -88,9 +110,6 @@ export const Header = () => {
 
                                 <div className="h-px bg-gray-50 my-1"></div>
 
-                                {/* We trigger the state here instead of nesting the whole
-                                    AlertDialog inside the conditional dropdown.
-                                */}
                                 <button
                                     onClick={() => {
                                         setIsLogoutDialogOpen(true);

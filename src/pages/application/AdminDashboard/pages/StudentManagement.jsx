@@ -127,7 +127,6 @@ const StudentsList = () => {
                     parents: userInfo.parents,
                     updatedAt: userInfo.updatedAt
                 }));
-                console.log(response);
                 setMockUsers(mockUsersList)
             } catch (error) {
                 console.error(error)
@@ -164,20 +163,17 @@ const StudentsList = () => {
 
     const handleRemoveUser = (user) => {
         // Add your remove logic here
-        console.log('Remove user:', user);
         if (window.confirm(`Are you sure you want to remove ${user.name}?`)) {
             alert(`User ${user.name} has been removed`);
         }
     };
 
     const handleChangeStatus = (user) => {
-        console.log(user)
         setStatusChangeUser(user);
     };
 
 
     const confirmStatusChange = (newStatus) => {
-        console.log('Change status for:', statusChangeUser, 'to:', newStatus);
         alert(`Status changed to: ${newStatus} for ${statusChangeUser.name}`);
         setStatusChangeUser(null);
     };

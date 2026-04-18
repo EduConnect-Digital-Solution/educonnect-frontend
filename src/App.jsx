@@ -1,11 +1,18 @@
 import React, { lazy, useEffect} from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { PWAProvider } from './contexts/PWAContext.jsx';
 
 // Components
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import {AuthLayout} from "./components/auth/AuthLayout.jsx";
+import {
+    PWAInstallPrompt,
+    PWAUpdateBanner,
+    OfflineBanner,
+    PWAInstalledToast,
+} from './components/pwa';
 
 // LAZY LOADED PAGES
 const Home = lazy(() => import("./pages/Home.jsx").then(m => ({ default: m.Home })));
@@ -40,13 +47,19 @@ const LoadingFallback = () => (
     </div>
 );
 
+// TODO: Add Skeleton Loaders
+
+/**
+ * AuthContextBridge
+ *
+ * Makes auth context available to axios interceptors AND wires
+ * clearUserCache from PWAContext so cache is cleared on logout.
+ */
 const AuthContextBridge = ({ children }) => {
     const auth = useAuth();
 
     useEffect(() => {
-        // Make auth context available to axios interceptors
         window.authContext = auth;
-
         return () => {
             delete window.authContext;
         };
@@ -62,6 +75,8 @@ function AppRoutes() {
     if (isLoading) {
         return <LoadingFallback />;
     }
+    const isInDashboard = location.pathname.startsWith('/dashboard');
+
     // TODO: add a bottom bar for cookie policy with accept button
     return (
         <div className={`font-[Inter]`}>
@@ -94,45 +109,36 @@ function AppRoutes() {
                     <Route path="/dashboard/parent/profile" element={<ProtectedRoute requiredRole="parent"><ParentProfilePage /></ProtectedRoute>} />
 
                     {/* Teacher Protected Routes */}
-                    <Route path="/dashboard/teacher" element={
-                        <ProtectedRoute requiredRole="teacher">
-                            <TeacherDashboard />
-                         </ProtectedRoute>
-                        } />
+                    <Route path="/dashboard/teacher" element={<ProtectedRoute requiredRole="teacher"><TeacherDashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard/teacher/profile" element={<ProtectedRoute requiredRole="teacher"><TeacherProfile /></ProtectedRoute>} />
+                    <Route path="/dashboard/teacher/classes" element={<ProtectedRoute requiredRole="teacher"><TeacherClasses /></ProtectedRoute>} />
+                    <Route path="/dashboard/teacher/students/:class/:subject" element={<ProtectedRoute requiredRole="teacher"><ClassStudents /></ProtectedRoute>} />
 
-                    <Route path="/dashboard/teacher/profile" element={
-                        <ProtectedRoute requiredRole="teacher">
-                            <TeacherProfile />
-                         </ProtectedRoute>
-                    } />
-                    <Route path="/dashboard/teacher/classes" element={
-                        <ProtectedRoute requiredRole="teacher">
-                            <TeacherClasses />
-                        </ProtectedRoute>
-                    } />
-
-                    {/* UPDATED: Route now expects class first, then subject */}
-                    <Route path="/dashboard/teacher/students/:class/:subject" element={
-                        <ProtectedRoute requiredRole="teacher">
-                            <ClassStudents />
-                        </ProtectedRoute>
-                    } />
-
-                    {/*<Route path="*" element={<Navigate to="/" />} />*/}
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
-            {/*</Suspense>*/}
+
+
+           {isInDashboard && (
+                <>
+                    <PWAUpdateBanner />
+                    <PWAInstallPrompt />
+                    <OfflineBanner />
+                    <PWAInstalledToast />
+                </>
+            )}
         </div>
     );
 }
 
 function App() {
     return (
-    <AuthProvider>
-        <AuthContextBridge>
-            <AppRoutes />
-        </AuthContextBridge>
-    </AuthProvider>
+        <AuthProvider>
+            <PWAProvider>
+                <AuthContextBridge>
+                    <AppRoutes />
+                </AuthContextBridge>
+            </PWAProvider>
+        </AuthProvider>
     );
 }
 

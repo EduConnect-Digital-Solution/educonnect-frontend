@@ -57,7 +57,6 @@ const SchoolProfilePage = () => {
         try {
             setLoading(true);
             const response = await getSchoolProfile();
-            console.log(response)
             const schoolInformation = response.data.school;
             const mockUsersList = {
                 id: schoolInformation.id,
@@ -82,7 +81,6 @@ const SchoolProfilePage = () => {
                 website: schoolInformation.website || '',
                 description: schoolInformation.description || '',
             });
-            // console.log(response.data.school);
         } catch (error) {
             console.error(error)
             showToast(error.message || 'Failed to fetch school profile.', 'error');
@@ -129,7 +127,6 @@ const SchoolProfilePage = () => {
 
             }
 
-             console.log(payload);
 
             setShowStatusModal(false);
             setStatusReason('');

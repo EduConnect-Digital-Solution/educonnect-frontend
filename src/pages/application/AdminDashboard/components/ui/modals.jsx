@@ -316,7 +316,6 @@ export const UnassignClassesModal = ({ onClose, showToast, teacher, schoolId }) 
 
     // teacher.classes should be available now.
     const assignedClasses = teacher.classes || [];
-    console.log(teacher)
 
     const handleClassToggle = (classToToggle) => {
         setSelectedClasses(prev =>

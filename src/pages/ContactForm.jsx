@@ -73,7 +73,6 @@ export default function ContactPage() {
                 const data = await response.json();
 
                 if (data.success) {
-                    console.log("Form Submitted Successfully:", data);
                     setIsSubmitted(true);
 
 

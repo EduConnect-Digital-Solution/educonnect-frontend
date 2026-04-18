@@ -1,6 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+export function clearSWUserCache() {
+    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+
+    return new Promise((resolve) => {
+        const channel = new MessageChannel();
+        channel.port1.onmessage = () => resolve();
+        navigator.serviceWorker.controller.postMessage(
+            { type: 'CLEAR_USER_CACHE' },
+            [channel.port2]
+        );
+        // Timeout fallback
+        setTimeout(resolve, 500);
+    });
+}
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -17,12 +32,27 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [tokenExpiry, setTokenExpiry] = useState(null);
 
+    // Load auth state from localStorage on mount
     useEffect(() => {
-        const verifyUser = async () => {
-            await checkAuthStatus();
-            setLoading(false);
+        const loadAuthFromStorage = () => {
+            try {
+                const storedUser = localStorage.getItem('auth_user');
+                const storedToken = localStorage.getItem('auth_token');
+                const storedExpiry = localStorage.getItem('auth_expiry');
+
+                if (storedUser && storedToken) {
+                    setUser(JSON.parse(storedUser));
+                    setAccessToken(storedToken);
+                    setTokenExpiry(storedExpiry ? parseInt(storedExpiry) : null);
+                }
+            } catch (error) {
+                console.error('Error loading auth from storage:', error);
+            } finally {
+                setLoading(false);
+            }
         };
-        verifyUser();
+
+        loadAuthFromStorage();
     }, []);
 
     const baseURL = import.meta.env.DEV
@@ -46,6 +76,16 @@ export const AuthProvider = ({ children }) => {
         const now = Date.now();
         const bufferTime = bufferMinutes * 60 * 1000;
         return expiry <= (now + bufferTime);
+    };
+
+    // Helper function to clear auth state
+    const clearAuthState = () => {
+        setAccessToken(null);
+        setUser(null);
+        setTokenExpiry(null);
+        localStorage.removeItem('auth_user');
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_expiry');
     };
 
     // Normalize user object to ensure name/fullName are available for UI
@@ -75,10 +115,16 @@ export const AuthProvider = ({ children }) => {
                 const userData = response.data.data.user;
                 const newToken = response.data.data.tokens.accessToken;
                 const expiry = getTokenExpiry(newToken);
+                const normalizedUser = normalizeUser(userData);
 
                 setAccessToken(newToken);
-                setUser(normalizeUser(userData));
+                setUser(normalizedUser);
                 setTokenExpiry(expiry);
+
+                // Save to localStorage
+                localStorage.setItem('auth_user', JSON.stringify(normalizedUser));
+                localStorage.setItem('auth_token', newToken);
+                localStorage.setItem('auth_expiry', expiry?.toString() || '');
 
                 return newToken;
             }
@@ -87,9 +133,7 @@ export const AuthProvider = ({ children }) => {
             console.error('Token refresh failed:', error);
             // Only clear auth state if it's an authentication error
             if (error.response?.status === 401 || error.response?.status === 403) {
-                setAccessToken(null);
-                setUser(null);
-                setTokenExpiry(null);
+                clearAuthState();
             }
             return null;
         }
@@ -107,27 +151,29 @@ export const AuthProvider = ({ children }) => {
                 const userData = response.data.user;
 
                 // Set user data from /auth/me response
-                setUser(normalizeUser(userData));
+                const normalizedUser = normalizeUser(userData);
+                setUser(normalizedUser);
 
                 // Note: /auth/me doesn't return accessToken, so we'll get it on first API call
                 // The axios interceptor will handle getting a fresh token when needed
                 setAccessToken('session-valid'); // Placeholder to indicate valid session
 
+                // Save to localStorage
+                localStorage.setItem('auth_user', JSON.stringify(normalizedUser));
+                localStorage.setItem('auth_token', 'session-valid');
+                localStorage.removeItem('auth_expiry'); // No expiry for session-valid
+
                 return userData; // Return the user data
             } else {
                 // If success is false or user is null, explicitly clear auth state
-                setAccessToken(null);
-                setUser(null);
-                setTokenExpiry(null);
+                clearAuthState();
                 return null;
             }
         } catch (error) {
             console.error('Auth check failed:', error);
             // Clear state on authentication errors
             if (error.response?.status === 401 || error.response?.status === 403) {
-                setAccessToken(null);
-                setUser(null);
-                setTokenExpiry(null);
+                clearAuthState();
             }
             return false;
         }
@@ -148,10 +194,16 @@ export const AuthProvider = ({ children }) => {
     const login = async (loginData) => {
         const token = loginData.data.tokens.accessToken;
         const expiry = getTokenExpiry(token);
+        const normalizedUser = normalizeUser(loginData.data.user);
 
         setAccessToken(token);
-        setUser(normalizeUser(loginData.data.user));
+        setUser(normalizedUser);
         setTokenExpiry(expiry);
+
+        // Save to localStorage
+        localStorage.setItem('auth_user', JSON.stringify(normalizedUser));
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('auth_expiry', expiry?.toString() || '');
 
     };
 
@@ -164,9 +216,8 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            setAccessToken(null);
-            setUser(null);
-            setTokenExpiry(null);
+            await clearSWUserCache();
+            clearAuthState();
         }
     };
 

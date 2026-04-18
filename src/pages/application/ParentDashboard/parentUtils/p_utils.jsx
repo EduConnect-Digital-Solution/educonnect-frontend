@@ -22,7 +22,6 @@ import React, {useEffect, useState} from "react";
 import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import {Images} from "../../../../components/images.jsx";
 import {getParentDashboard} from "../../../auth/authAPIs.js";
-import {useAnalytics} from "../hooks/useAnalytics";
 import {formatDate} from "../../AdminDashboard/utils/formatters.js";
 
 export const StatsMetricCard = ({ title, value, icon: Icon, colorClass }) => {

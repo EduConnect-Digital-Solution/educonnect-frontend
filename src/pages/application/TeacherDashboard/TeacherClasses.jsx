@@ -1,13 +1,33 @@
-import React, {Fragment, useState} from 'react';
-import { useData } from './hooks/useData.jsx';
+import React, {Fragment, useState, useEffect} from 'react';
 import TeacherLayout from './components/layout/TeacherLayout.jsx';
 import { Link } from 'react-router-dom';
-import {getSubjectsByClass} from "../../auth/authAPIs.js";
+import {getSubjectsByClass, getTeacherClasses} from "../../auth/authAPIs.js";
 import { Dialog, Transition } from '@headlessui/react';
 import { X } from 'lucide-react';
+// import {getTeacherClasses} from '../services/teacherService.jsx';
 
 const TeacherClasses = () => {
-    const { loading, classes, error } = useData();
+    const [loading, setLoading] = useState(true);
+    const [classes, setClasses] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchClasses = async () => {
+            try {
+                setLoading(true);
+                const classRes = await getTeacherClasses();
+                setClasses(classRes.data.classes);
+            } catch (err) {
+                console.error('Failed to fetch classes:', err);
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClasses();
+    }, []);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedClass, setSelectedClass] = useState(null);
     const [subjects, setSubjects] = useState([]);
@@ -15,7 +35,6 @@ const TeacherClasses = () => {
 
     const handleViewStudentsClick = async (cls) => {
         setSelectedClass(cls);
-        console.log(cls.name)
         setIsModalOpen(true);
         setLoadingSubjects(true);
         try {
