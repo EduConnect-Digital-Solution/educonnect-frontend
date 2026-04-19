@@ -160,9 +160,9 @@ export default function AuthPage() {
         <>
             {/* Logo */}
             <div className="absolute top-0 left-0 z-50 m-8">
-                <NavLink to="/">
+                {/*<NavLink to="/">*/}
                     <img src={Images.main_logo} alt="EduConnect Logo" className="w-[130px] md:w-[160px]" />
-                </NavLink>
+                {/*</NavLink>*/}
             </div>
 
             {/* Toast */}

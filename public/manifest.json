@@ -2,56 +2,20 @@
   "name": "EduConnect – School Management",
   "short_name": "EduConnect",
   "description": "Digital school management platform for Nigerian schools. Connect teachers, parents, and students.",
-  "start_url": "/",
+  "start_url": "/login",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#104889",
+  "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "categories": ["education", "productivity"],
   "lang": "en",
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
       "src": "/icons/icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512x512.png",
@@ -79,16 +43,23 @@
   "shortcuts": [
     {
       "name": "Admin Dashboard",
-      "short_name": "Dashboard",
+      "short_name": "Admin",
       "description": "Go to your admin dashboard",
       "url": "/dashboard/admin",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Students",
-      "short_name": "Students",
-      "description": "Manage students",
-      "url": "/dashboard/admin/students",
+      "name": "Teacher Dashboard",
+      "short_name": "Teacher",
+      "description": "Manage students & classes",
+      "url": "/dashboard/teacher",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Parent Dashboard",
+      "short_name": "Parent",
+      "description": "Manage children's progress",
+      "url": "/dashboard/parent",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }
   ],

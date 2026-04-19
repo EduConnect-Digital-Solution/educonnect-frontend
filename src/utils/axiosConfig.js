@@ -127,12 +127,14 @@ apiClient.interceptors.response.use(
             } catch (refreshError) {
                 processQueue(refreshError, null);
 
-                // Redirect to login if refresh fails
-                const authContext = window.authContext;
-                if (authContext && authContext.logout) {
-                    await authContext.logout();
+                // Only logout if online; if offline, allow continued use with cached auth
+                if (navigator.onLine) {
+                    const authContext = window.authContext;
+                    if (authContext && authContext.logout) {
+                        await authContext.logout();
+                    }
+                    window.location.href = '/login';
                 }
-                window.location.href = '/login';
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;
