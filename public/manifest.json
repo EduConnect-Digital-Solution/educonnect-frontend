@@ -12,16 +12,10 @@
   "lang": "en",
   "icons": [
     {
-      "src": "/icons/icon-icon-34x34.png",
+      "src": "/icons/icon-34x34.png",
       "sizes": "34x34",
       "type": "image/png",
       "purpose": "any"
-    },
-    {
-      "src": "/main_logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
     }
   ],
   "screenshots": [
