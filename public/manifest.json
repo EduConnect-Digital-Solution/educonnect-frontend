@@ -12,7 +12,7 @@
   "lang": "en",
   "icons": [
     {
-      "src": "/main_logo.png",
+      "src": "/icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
