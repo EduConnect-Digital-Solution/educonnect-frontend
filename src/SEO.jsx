@@ -4,8 +4,7 @@ export const SEO = ({
                         keywords = 'school management system, education technology, Nigeria schools, digital learning, EduConnect',
                         image = 'https://educonnect.com.ng/assets/logo-CGEByueL.png',
                         url = 'educonnect.com.ng',
-                        type = 'website'
-                    }) => {
+                        type = 'website' }) => {
     return (
         <>
             {/* Primary Meta Tags */}
