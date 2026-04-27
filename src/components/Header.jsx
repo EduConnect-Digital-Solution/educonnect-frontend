@@ -3,7 +3,6 @@ import {NavLink, useNavigate, useLocation} from "react-router-dom";
 import {Images} from "./images.jsx";
 import {Icons} from "./icons.jsx";
 import {navItems} from "../utils/imports.jsx";
-import {useAuth} from "../contexts/AuthContext.jsx";
 import {ChevronDown} from 'lucide-react';
 import {Phone} from "lucide-react";
 import ScheduleButton from "./ScheduleButton.jsx";
@@ -54,40 +53,17 @@ export const Header = () => {
         return () => { document.body.style.overflow = ''; };
     }, [mobileOpen]);
 
-    const { checkAuthStatus, user } = useAuth();
-
-    const getDashboardRoute = (u) => {
-        if (!u) return '/';
-        // adjust this to match your user payload (e.g., role, isAdmin, school)
-        if (u.role === 'admin') return '/dashboard/admin';
-        if (u.role === 'teacher') return '/dashboard/teacher';
-        if (u.role === 'parent') return '/dashboard/parent';
-        // if (u.schoolId || u.school) return '/school/dashboard';
-        return '/dashboard';
-    };
-
-    const handleClick = async () => {
-        // Try to rehydrate session from httpOnly cookie if needed
-        const hasSession = await checkAuthStatus();
-        if (hasSession) {
-            navigate(getDashboardRoute(user));
-        } else {
-            navigate('/login'); // or your login route
-        }
-    };
-
     return (
         <>
             <nav className={`py-5 sticky top-0 z-40 shadow-md bg-white px-6 md:px-12 flex items-center justify-between`}>
 
-                {/* Logo */}
                 <div className="flex items-center space-x-2">
-                    {/* Logo Icon Placeholder */}
+
                     <NavLink to={`/`}>
                         <img
-                            src={`${Images.main_logo}`} // Placeholder for the book icon
+                            src={`${Images.main_logo}`}
                             alt="EduConnect Logo Icon"
-                            className="w-[120px] md:w-[170px] md:ml-14"
+                            className="w-30 md:w-42.5 md:ml-14"
                         />
                     </NavLink>
 
@@ -118,7 +94,7 @@ export const Header = () => {
 
                 {/* Action Buttons */}
                 <div className=" flex space-x-4">
-                    <NavLink to={`/login`}>
+                    <NavLink to={`https://app.educonnect.com.ng/`}>
                         <button
                             // onClick={handleClick}
                             className="px-5 py-2 hidden md:flex bg-[#104889] text-white rounded-md hover:bg-[#FEC11B] hover:text-black transition duration-150">
@@ -126,13 +102,13 @@ export const Header = () => {
                         </button>
                     </NavLink>
 
-                    <NavLink to={`/register`}>
+                    <NavLink to={`https://app.educonnect.com.ng/register/school`}>
                     <button className="px-2 py-2 hidden md:flex border border-gray-300 text-gray-800 rounded-md hover:bg-gray-100 transition duration-150">
                         <span className={``}>Get Started</span>
                     </button>
                     </NavLink>
 
-                    <NavLink to={`/register`}>
+                    <NavLink to={`https://app.educonnect.com.ng/register/school`}>
 
                         <button className="px-3 py-2 md:hidden bg-[#104889] text-white rounded-2xl hover:bg-[#FEC11B] hover:text-black transition duration-150">
                             Get Started
@@ -184,7 +160,7 @@ export const Header = () => {
                                 Book Consultation <Phone className={`w-5 h-5`} />
                             </button>
 
-                            <NavLink to={`/login`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">
+                            <NavLink to={`https://app.educonnect.com.ng/`} className="mt-4 text-black px-4 py-2 rounded-full w-fit">
                                 Log in
                             </NavLink>
                         </div>
